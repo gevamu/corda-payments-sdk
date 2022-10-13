@@ -4,6 +4,9 @@ plugins {
     id("net.corda.plugins.cordformation")
 }
 
+repositories {
+    mavenCentral()
+}
 
 tasks.register<Cordform>("deployNodes") {
     // etc
