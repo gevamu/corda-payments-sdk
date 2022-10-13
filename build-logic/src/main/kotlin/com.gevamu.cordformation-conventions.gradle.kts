@@ -11,7 +11,8 @@ repositories {
 tasks.register<Cordform>("deployNodes") {
     // etc
     node {
-        name("O=Notary,L=London,C=GB")
-
+        name("PaymentGateway")
+        p2pAddress("10.100.84.103")
+        p2pPort(10001)
     }
 }
