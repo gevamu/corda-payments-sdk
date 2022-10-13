@@ -16,6 +16,6 @@ tasks.register<Cordform>("deployNodes") {
         name("PaymentGateway")
         p2pAddress("10.100.84.103")
         p2pPort(10001)
-        cordapp("com.gevamu.xflows")
+        cordapp(project(":xflows"))
     }
 }
