@@ -8,7 +8,7 @@ repositories {
     mavenCentral()
 }
 
-setProperty("corda_release_version", "5.1.0")
+setProperty("corda_release_version", "4.9.2")
 
 tasks.register<Cordform>("deployNodes") {
     // etc
