@@ -31,7 +31,7 @@ tasks.register<Cordform>("deployNodes") {
     project.logger.info("custom_message")
     project.logger.info(RUNTIME_CLASSPATH_CONFIGURATION_NAME)
     val cordaPath = project.configurations.getByName(RUNTIME_CLASSPATH_CONFIGURATION_NAME)
-    project.logger.info(cordaPath.joinToString { it.toString() })
+    project.logger.info(cordaPath.filter { it.toString().contains("corda-4.9.3.jar") }.joinToString{it.toString()})
     node {
         name("PaymentGateway")
         p2pAddress("0.0.0.0")
