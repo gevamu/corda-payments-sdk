@@ -1,4 +1,3 @@
-import gradle.kotlin.dsl.accessors._129ec4e424400dc84d7a193e170168bb.cordaCordapp
 import net.corda.plugins.Cordform
 // Variable to check corda jar like in cordformation source code
 import org.gradle.api.plugins.JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME
@@ -6,7 +5,8 @@ import org.gradle.api.plugins.JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME
 plugins {
     java
     id("net.corda.plugins.cordformation")
-    id("net.corda.plugins.cordapp")
+    //id("net.corda.plugins.cordapp")
+    id("com.gevamu.kotlin-cordapp-conventions")
 }
 
 configurations {
@@ -18,15 +18,15 @@ repositories {
     maven("https://software.r3.com/artifactory/corda")
 }
 
-dependencies{
-    cordaProvided("net.corda:corda-node-api:4.9.3")
-
-    cordaRuntimeOnly("net.corda:corda:4.9.3")
-
-    // logging. Corda 4.9 provides log4j 2.17.1
-    cordaProvided("org.apache.logging.log4j:log4j-api:2.17.1")
-    cordaProvided("org.apache.logging.log4j:log4j-core:2.17.1")
-}
+//dependencies{
+//    cordaProvided("net.corda:corda-node-api:4.9.3")
+//
+//    cordaRuntimeOnly("net.corda:corda:4.9.3")
+//
+//    // logging. Corda 4.9 provides log4j 2.17.1
+//    cordaProvided("org.apache.logging.log4j:log4j-api:2.17.1")
+//    cordaProvided("org.apache.logging.log4j:log4j-core:2.17.1")
+//}
 
 tasks.register<Cordform>("deployNodes") {
     // Check corda jar like in cordformation source code
