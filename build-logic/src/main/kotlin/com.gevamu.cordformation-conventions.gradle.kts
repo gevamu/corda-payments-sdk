@@ -1,5 +1,6 @@
 import gradle.kotlin.dsl.accessors._129ec4e424400dc84d7a193e170168bb.cordaCordapp
 import net.corda.plugins.Cordform
+// Variable to check corda jar like in cordformation source code
 import org.gradle.api.plugins.JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME
 
 plugins {
@@ -28,10 +29,14 @@ dependencies{
 }
 
 tasks.register<Cordform>("deployNodes") {
-    project.logger.info("custom_message")
+    // Check corda jar like in cordformation source code
+    // FIXME: Corda JAR is not found while it exists
+    project.logger.info("check_corda_jar")
     project.logger.info(RUNTIME_CLASSPATH_CONFIGURATION_NAME)
     val cordaPath = project.configurations.getByName(RUNTIME_CLASSPATH_CONFIGURATION_NAME)
-    project.logger.info(cordaPath.filter { it.toString().contains("corda-4.9.3.jar") }.joinToString{it.toString()})
+    project.logger.info(cordaPath
+        .filter { it.toString().contains("\\Qcorda\\E(-enterprise)?-\\Q4.9.3\\E(-.+)?\\.jar\$".toRegex()) }
+        .joinToString{it.toString()})
     node {
         name("PaymentGateway")
         p2pAddress("0.0.0.0")
