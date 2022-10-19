@@ -49,19 +49,22 @@ artifacts {
 
 tasks.register<Cordform>("deployNodes") {
     dependsOn.add("cpk")
-    // Check corda jar like in cordformation source code
     // FIXME: Corda JAR is not found while it exists
+    checkCordaJAR()
+    node {
+        name("PaymentGateway")
+        p2pAddress("0.0.0.0")
+        p2pPort(10001)
+        cordapp(project(":xflows"))
+    }
+}
+
+// Check corda jar like in cordformation source code
+fun checkCordaJAR() {
     project.logger.info("check_corda_jar")
     project.logger.info(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME)
     val cordaPath = project.configurations.getByName(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME)
     project.logger.info(cordaPath
         .filter { it.toString().contains("\\Qcorda\\E(-enterprise)?-\\Q4.9\\E(-.+)?\\.jar\$".toRegex()) }
         .joinToString{it.toString()})
-    node {
-        name("PaymentGateway")
-        p2pAddress("0.0.0.0")
-        p2pPort(10001)
-        cordapp(project(":xflows"))
-
-    }
 }
