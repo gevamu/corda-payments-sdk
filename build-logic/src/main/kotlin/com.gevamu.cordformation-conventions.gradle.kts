@@ -28,9 +28,9 @@ repositories {
 
 dependencies{
     //cordaProvided("net.corda:corda-core:4.9.3")
-    cordaRuntimeOnly("net.corda:corda-node-api:4.9")
-    cordaRuntimeOnly("net.corda:corda:4.9")
-    cordapp(project(":xflows"))
+    cordaRuntimeOnly("$corda_group:corda-node-api:$corda_release_version")
+    cordaRuntimeOnly("$corda_group:corda:$corda_release_version")
+    //cordapp(project(":xflows"))
 
     // logging. Corda 4.9 provides log4j 2.17.1
 //    cordaProvided("org.apache.logging.log4j:log4j-api:2.17.1")
@@ -61,6 +61,8 @@ tasks.register<Cordform>("deployNodes") {
 
 // Check corda jar like in cordformation source code
 fun checkCordaJAR() {
+    project.logger.info(cordaCPK.name)
+    project.logger.info(cordaCPK.asPath)
     project.logger.info("check_corda_jar")
     project.logger.info(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME)
     val cordaPath = project.configurations.getByName(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME)
