@@ -65,6 +65,7 @@ fun checkCordaJAR() {
     project.logger.info(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME)
     val cordaPath = project.configurations.getByName(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME)
     project.logger.info(cordaPath
-        .filter { it.toString().contains("\\Qcorda\\E(-enterprise)?-\\Q4.9\\E(-.+)?\\.jar\$".toRegex()) }
-        .joinToString{it.toString()})
+        //.filter { it.toString().contains("\\Qcorda\\E(-enterprise)?-\\Q4.9\\E(-.+)?\\.jar\$".toRegex()) }
+        .filter { it.toString().contains("corda") }
+        .joinToString{it.toString() + "\n"})
 }
