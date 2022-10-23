@@ -19,9 +19,9 @@ dependencies {
     implementation(gradlePlugin("org.jmailen.kotlinter", "3.12.0"))
 
     // Corda plugins
+    implementation(gradlePlugin("net.corda.plugins.quasar-utils", "5.1.0"))
     implementation(gradlePlugin("net.corda.plugins.cordapp", "5.1.0"))
     implementation(gradlePlugin("net.corda.plugins.cordformation", "5.1.0"))
-    implementation(gradlePlugin("net.corda.plugins.quasar-utils", "5.1.0"))
 }
 
 fun gradlePlugin(id: String, version: String) = "$id:$id.gradle.plugin:$version"
