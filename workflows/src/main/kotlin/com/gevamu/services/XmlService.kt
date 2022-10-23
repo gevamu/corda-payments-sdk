@@ -40,7 +40,7 @@ open class XmlService protected constructor(
         marshaller.marshal(
             // TODO it may be possible to instruct xjc to add XmlRootElement annotation using bindings file
             JAXBElement(
-                QName("FooBar"), CustomerCreditTransferInitiationV11::class.java, null, paymentInstruction
+                QName("CstmrCdtTrfInitn"), CustomerCreditTransferInitiationV11::class.java, null, paymentInstruction
             ),
             // XXX Which character encoding is used?
             outputStream
