@@ -26,9 +26,10 @@ class XmlValidator {
 //            val payload = request.getElementsByTagName("RequestPayload")
 //            println(payload.serialize().toString())
 //            return payload.serialize().toString()
-            return xmlRequest
+            val payload = xmlRequest
                 .substringAfter("<RequestPayload>")
                 .substringBefore("</RequestPayload>")
+            return "<Document xmlns=\"urn:iso:std:iso:20022:tech:xsd:pain.001.001.11\">$payload</Document>"
         }
         fun validate(xmlRequest: String): Boolean {
             println("Validation Starts now!")
