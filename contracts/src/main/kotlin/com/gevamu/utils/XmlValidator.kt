@@ -18,15 +18,12 @@ class XmlValidator {
                 .newSchema(schemaSource)
                 .newValidator()
         }
-        private fun getRequestPayload(xmlRequest: String, xmlns: String): String{
+        fun validateCustomerCreditTransferInitiationRequest(xmlRequest: String) {
             val payload = xmlRequest
                 .substringAfter("<RequestPayload>")
                 .substringBefore("</RequestPayload>")
-            return "<Document xmlns=\"$xmlns\">$payload</Document>"
-        }
-        fun validateCustomerCreditTransferInitiationRequest(xmlRequest: String) {
-            val payload = getRequestPayload(xmlRequest, "urn:iso:std:iso:20022:tech:xsd:pain.001.001.11")
-            val source = StreamSource(StringReader(payload))
+            val xmlToValidate = "<Document xmlns=\"urn:iso:std:iso:20022:tech:xsd:pain.001.001.11\">$payload</Document>"
+            val source = StreamSource(StringReader(xmlToValidate))
             customerCreditTransferInitiationSchemaValidator.validate(source)
         }
     }
