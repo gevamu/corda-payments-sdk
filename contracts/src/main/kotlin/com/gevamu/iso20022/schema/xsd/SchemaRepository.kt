@@ -3,9 +3,9 @@ package com.gevamu.iso20022.schema.xsd
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 
-object Repository {
+object SchemaRepository {
     private fun getSource(fileName: String): StreamSource {
-        val inputStream = Repository::class.java.getResourceAsStream(fileName)
+        val inputStream = SchemaRepository::class.java.getResourceAsStream(fileName)
         return if (inputStream == null) {
             throw IllegalArgumentException("Resource file not found: $fileName")
         } else {

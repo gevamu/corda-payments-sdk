@@ -1,6 +1,6 @@
 package com.gevamu.iso20022.schema
 
-import com.gevamu.iso20022.schema.xsd.Repository
+import com.gevamu.iso20022.schema.xsd.SchemaRepository
 import org.xml.sax.SAXException
 import java.io.StringReader
 import javax.xml.transform.Source
@@ -12,7 +12,7 @@ import kotlin.jvm.Throws
 class XmlValidator {
     companion object {
         private val customerCreditTransferInitiationSchema: Schema =
-            createSchema(Repository.getCustomerCreditTransferInitiationSchema())
+            createSchema(SchemaRepository.getCustomerCreditTransferInitiationSchema())
 
         private fun createSchema(schemaSource: Source): Schema {
             return SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
