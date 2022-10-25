@@ -16,7 +16,7 @@ data class Payment(
     val paymentInstructionId: AttachmentId,
     val status: PaymentStatus,
     override val linearId: UniqueIdentifier
-): LinearState {
+) : LinearState {
     override val participants: List<AbstractParty>
         get() = listOf(payer)
 
@@ -27,6 +27,6 @@ data class Payment(
         ACCEPTED,
         PENDING,
         COMPLETED,
-        REJECTED,
+        REJECTED
     }
 }

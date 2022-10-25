@@ -7,13 +7,12 @@ import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
 import javax.xml.validation.Validator
 
-
 class XmlValidator {
     companion object {
         private val customerCreditTransferInitiationSchemaValidator: Validator =
             createValidator(XsdRepository.getCustomerCreditTransferInitiationSchema())
 
-        private fun createValidator(schemaSource: Source): Validator{
+        private fun createValidator(schemaSource: Source): Validator {
             return SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
                 .newSchema(schemaSource)
                 .newValidator()

@@ -13,7 +13,6 @@ object XsdRepository {
         }
     }
 
-
     public fun getCustomerCreditTransferInitiationSchema(): Source {
         return getSource("/xsd/pain.001.001.11.xsd")
     }
