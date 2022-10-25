@@ -10,7 +10,8 @@ import javax.xml.validation.Validator
 
 class XmlValidator {
     companion object {
-        private val pain_001_001_11Validator: Validator = createValidator(XsdRepository.getPain_001_001_11())
+        private val customerCreditTransferInitiationSchemaValidator: Validator =
+            createValidator(XsdRepository.getCustomerCreditTransferInitiationSchema())
 
         private fun createValidator(schemaSource: Source): Validator{
             return SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
@@ -23,10 +24,10 @@ class XmlValidator {
                 .substringBefore("</RequestPayload>")
             return "<Document xmlns=\"$xmlns\">$payload</Document>"
         }
-        fun validatePain_001_001_11(xmlRequest: String) {
+        fun validateCustomerCreditTransferInitiationRequest(xmlRequest: String) {
             val payload = getRequestPayload(xmlRequest, "urn:iso:std:iso:20022:tech:xsd:pain.001.001.11")
             val source = StreamSource(StringReader(payload))
-            pain_001_001_11Validator.validate(source)
+            customerCreditTransferInitiationSchemaValidator.validate(source)
         }
     }
 }

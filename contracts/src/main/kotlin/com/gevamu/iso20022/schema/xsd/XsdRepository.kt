@@ -14,7 +14,7 @@ object XsdRepository {
     }
 
 
-    public fun getPain_001_001_11(): Source {
+    public fun getCustomerCreditTransferInitiationSchema(): Source {
         return getSource("/xsd/pain.001.001.11.xsd")
     }
 }
