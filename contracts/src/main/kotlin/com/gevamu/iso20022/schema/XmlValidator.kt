@@ -18,12 +18,10 @@ object XmlValidator {
     }
 
     @Throws(SAXException::class)
-    fun validateCustomerCreditTransferInitiationRequest(xmlRequest: String) {
-        val payload = xmlRequest
-            .substringAfter("<RequestPayload>")
-            .substringBefore("</RequestPayload>")
-        val xmlToValidate = "<Document xmlns=\"urn:iso:std:iso:20022:tech:xsd:pain.001.001.11\">$payload</Document>"
-        val source = StreamSource(StringReader(xmlToValidate))
-        customerCreditTransferInitiationSchema.newValidator().validate(source)
+    fun validateCustomerCreditTransferInitiationRequest(xmlRequestPayload: String) {
+        val xmlToValidate =
+            "<Document xmlns=\"urn:iso:std:iso:20022:tech:xsd:pain.001.001.11\">$xmlRequestPayload</Document>"
+        val sourceToValidate = StreamSource(StringReader(xmlToValidate))
+        customerCreditTransferInitiationSchema.newValidator().validate(sourceToValidate)
     }
 }
