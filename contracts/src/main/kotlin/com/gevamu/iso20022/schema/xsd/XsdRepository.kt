@@ -7,7 +7,7 @@ object XsdRepository {
     private fun getSource(fileName: String): StreamSource {
         val inputStream = XsdRepository::class.java.getResourceAsStream(fileName)
         return if (inputStream == null) {
-            throw IllegalArgumentException("file not found! $fileName")
+            throw IllegalArgumentException("Resource file not found: $fileName")
         } else {
             StreamSource(inputStream)
         }
