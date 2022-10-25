@@ -1,4 +1,4 @@
-package com.gevamu.utils
+package com.gevamu.iso20022.schema
 
 import com.gevamu.iso20022.schema.xsd.Repository
 import java.io.StringReader
@@ -7,7 +7,7 @@ import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
 import javax.xml.validation.Validator
 
-class XmlValidator {
+class Validator {
     companion object {
         private val customerCreditTransferInitiationSchemaValidator: Validator =
             createValidator(Repository.getCustomerCreditTransferInitiationSchema())
