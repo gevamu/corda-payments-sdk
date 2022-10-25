@@ -6,15 +6,14 @@ import java.io.StringReader
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
-import javax.xml.validation.Validator
 import kotlin.jvm.Throws
 
 class Validator {
     companion object {
-        private val customerCreditTransferInitiationSchemaValidator: Validator =
+        private val customerCreditTransferInitiationSchemaValidator: javax.xml.validation.Validator =
             createValidator(Repository.getCustomerCreditTransferInitiationSchema())
 
-        private fun createValidator(schemaSource: Source): Validator {
+        private fun createValidator(schemaSource: Source): javax.xml.validation.Validator {
             return SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
                 .newSchema(schemaSource)
                 .newValidator()
