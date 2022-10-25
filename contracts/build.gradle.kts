@@ -16,11 +16,11 @@ dependencies {
 jaxb {
     javaGen {
         register("iso20022pain") {
-            schema = file("src/main/resources/com/gevamu/iso20022/schema/xsd/pain.001.001.11.xsd")
+            schema = file("src/main/resources/com/gevamu/iso20022/schema/pain.001.001.11.xsd")
             packageName = "com.gevamu.iso20022.pain"
         }
         register("iso20022head") {
-            schema = file("src/main/resources/com/gevamu/iso20022/schema/xsd/head.001.001.03.xsd")
+            schema = file("src/main/resources/com/gevamu/iso20022/schema/head.001.001.03.xsd")
             packageName = "com.gevamu.iso20022.head"
         }
     }

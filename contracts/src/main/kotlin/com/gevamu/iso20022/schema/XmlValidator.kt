@@ -1,6 +1,5 @@
 package com.gevamu.iso20022.schema
 
-import com.gevamu.iso20022.schema.xsd.SchemaRepository
 import org.xml.sax.SAXException
 import java.io.StringReader
 import javax.xml.transform.Source
