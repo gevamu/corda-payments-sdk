@@ -1,11 +1,13 @@
 package com.gevamu.iso20022.schema
 
 import com.gevamu.iso20022.schema.xsd.Repository
+import org.xml.sax.SAXException
 import java.io.StringReader
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
 import javax.xml.validation.Validator
+import kotlin.jvm.Throws
 
 class Validator {
     companion object {
@@ -17,6 +19,8 @@ class Validator {
                 .newSchema(schemaSource)
                 .newValidator()
         }
+
+        @Throws(SAXException::class)
         fun validateCustomerCreditTransferInitiationRequest(xmlRequest: String) {
             val payload = xmlRequest
                 .substringAfter("<RequestPayload>")
