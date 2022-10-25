@@ -1,6 +1,6 @@
 package com.gevamu.utils
 
-import com.gevamu.xsd.XsdRepository
+import com.gevamu.iso20022.schema.xsd.XsdRepository
 import java.io.StringReader
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource

@@ -1,4 +1,4 @@
-package com.gevamu.xsd
+package com.gevamu.iso20022.schema.xsd
 
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
