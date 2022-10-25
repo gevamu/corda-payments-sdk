@@ -1,6 +1,6 @@
 package com.gevamu.utils
 
-import com.gevamu.iso20022.schema.xsd.XsdRepository
+import com.gevamu.iso20022.schema.xsd.Repository
 import java.io.StringReader
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
@@ -10,7 +10,7 @@ import javax.xml.validation.Validator
 class XmlValidator {
     companion object {
         private val customerCreditTransferInitiationSchemaValidator: Validator =
-            createValidator(XsdRepository.getCustomerCreditTransferInitiationSchema())
+            createValidator(Repository.getCustomerCreditTransferInitiationSchema())
 
         private fun createValidator(schemaSource: Source): Validator {
             return SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
