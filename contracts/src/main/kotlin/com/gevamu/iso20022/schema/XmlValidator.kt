@@ -9,7 +9,7 @@ import javax.xml.validation.Schema
 import javax.xml.validation.SchemaFactory
 import kotlin.jvm.Throws
 
-class Validator {
+class XmlValidator {
     companion object {
         private val customerCreditTransferInitiationSchema: Schema =
             createSchema(Repository.getCustomerCreditTransferInitiationSchema())
