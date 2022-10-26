@@ -8,7 +8,7 @@ group = rootProject.group
 dependencies {
     cordapp(project(":contracts"))
 
-    runtimeOnly("org.glassfish.jaxb:jaxb-runtime:3.0.1")
+    api("javax.xml.bind:jaxb-api:2.3.1")
 }
 
 cordapp {

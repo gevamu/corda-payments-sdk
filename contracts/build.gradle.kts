@@ -8,9 +8,12 @@ plugins {
 group = rootProject.group
 
 dependencies {
-    // TODO for some reason JAXB plugin doesn't add it automatically (should it?)
-//    api("com.sun.xml.bind:jaxb-core:3.0.1")
-    api("jakarta.xml.bind:jakarta.xml.bind-api:3.0.1")
+    jaxb("javax.xml.bind:jaxb-api:2.3.1")
+    jaxb("javax.activation:activation:1.1.1")
+    jaxb("com.sun.xml.bind:jaxb-xjc:2.3.1")
+    jaxb("com.sun.xml.bind:jaxb-impl:2.3.1")
+    jaxb("com.sun.xml.bind:jaxb-core:2.3.0.1")
+    jaxb("org.glassfish.jaxb:jaxb-runtime:2.3.1")
 }
 
 jaxb {
