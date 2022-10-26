@@ -2,7 +2,7 @@ package com.gevamu.flows
 
 import co.paralleluniverse.fibers.Suspendable
 import com.gevamu.contracts.PaymentContract
-import com.gevamu.iso20022.pain.CustomerCreditTransferInitiationV11
+import com.gevamu.iso20022.pain.CustomerCreditTransferInitiationV09
 import com.gevamu.services.FlowService
 import com.gevamu.services.XmlService
 import com.gevamu.states.Payment
@@ -17,7 +17,7 @@ import net.corda.core.utilities.ProgressTracker
 
 @StartableByRPC
 class PaymentFlow(
-    private val paymentInstruction: CustomerCreditTransferInitiationV11, private val gateway: Party
+    private val paymentInstruction: CustomerCreditTransferInitiationV09, private val gateway: Party
 ) : FlowLogic<UniqueIdentifier>() {
     override val progressTracker = ProgressTracker()
 

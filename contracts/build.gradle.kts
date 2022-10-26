@@ -19,7 +19,7 @@ dependencies {
 jaxb {
     javaGen {
         register("iso20022pain") {
-            schema = file("src/main/xsd/pain.001.001.11.xsd")
+            schema = file("src/main/xsd/pain.001.001.09.xsd")
             packageName = "com.gevamu.iso20022.pain"
         }
         register("iso20022head") {
