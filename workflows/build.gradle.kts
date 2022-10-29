@@ -1,4 +1,7 @@
 plugins {
+    // Include Kotlin Common Conventions
+    id("com.gevamu.kotlin-common-conventions")
+
     // Apply common settings for cordapps.
     id("com.gevamu.kotlin-cordapp-conventions")
 }
@@ -8,6 +11,7 @@ group = rootProject.group
 dependencies {
     cordapp(project(":contracts"))
 
+    // Corda 4 provides 2.3.1
     api("javax.xml.bind:jaxb-api:2.3.1")
 }
 

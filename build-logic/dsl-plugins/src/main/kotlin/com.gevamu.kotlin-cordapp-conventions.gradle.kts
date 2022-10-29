@@ -1,9 +1,6 @@
 import net.corda.plugins.CordappExtension
 
 plugins {
-    // Include Kotlin Common Conventions
-    id("com.gevamu.kotlin-common-conventions")
-
     // Include Java-library Conventions
     id("com.gevamu.java-library-conventions")
 

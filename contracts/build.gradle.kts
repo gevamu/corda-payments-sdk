@@ -1,5 +1,8 @@
 plugins {
-    // Apply common settings for cordapps.
+    // Include Kotlin Common Conventions
+    id("com.gevamu.kotlin-common-conventions")
+
+    // Apply common settings for cordapps
     id("com.gevamu.kotlin-cordapp-conventions")
 
     id("com.intershop.gradle.jaxb") version "5.2.1"
@@ -8,6 +11,7 @@ plugins {
 group = rootProject.group
 
 dependencies {
+    // Corda 4 provides 2.3.1
     jaxb("javax.xml.bind:jaxb-api:2.3.1")
     jaxb("javax.activation:activation:1.1.1")
     jaxb("com.sun.xml.bind:jaxb-xjc:2.3.1")
