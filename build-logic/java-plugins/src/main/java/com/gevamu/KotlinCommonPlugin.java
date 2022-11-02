@@ -60,10 +60,6 @@ public class KotlinCommonPlugin implements Plugin<Project> {
             JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME,
             kotlinApi("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
         );
-        project.getDependencies().add(
-            JavaPlugin.TEST_IMPLEMENTATION_CONFIGURATION_NAME,
-            kotlinApi("org.jetbrains.kotlin:kotlin-test-junit5")
-        );
         // logging
         // implementation("org.apache.logging.log4j:log4j-api-kotlin:1.2.0")
 

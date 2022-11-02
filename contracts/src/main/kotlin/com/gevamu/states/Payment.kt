@@ -1,6 +1,7 @@
 package com.gevamu.states
 
 import com.gevamu.contracts.PaymentContract
+import java.time.Instant
 import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
@@ -15,10 +16,20 @@ data class Payment(
     val gateway: Party,
     val paymentInstructionId: AttachmentId,
     val status: PaymentStatus,
-    override val linearId: UniqueIdentifier
-): LinearState {
+    /**
+     * Timestamp to record when payment state was proposed/changed.
+     * [Instant.now()] by default
+     */
+    val timestamp: Instant = Instant.now(),
+    /**
+     * Payment info provided by the bank.
+     * Null by default since initial payment doesn't have any bank response
+     */
+    val additionalInfo: String? = null,
+    override val linearId: UniqueIdentifier,
+) : LinearState {
     override val participants: List<AbstractParty>
-        get() = listOf(payer)
+        get() = if (status == PaymentStatus.CREATED) listOf(payer) else listOf(payer, gateway)
 
     @CordaSerializable
     enum class PaymentStatus {

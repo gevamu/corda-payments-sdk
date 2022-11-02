@@ -1,5 +1,6 @@
 package com.gevamu.services
 
+import com.gevamu.flows.PaymentInstruction
 import com.gevamu.iso20022.pain.CustomerCreditTransferInitiationV09
 import net.corda.core.identity.Party
 import net.corda.core.node.AppServiceHub
@@ -30,6 +31,11 @@ open class XmlService protected constructor(
 
     fun storePaymentInstruction(paymentInstruction: CustomerCreditTransferInitiationV09, ourIdentity: Party): AttachmentId {
         val zipBytes = zip(listOf(ZipFileEntry("paymentInstruction.xml", toXmlBytes(paymentInstruction))))
+        return storeAttachment(zipBytes, ourIdentity)
+    }
+
+    fun storePaymentInstruction(paymentInstruction: PaymentInstruction, ourIdentity: Party): AttachmentId {
+        val zipBytes = zip(listOf(ZipFileEntry("paymentInstruction.xml", paymentInstruction.paymentInstruction)))
         return storeAttachment(zipBytes, ourIdentity)
     }
 
