@@ -1,0 +1,95 @@
+server:
+  port: 8080
+
+corda:
+  rpc:
+    client:
+      connection:
+        host: localhost
+        port: 10012
+        user: user1
+        password: test
+
+participants:
+  creditors:
+    - bic: HSBCHKHH
+      country: HK
+      currency: USD
+      account: 004531117838
+      accountName: 'XXXX XXXX XXXX XXXX'
+      effectiveDate: 2022-10-01
+      expiryDate: 2023-10-01
+      paymentLimit: 1000000
+    - bic: HSBCSGSG
+      country: SG
+      currency: USD
+      account: 260028006178
+      accountName: 'DFACSNSG ACU 260-028006-178'
+      effectiveDate: 2022-10-01
+      expiryDate: 2023-10-01
+      paymentLimit: 1000000
+    - bic: HSBCLULL
+      country: LU
+      currency: USD
+      account: LU963740101013787130
+      accountName: 'LU HBEU 101-13787-130'
+      effectiveDate: 2022-10-01
+      expiryDate: 2023-10-01
+      paymentLimit: 1000000
+    - bic: MIDLGB22
+      country: GB
+      currency: GBP
+      account: 40025050951366
+      accountName: 'ALIPAY GLOBA*BCB'
+      effectiveDate: 2022-10-01
+      expiryDate: 2023-10-01
+      paymentLimit: 1000000
+    - bic: MIDLGB22
+      country: GB
+      currency: GBP
+      account: GB77MIDL40025050951366
+      accountName: 'ALIPAY GLOBA BCB'
+      effectiveDate: 2022-10-01
+      expiryDate: 2023-10-01
+      paymentLimit: 1000000
+    - bic: HASEHKHH
+      country: HK
+      currency: USD
+      account: 90000000000002
+      accountName: 'TEST HK HASE'
+      effectiveDate: 2022-10-01
+      expiryDate: 2023-10-01
+      paymentLimit: 1000000
+    - bic: DBSSSGSG
+      country: SG
+      currency: USD
+      account: 90000000000003
+      accountName: 'TEST SG DBS'
+      effectiveDate: 2022-10-01
+      expiryDate: 2023-10-01
+      paymentLimit: 1000000
+    - bic: HSBCSGSG
+      country: SG
+      currency: USD
+      account: 260183041178
+      accountName: 'DFACSNSG ACU 260-183041-178'
+      effectiveDate: 2022-10-01
+      expiryDate: 2023-10-01
+      paymentLimit: 1000000
+    - bic: BKCHCNBJ
+      country: CN
+      currency: USD
+      account: 90000000000005
+      accountName: 'TEST CN BOC'
+      effectiveDate: 2022-10-01
+      expiryDate: 2023-10-01
+      paymentLimit: 1000000
+  debtors:
+    - bic: HSBCHKHH
+      country: HK
+      currency: USD
+      account: 741071328201
+      accountName: 'ASCENT WAYXXXXXXXXXX'
+      effectiveDate: 2022-10-01
+      expiryDate: 2023-10-01
+      paymentLimit: 1000000
