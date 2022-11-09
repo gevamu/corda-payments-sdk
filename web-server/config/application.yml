@@ -1,6 +1,8 @@
 server:
   port: 8080
 
+static_resources_path: ../web-ui/dist/spa
+
 corda:
   rpc:
     client:

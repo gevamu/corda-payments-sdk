@@ -58,6 +58,10 @@ dependencies {
 }
 
 tasks {
+    getByName("run") {
+        dependsOn(":web-ui:assemble")
+    }
+
     test {
         useJUnitPlatform()
     }
