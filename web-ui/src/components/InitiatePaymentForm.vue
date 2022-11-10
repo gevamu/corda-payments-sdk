@@ -103,8 +103,8 @@ export default defineComponent({
     },
     resetForm(){
       this.amount = 0
-      this.creditorAccount = this.participantsStore.creditors[0]?.name || ''
-      this.debtorAccount = this.participantsStore.debtors[0]?.name || ''
+      this.creditorAccount = this.participantsStore.creditors[0]?.id || ''
+      this.debtorAccount = this.participantsStore.debtors[0]?.id || ''
     }
   },
   async created() {
