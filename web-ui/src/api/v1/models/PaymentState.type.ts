@@ -6,7 +6,8 @@ export type PaymentState = {
   // TODO: specify exact currency values
   currency: string
   status: PaymentStatus
-  beneficiary: ParticipantAccount
+  creditor: ParticipantAccount
+  debtor: ParticipantAccount
 }
 
 export type PaymentStatus = 'CREATED' | 'SENT_TO_GATEWAY' | 'ACCEPTED' | 'PENDING' | 'COMPLETED' | 'REJECTED'

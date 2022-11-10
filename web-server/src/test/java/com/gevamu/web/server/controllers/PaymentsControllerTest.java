@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = {
-        "participants.creditors[0].mic=test_creditor_mic",
+        "participants.creditors[0].bic=test_creditor_bic",
         "participants.creditors[0].country=test_creditor_country",
         "participants.creditors[0].currency=test_creditor_currency",
         "participants.creditors[0].participantId=test_creditor_participantId",
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
         "participants.creditors[0].effectiveDate=test_creditor_effectiveDate",
         "participants.creditors[0].expiryDate=test_creditor_expiryDate",
         "participants.creditors[0].paymentLimit=test_creditor_paymentLimit",
-        "participants.debtors[0].mic=test_debtor_mic",
+        "participants.debtors[0].bic=test_debtor_bic",
         "participants.debtors[0].country=test_debtor_country",
         "participants.debtors[0].currency=test_debtor_currency",
         "participants.debtors[0].participantId=test_debtor_participantId",
@@ -80,7 +80,7 @@ public class PaymentsControllerTest {
         when(cordaRpcClientService.executePaymentFlow(any()))
             .thenReturn(CompletableFuture.completedStage(null));
 
-        var request = new PaymentRequest("test_creditor_account", BigDecimal.TEN);
+        var request = new PaymentRequest("test_creditor_account", "test_debtor_account", BigDecimal.TEN);
 
         webClient.post()
             .uri(PATH)

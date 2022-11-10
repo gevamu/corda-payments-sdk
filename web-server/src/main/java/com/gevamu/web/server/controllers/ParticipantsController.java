@@ -1,5 +1,6 @@
 package com.gevamu.web.server.controllers;
 
+import com.gevamu.web.server.config.Participant;
 import com.gevamu.web.server.models.ParticipantAccount;
 import com.gevamu.web.server.models.ParticipantAccountResponse;
 import com.gevamu.web.server.services.ParticipantService;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,8 +31,21 @@ public class ParticipantsController {
     )
     public Mono<ParticipantAccountResponse> getCreditors() {
         log.debug("getCreditors");
+        return getAccounts(() -> participantService.getCreditors());
+    }
+
+    @GetMapping(
+        path = "/debtors",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public Mono<ParticipantAccountResponse> getDebtors() {
+        log.debug("getDebtors");
+        return getAccounts(() -> participantService.getDebtors());
+    }
+
+    private Mono<ParticipantAccountResponse> getAccounts(Supplier<Collection<Participant>> supplier) {
         return Mono.defer(
-            () -> Mono.just(participantService.getCreditors())
+            () -> Mono.just(supplier.get())
                 .map(it -> it.stream()
                     .map(p -> ParticipantAccount.builder()
                         .accountId(p.getAccount())

@@ -6,5 +6,5 @@ export interface Payment {
   // TODO: specify currencies enum
   currency: string
   status: PaymentStatus
-  creditorId: string
+  creditor: string
 }

@@ -1,4 +1,5 @@
 export type SubmitPaymentRequest = {
-  beneficiaryAccount: string
+  creditorAccount: string
+  debtorAccount: string
   amount: number
 }

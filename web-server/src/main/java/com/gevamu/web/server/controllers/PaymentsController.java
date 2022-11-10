@@ -47,7 +47,7 @@ public class PaymentsController {
     }
 
     @ResponseStatus(
-        value = HttpStatus.BAD_REQUEST,
+        value = HttpStatus.FORBIDDEN,
         reason = "Participant not registered"
     )
     @ExceptionHandler(ParticipantNotRegisteredException.class)

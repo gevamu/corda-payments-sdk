@@ -7,7 +7,7 @@
       </p>
     </q-card-section>
     <q-form @submit.prevent="submitPayment">
-      <q-card-section class="row items-end">
+      <q-card-section class="row">
         <div class="q-mr-lg payment-form__field">
           <label class="text-bold">Amount</label>
           <q-input type="number" v-model="amount" :disable="disabled"
@@ -17,18 +17,25 @@
           </q-input>
         </div>
         <div class="q-mr-lg payment-form__field">
-          <label class="text-bold">Recipient</label>
+          <label class="text-bold">Debtor</label>
+          <q-select v-model="debtorAccount" :disable="disabled"
+                    :options="debtorOptions" map-options emit-value
+                    dense outlined>
+          </q-select>
+        </div>
+        <div class="q-mr-lg payment-form__field">
+          <label class="text-bold">Creditor</label>
           <q-select v-model="creditorAccount" :disable="disabled"
                     :options="creditorOptions" map-options emit-value
                     dense outlined>
           </q-select>
+          <q-btn type="submit" :disable="disabled"
+                 class="q-mt-lg full-width"
+                 size="15.5px" unelevated
+                 no-caps color="primary">
+            Submit
+          </q-btn>
         </div>
-
-        <q-btn type="submit" :disable="disabled"
-               size="15.5px" unelevated
-               no-caps color="primary">
-          Submit
-        </q-btn>
       </q-card-section>
     </q-form>
     <!-- Loading -->
@@ -42,7 +49,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import {useAuthStore} from 'stores/auth.store'
-import {useCreditorsStore} from 'stores/creditors.store'
+import {useParticipantsStore} from 'stores/participants.store'
 import {usePaymentsStore} from 'stores/payments.store'
 import {QSelectOption} from 'quasar'
 
@@ -51,14 +58,15 @@ export default defineComponent({
   setup(){
     const amount = ref(0)
     const creditorAccount = ref('')
+    const debtorAccount = ref('')
     const authStore = useAuthStore()
-    const creditorsStore = useCreditorsStore()
+    const participantsStore = useParticipantsStore()
     const paymentsStore = usePaymentsStore()
     const loading = ref(false)
 
     return {
-      amount, creditorAccount,
-      authStore, creditorsStore, paymentsStore,
+      amount, creditorAccount, debtorAccount,
+      authStore, participantsStore, paymentsStore,
       loading
     }
   },
@@ -67,7 +75,16 @@ export default defineComponent({
       return !this.authStore.isAuthorized
     },
     creditorOptions(){
-      return this.creditorsStore.creditors
+      return this.participantsStore.creditors
+        .map((creditor): QSelectOption => {
+          return {
+            label: creditor.name,
+            value: creditor.id
+          }
+        })
+    },
+    debtorOptions(){
+      return this.participantsStore.debtors
         .map((creditor): QSelectOption => {
           return {
             label: creditor.name,
@@ -79,18 +96,20 @@ export default defineComponent({
   methods: {
     async submitPayment(){
       this.loading = true
-      await this.paymentsStore.submitPayment(this.amount, this.creditorAccount)
+      await this.paymentsStore.submitPayment(this.debtorAccount, this.creditorAccount, this.amount)
       this.resetForm()
       await this.paymentsStore.fetchPayments()
       this.loading = false
     },
     resetForm(){
       this.amount = 0
-      this.creditorAccount = this.creditorsStore.creditors[0]?.name || ''
+      this.creditorAccount = this.participantsStore.creditors[0]?.name || ''
+      this.debtorAccount = this.participantsStore.debtors[0]?.name || ''
     }
   },
   async created() {
-    await this.creditorsStore.fetchCreditors()
+    await this.participantsStore.fetchCreditors()
+    await this.participantsStore.fetchDebtors()
     this.resetForm()
   }
 })

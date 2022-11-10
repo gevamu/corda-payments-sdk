@@ -1,13 +1,17 @@
 import {ApiV1} from 'src/api/v1/models/ApiV1.interface'
 import {axiosInstance} from 'src/api/v1/axiosInstance';
 import {
-  GetCreditorsResponse,
+  GetCreditorsResponse, GetDebtorsResponse,
   GetPaymentsResponse,
   GetRegistrationResponse,
   RegisterResponse
 } from 'src/api/v1/models/responses';
 
 export const apiV1: ApiV1 = {
+  async getDebtors(){
+    const {data} = await axiosInstance.get<GetDebtorsResponse>('/participants/debtors')
+    return data
+  },
   async getCreditors(){
     const {data} = await axiosInstance.get<GetCreditorsResponse>('/participants/creditors')
     return data

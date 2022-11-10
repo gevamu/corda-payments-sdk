@@ -12,7 +12,8 @@
           <th>PAYMENT ID</th>
           <th>AMOUNT</th>
           <th>STATUS</th>
-          <th>RECIPIENT</th>
+          <th>DEBTOR ACCOUNT</th>
+          <th>CREDITOR ACCOUNT</th>
         </tr>
       </thead>
       <tbody>
@@ -29,7 +30,8 @@
               {{payment.status}}
             </q-chip>
           </td>
-          <td>{{payment.creditorId}}</td>
+          <td>{{ payment.debtor }}</td>
+          <td>{{ payment.creditor }}</td>
         </q-tr>
       </tbody>
     </q-markup-table>

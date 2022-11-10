@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -47,37 +46,32 @@ public class ParticipantService {
         return creditors.values();
     }
 
+    public Collection<Participant> getDebtors() {
+        return debtors.values();
+    }
+
     public ParticipantIdentification getCreditorIdentification(@NonNull String account) {
         var creditor = creditors.get(account);
         return createIdentification(creditor);
     }
 
     public ParticipantIdentification getDebtorIdentification(@NonNull String account) {
-        var debtor = debtors.get(account);
-        return createIdentification(debtor);
-    }
+        return registrationService.getRegistration()
+            .map(it -> {
+                var debtor = debtors.get(account);
+                var identification = createIdentification(debtor);
 
-    //FIXME temporary
-    public ParticipantIdentification getDefaultDebtorIdentification() {
-        var registration = registrationService.getRegistration()
+                var genericOrgId = objectFactory.createGenericOrganisationIdentification1();
+                genericOrgId.setId(it.getParticipantId());
+                var orgId = objectFactory.createOrganisationIdentification29();
+                orgId.getOthr().add(genericOrgId);
+                var id = objectFactory.createParty38Choice();
+                id.setOrgId(orgId);
+                identification.getPartyIdentification().setId(id);
+
+                return identification;
+            })
             .orElseThrow(ParticipantNotRegisteredException::new);
-
-        var debtor = debtors.values()
-            .stream()
-            .findFirst()
-            .orElseThrow(NoSuchElementException::new);
-
-        var identification = createIdentification(debtor);
-
-        var genericOrgId = objectFactory.createGenericOrganisationIdentification1();
-        genericOrgId.setId(registration.getParticipantId());
-        var orgId = objectFactory.createOrganisationIdentification29();
-        orgId.getOthr().add(genericOrgId);
-        var id = objectFactory.createParty38Choice();
-        id.setOrgId(orgId);
-        identification.getPartyIdentification().setId(id);
-
-        return identification;
     }
 
     private ParticipantIdentification createIdentification(@NonNull Participant participant) {

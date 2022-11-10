@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = {
-        "participants.creditors[0].mic=test_creditor_mic",
+        "participants.creditors[0].bic=test_creditor_bic",
         "participants.creditors[0].country=test_creditor_country",
         "participants.creditors[0].currency=test_creditor_currency",
         "participants.creditors[0].account=test_creditor_account",
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
         "participants.creditors[0].effectiveDate=test_creditor_effectiveDate",
         "participants.creditors[0].expiryDate=test_creditor_expiryDate",
         "participants.creditors[0].paymentLimit=test_creditor_paymentLimit",
-        "participants.debtors[0].mic=test_debtor_mic",
+        "participants.debtors[0].bic=test_debtor_bic",
         "participants.debtors[0].country=test_debtor_country",
         "participants.debtors[0].currency=test_debtor_currency",
         "participants.debtors[0].account=test_debtor_account",
@@ -50,6 +50,7 @@ public class PaymentsControllerNegativeTest {
     private static final String PATH = "/api/v1/payments";
 
     private static final String TEST_CREDITOR_ACCOUNT = "test_creditor_account";
+    private static final String TEST_DEBTOR_ACCOUNT = "test_debtor_account";
 
     @Autowired
     private transient WebTestClient webClient;
@@ -77,8 +78,8 @@ public class PaymentsControllerNegativeTest {
     }
 
     @Test
-    public void testPostPaymentNullBeneficiaryAccount() {
-        var request = new PaymentRequest(null, BigDecimal.TEN);
+    public void testPostPaymentNullCreditorAccount() {
+        var request = new PaymentRequest(null, TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -88,8 +89,8 @@ public class PaymentsControllerNegativeTest {
     }
 
     @Test
-    public void testPostPaymentEmptyBeneficiaryAccount() {
-        var request = new PaymentRequest("", BigDecimal.TEN);
+    public void testPostPaymentEmptyCreditorAccount() {
+        var request = new PaymentRequest("", TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -99,8 +100,41 @@ public class PaymentsControllerNegativeTest {
     }
 
     @Test
-    public void testPostPaymentBlankBeneficiaryAccount() {
-        var request = new PaymentRequest(" ", BigDecimal.TEN);
+    public void testPostPaymentBlankCreditorAccount() {
+        var request = new PaymentRequest(" ", TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
+        webClient.post()
+            .uri(PATH)
+            .bodyValue(request)
+            .exchange()
+            .expectStatus()
+            .isBadRequest();
+    }
+
+    @Test
+    public void testPostPaymentNullDebtorAccount() {
+        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, null, BigDecimal.TEN);
+        webClient.post()
+            .uri(PATH)
+            .bodyValue(request)
+            .exchange()
+            .expectStatus()
+            .isBadRequest();
+    }
+
+    @Test
+    public void testPostPaymentEmptyDebtorAccount() {
+        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, "", BigDecimal.TEN);
+        webClient.post()
+            .uri(PATH)
+            .bodyValue(request)
+            .exchange()
+            .expectStatus()
+            .isBadRequest();
+    }
+
+    @Test
+    public void testPostPaymentBlankDebtorAccount() {
+        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, " ", BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -111,7 +145,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentNullAmount() {
-        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, null);
+        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, null);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -122,7 +156,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentZeroAmount() {
-        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, BigDecimal.valueOf(0.0));
+        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, BigDecimal.valueOf(0.0));
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -133,7 +167,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentNegativeAmount() {
-        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, BigDecimal.valueOf(-100.0));
+        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, BigDecimal.valueOf(-100.0));
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -146,12 +180,12 @@ public class PaymentsControllerNegativeTest {
     public void testPostPaymentParticipantNotRegistered() {
         when(registrationService.getRegistration())
             .thenReturn(Optional.empty());
-        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, BigDecimal.TEN);
+        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
             .exchange()
             .expectStatus()
-            .isBadRequest();
+            .isForbidden();
     }
 }

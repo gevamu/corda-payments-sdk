@@ -10,7 +10,9 @@ import java.math.BigDecimal;
 @Value
 public class PaymentRequest {
     @NotBlank
-    String beneficiaryAccount;
+    String creditorAccount;
+    @NotBlank
+    String debtorAccount;
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false)
     BigDecimal amount;

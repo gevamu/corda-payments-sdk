@@ -27,8 +27,8 @@ public class CustomerCreditTransferInitiationService {
 
     public CustomerCreditTransferInitiationV09 createCustomerCreditTransferInitiation(PaymentRequest paymentRequest) {
 
-        var debtorIdentification = participantService.getDefaultDebtorIdentification();
-        var creditorIdentification = participantService.getCreditorIdentification(paymentRequest.getBeneficiaryAccount());
+        var creditorIdentification = participantService.getCreditorIdentification(paymentRequest.getCreditorAccount());
+        var debtorIdentification = participantService.getDebtorIdentification(paymentRequest.getDebtorAccount());
 
         var result = objectFactory.createCustomerCreditTransferInitiationV09();
         setGroupHeader(result, debtorIdentification, paymentRequest);

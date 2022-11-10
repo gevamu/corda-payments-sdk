@@ -12,14 +12,23 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = {
-        "participants.creditors[0].mic=test_mic",
-        "participants.creditors[0].country=test_country",
-        "participants.creditors[0].currency=test_currency",
-        "participants.creditors[0].account=test_account",
-        "participants.creditors[0].accountName=test_accountName",
-        "participants.creditors[0].effectiveDate=test_effectiveDate",
-        "participants.creditors[0].expiryDate=test_expiryDate",
-        "participants.creditors[0].paymentLimit=test_paymentLimit"
+        "participants.creditors[0].bic=test_creditor_bic",
+        "participants.creditors[0].country=test_creditor_country",
+        "participants.creditors[0].currency=test_creditor_currency",
+        "participants.creditors[0].account=test_creditor_account",
+        "participants.creditors[0].accountName=test_creditor_accountName",
+        "participants.creditors[0].effectiveDate=test_creditor_effectiveDate",
+        "participants.creditors[0].expiryDate=test_creditor_expiryDate",
+        "participants.creditors[0].paymentLimit=test_creditor_paymentLimit",
+        "participants.debtors[0].bic=test_debtor_bic",
+        "participants.debtors[0].country=test_debtor_country",
+        "participants.debtors[0].currency=test_debtor_currency",
+        "participants.debtors[0].participantId=test_debtor_participantId",
+        "participants.debtors[0].account=test_debtor_account",
+        "participants.debtors[0].accountName=test_debtor_accountName",
+        "participants.debtors[0].effectiveDate=test_debtor_effectiveDate",
+        "participants.debtors[0].expiryDate=test_debtor_expiryDate",
+        "participants.debtors[0].paymentLimit=test_debtor_paymentLimit"
     }
 )
 @ActiveProfiles("test")
@@ -48,10 +57,32 @@ public class ParticipantsControllerTest {
             .jsonPath("accounts.length()")
             .isEqualTo(1)
             .jsonPath("accounts[0].accountId")
-            .isEqualTo("test_account")
+            .isEqualTo("test_creditor_account")
             .jsonPath("accounts[0].accountName")
-            .isEqualTo("test_accountName")
+            .isEqualTo("test_creditor_accountName")
             .jsonPath("accounts[0].currency")
-            .isEqualTo("test_currency");
+            .isEqualTo("test_creditor_currency");
+    }
+
+    @Test
+    public void testDebtors() {
+        webClient.get()
+            .uri(PATH + "/debtors")
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .expectHeader()
+            .contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .jsonPath("accounts")
+            .isArray()
+            .jsonPath("accounts.length()")
+            .isEqualTo(1)
+            .jsonPath("accounts[0].accountId")
+            .isEqualTo("test_debtor_account")
+            .jsonPath("accounts[0].accountName")
+            .isEqualTo("test_debtor_accountName")
+            .jsonPath("accounts[0].currency")
+            .isEqualTo("test_debtor_currency");
     }
 }
