@@ -1,29 +1,49 @@
 package com.gevamu.iso20022.schema
 
-import javax.xml.parsers.SAXParserFactory
 import javax.xml.transform.Source
+import javax.xml.transform.sax.SAXSource
 import javax.xml.validation.Schema
-import javax.xml.validation.SchemaFactory
+import javax.xml.validation.Validator
 import org.xml.sax.SAXException
-import org.xml.sax.XMLReader
 import kotlin.jvm.Throws
+import org.xml.sax.Attributes
+import org.xml.sax.InputSource
+import org.xml.sax.SAXParseException
+import org.xml.sax.helpers.XMLFilterImpl
 
-object XmlValidator {
-    private val customerCreditTransferInitiationSchema: Schema =
-        createSchema(SchemaRepository.getCustomerCreditTransferInitiationSchema())
-
-    private val xmlReader: XMLReader = SAXParserFactory.newInstance().apply {
-        isValidating = false
-        schema = customerCreditTransferInitiationSchema
-    }.newSAXParser().xmlReader
-
-    private fun createSchema(schemaSource: Source): Schema {
-        return SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
-            .newSchema(schemaSource)
-    }
+class XmlValidator(schema: Schema, private val defaultNamespace: String) : XMLFilterImpl() {
+    private val validator: Validator = schema.newValidator()
 
     @Throws(SAXException::class)
-    fun validateCustomerCreditTransferInitiationRequest(xmlRequestPayload: String) {
-        xmlReader.parse(xmlRequestPayload)
+    fun validate(xml: String) {
+        val xmlSource: Source = SAXSource(this, InputSource(xml.byteInputStream()))
+        validator.validate(xmlSource)
     }
+
+    override fun startElement(uri: String, localName: String, qName: String, atts: Attributes) {
+        // Make the validator think the XML file's elements have a namespace
+        if (uri.isEmpty()) {
+            super.startElement(defaultNamespace, localName, qName, atts)
+        } else super.startElement(uri, localName, qName, atts)
+    }
+
+    override fun endElement(uri: String, localName: String, qName: String) {
+        if (uri.isEmpty()) {
+            super.endElement(defaultNamespace, localName, qName)
+        } else super.endElement(uri, localName, qName)
+    }
+
+    override fun error(excepction: SAXParseException) {
+        throw excepction
+    }
+
+    override fun warning(excepction: SAXParseException) {
+        throw excepction
+    }
+
+    override fun fatalError(excepction: SAXParseException) {
+        throw excepction
+    }
+
 }
+
