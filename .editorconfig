@@ -23,10 +23,19 @@ charset = utf-8
 trim_trailing_whitespace = false
 
 # Source code files
-[*.{gradle,java,kt,sql,sh,py,kts}]
+[*.{gradle,java,kt,kts,sql,sh,py}]
 charset = utf-8
 indent_style = space
 indent_size = 4
+
+[*.{kt,kts}]
+ij_kotlin_import_nested_classes = false
+ij_kotlin_imports_layout = *,java.**,javax.**,kotlin.**,^
+ij_kotlin_name_count_to_use_star_import = 2147483647
+ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
+ij_kotlin_packages_to_use_import_on_demand = unset
+kotlin_imports_layout = *,java.*,javax.*,kotlin.*,^* # ktlint 0.38.1 uses ou
+max_line_length = 120 # it seems it doesn't work :-(
 
 # UI code files
 [*.{js,jsx,ts,tsx,json,scss}]

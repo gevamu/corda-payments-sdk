@@ -14,31 +14,34 @@ import net.corda.core.node.services.Vault
 import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
-import net.corda.core.utilities.unwrap
-
+import java.time.Instant
 
 @InitiatingFlow
 @StartableByService
-class SendPaymentFlow(private val paymentId: UniqueIdentifier) : FlowLogic<String>() {
+class SendPaymentFlow(private val paymentId: UniqueIdentifier) : FlowLogic<Unit>() {
     override val progressTracker = ProgressTracker()
 
     @Suspendable
-    override fun call(): String {
+    override fun call() {
+        // Get payment from the vault
         val inputCriteria: QueryCriteria.LinearStateQueryCriteria = QueryCriteria.LinearStateQueryCriteria()
             .withUuid(listOf(paymentId.id))
+            // Shouldn't be archived
             .withStatus(Vault.StateStatus.UNCONSUMED)
+            // Payer should be a participant
             .withRelevancyStatus(Vault.RelevancyStatus.RELEVANT)
-        val paymentStateAndRef
-            = serviceHub.vaultService.queryBy(Payment::class.java, inputCriteria).states.first()
-        val gateway = paymentStateAndRef.state.data.gateway
+        val paymentStateAndRef = serviceHub.vaultService.queryBy(Payment::class.java, inputCriteria).states.first()
 
-        val gatewaySession: FlowSession = initiateFlow(gateway)
-
+        // Mutate it to change status and timestamp
         val payment = paymentStateAndRef.state.data.copy(
             status = Payment.PaymentStatus.SENT_TO_GATEWAY,
+            timestamp = Instant.now(),
         )
 
+        // Prepare transaction to send over the state
+        // TODO It's better to replace notary with named one since we are consuming states
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
+        val gateway = paymentStateAndRef.state.data.gateway
         val builder = TransactionBuilder(notary)
             .addInputState(paymentStateAndRef)
             .addOutputState(payment)
@@ -46,34 +49,16 @@ class SendPaymentFlow(private val paymentId: UniqueIdentifier) : FlowLogic<Strin
             .addAttachment(paymentStateAndRef.state.data.paymentInstructionId)
         builder.verify(serviceHub)
 
+        // Sign the transaction on our payer cordapp
         val partiallySignedTransaction = serviceHub.signInitialTransaction(builder)
-        val fullySignedTransaction = subFlow(
-            CollectSignaturesFlow(partiallySignedTransaction, listOf(gatewaySession)))
 
-        val foo = subFlow(FinalityFlow(fullySignedTransaction, listOf()))
+        // Notify gateway about incoming payment tx
+        val gatewaySession: FlowSession = initiateFlow(gateway)
 
-        val newStatus: Payment.PaymentStatus = gatewaySession.receive<Payment.PaymentStatus>().unwrap { it }
+        // Expect gateway to sign the transaction
+        val fullySignedTransaction = subFlow(CollectSignaturesFlow(partiallySignedTransaction, listOf(gatewaySession)))
 
-        val paymentUpdate = payment.copy(
-            status = newStatus,
-        )
-
-        val builder2 = TransactionBuilder(notary)
-            .addInputState(foo.tx.outRef<Payment>(0))
-            .addOutputState(paymentUpdate)
-            .addCommand(
-                PaymentContract.Commands.UpdateStatus(),
-                ourIdentity.owningKey, gateway.owningKey
-            )
-            .addAttachment(payment.paymentInstructionId)
-        builder.verify(serviceHub)
-
-        val partiallySignedTransaction2 = serviceHub.signInitialTransaction(builder2)
-        val fullySignedTransaction2 = subFlow(
-            CollectSignaturesFlow(partiallySignedTransaction2, listOf(gatewaySession)))
-
-        subFlow(FinalityFlow(fullySignedTransaction2, listOf()))
-
-        return "xxx"
+        // Record signed transaction to the vault
+        subFlow(FinalityFlow(fullySignedTransaction, listOf(gatewaySession)))
     }
 }
