@@ -1,6 +1,5 @@
 package com.gevamu.iso20022.schema
 
-import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 import kotlin.jvm.Throws
 import java.io.IOException
@@ -18,7 +17,7 @@ object SchemaRepository {
         }
     }
 
-    fun getCustomerCreditTransferInitiationSchema(): Source {
+    fun getCustomerCreditTransferInitiationSchema(): StreamSource {
         return getSource("pain.001.001.11.xsd")
     }
 }
