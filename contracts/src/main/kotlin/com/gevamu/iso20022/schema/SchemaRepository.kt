@@ -18,6 +18,6 @@ object SchemaRepository {
     }
 
     fun getCustomerCreditTransferInitiationSchema(): StreamSource {
-        return getSource("pain.001.001.11.xsd")
+        return getSource("pain.001.001.09.xsd")
     }
 }
