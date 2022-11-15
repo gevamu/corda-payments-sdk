@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: createTable-account
+      author: Exactpro Systems LLC
+      changes:
+        - sqlFile:
+            path: migration/account-v1/sql/0001-init.sql
