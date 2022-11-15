@@ -9,13 +9,15 @@ import com.gevamu.states.Payment;
 import com.gevamu.web.server.models.ParticipantAccount;
 import com.gevamu.web.server.models.PaymentRequest;
 import com.gevamu.web.server.models.PaymentState;
+import com.gevamu.web.server.util.CompletableFutures;
+import com.gevamu.web.server.util.MoreCollectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -36,13 +38,13 @@ public class PaymentService {
         try {
             registrationService.getRegistration()
                 .orElseThrow(ParticipantNotRegisteredException::new);
-            var customerCreditTransferInitiation = customerCreditTransferInitiationService.createCustomerCreditTransferInitiation(paymentRequest);
-            var bytes = xmlMarshallingService.marshal(customerCreditTransferInitiation);
-            var paymentInstruction = new PaymentInstruction(PaymentInstructionFormat.ISO20022_V9_XML_UTF8, bytes);
+            CustomerCreditTransferInitiationV09 customerCreditTransferInitiation = customerCreditTransferInitiationService.createCustomerCreditTransferInitiation(paymentRequest);
+            byte[] bytes = xmlMarshallingService.marshal(customerCreditTransferInitiation);
+            PaymentInstruction paymentInstruction = new PaymentInstruction(PaymentInstructionFormat.ISO20022_V9_XML_UTF8, bytes);
             return cordaRpcClientService.executePaymentFlow(paymentInstruction);
         }
         catch (Exception e) {
-            return CompletableFuture.failedStage(e);
+            return CompletableFutures.failedStage(e);
         }
     }
 
@@ -50,18 +52,18 @@ public class PaymentService {
         return cordaRpcClientService.getPayments()
             .stream()
             .map(this::convert)
-            .collect(Collectors.toUnmodifiableList());
+            .collect(MoreCollectors.toUnmodifiableList());
     }
 
     private PaymentState convert(Payment payment) {
-        var builder = PaymentState.builder()
+        PaymentState.PaymentStateBuilder builder = PaymentState.builder()
             .paymentId(payment.getLinearId().toString())
             .status(payment.getStatus())
             .updateTime(payment.getTimestamp());
 
-        var attachment = cordaRpcClientService.getAttachedPaymentInstruction(payment.getPaymentInstructionId());
+        byte[] attachment = cordaRpcClientService.getAttachedPaymentInstruction(payment.getPaymentInstructionId());
         CustomerCreditTransferInitiationV09 xml = xmlMarshallingService.unmarshal(attachment);
-        var creationTime = xml.getGrpHdr()
+        Instant creationTime = xml.getGrpHdr()
             .getCreDtTm()
             .toGregorianCalendar()
             .toZonedDateTime()
@@ -69,14 +71,14 @@ public class PaymentService {
         builder.creationTime(creationTime);
 
         if (!xml.getPmtInf().isEmpty()) {
-            var paymentInstruction = xml.getPmtInf().get(0);
+            PaymentInstruction30 paymentInstruction = xml.getPmtInf().get(0);
             if (!paymentInstruction.getCdtTrfTxInf().isEmpty()) {
-                var transaction = paymentInstruction.getCdtTrfTxInf().get(0);
-                var endToEndId = transaction.getPmtId().getEndToEndId();
-                var amount = transaction.getAmt().getInstdAmt().getValue();
-                var currency = transaction.getAmt().getInstdAmt().getCcy();
-                var creditor = deriveCreditor(transaction);
-                var debtor = deriveDebtor(paymentInstruction);
+                CreditTransferTransaction34 transaction = paymentInstruction.getCdtTrfTxInf().get(0);
+                String endToEndId = transaction.getPmtId().getEndToEndId();
+                BigDecimal amount = transaction.getAmt().getInstdAmt().getValue();
+                String currency = transaction.getAmt().getInstdAmt().getCcy();
+                ParticipantAccount creditor = deriveCreditor(transaction);
+                ParticipantAccount debtor = deriveDebtor(paymentInstruction);
                 builder.endToEndId(endToEndId)
                     .amount(amount)
                     .currency(currency)
@@ -89,9 +91,9 @@ public class PaymentService {
     }
 
     private ParticipantAccount deriveCreditor(CreditTransferTransaction34 transaction) {
-        var creditor = transaction.getCdtr().getNm();
-        var creditorAccount = transaction.getCdtrAcct().getId().getOthr().getId();
-        var creditorCurrency = transaction.getCdtrAcct().getCcy();
+        String creditor = transaction.getCdtr().getNm();
+        String creditorAccount = transaction.getCdtrAcct().getId().getOthr().getId();
+        String creditorCurrency = transaction.getCdtrAcct().getCcy();
         return ParticipantAccount.builder()
             .accountId(creditorAccount)
             .accountName(creditor)
@@ -100,9 +102,9 @@ public class PaymentService {
     }
 
     private ParticipantAccount deriveDebtor(PaymentInstruction30 paymentInstruction) {
-        var creditor = paymentInstruction.getDbtr().getNm();
-        var creditorAccount = paymentInstruction.getDbtrAcct().getId().getOthr().getId();
-        var creditorCurrency = paymentInstruction.getDbtrAcct().getCcy();
+        String creditor = paymentInstruction.getDbtr().getNm();
+        String creditorAccount = paymentInstruction.getDbtrAcct().getId().getOthr().getId();
+        String creditorCurrency = paymentInstruction.getDbtrAcct().getCcy();
         return ParticipantAccount.builder()
             .accountId(creditorAccount)
             .accountName(creditor)

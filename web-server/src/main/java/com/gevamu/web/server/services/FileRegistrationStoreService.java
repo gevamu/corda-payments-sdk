@@ -9,14 +9,15 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 @Profile("!test")
 public class FileRegistrationStoreService extends AbstractRegistrationStoreService {
     @Override
     protected ChronicleMap<CharSequence, ParticipantRegistration> createMap() throws IOException {
-        var directory = Path.of(System.getProperty("user.dir"), "data");
-        var file = directory.resolve("registration.dat");
+        Path directory = Paths.get(System.getProperty("user.dir"), "data");
+        Path file = directory.resolve("registration.dat");
         Files.createDirectories(directory);
         return ChronicleMapBuilder.of(CharSequence.class, ParticipantRegistration.class)
             .name("file-registration-store")

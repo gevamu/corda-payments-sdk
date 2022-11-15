@@ -1,5 +1,6 @@
 package com.gevamu.web.server.config;
 
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -24,11 +25,11 @@ public class IndexFallbackWebFilter implements WebFilter {
     }
 
     private Mono<Void> redirectToIndex(ServerWebExchange exchange, WebFilterChain chain) {
-        var redirectRequest = exchange.getRequest()
+        ServerHttpRequest redirectRequest = exchange.getRequest()
             .mutate()
             .path(INDEX)
             .build();
-        var redirectExchange = exchange.mutate()
+        ServerWebExchange redirectExchange = exchange.mutate()
             .request(redirectRequest)
             .build();
         return chain.filter(redirectExchange);

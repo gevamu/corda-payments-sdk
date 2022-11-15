@@ -3,6 +3,7 @@ package com.gevamu.web.server.controllers;
 import com.gevamu.flows.ParticipantRegistration;
 import com.gevamu.web.server.services.CordaRpcClientService;
 import com.gevamu.web.server.services.RegistrationService;
+import com.gevamu.web.server.util.CompletableFutures;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.when;
@@ -36,9 +35,9 @@ public class RegistrationControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        var registration = new ParticipantRegistration("test_p_id", "test_n_id");
+        ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
         when(cordaRpcClientService.executeRegistrationFlow())
-            .thenReturn(CompletableFuture.completedStage(registration));
+            .thenReturn(CompletableFutures.completedStage(registration));
     }
 
     @AfterEach

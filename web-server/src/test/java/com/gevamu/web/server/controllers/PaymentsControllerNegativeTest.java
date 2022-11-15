@@ -4,6 +4,7 @@ import com.gevamu.flows.ParticipantRegistration;
 import com.gevamu.web.server.models.PaymentRequest;
 import com.gevamu.web.server.services.CordaRpcClientService;
 import com.gevamu.web.server.services.RegistrationService;
+import com.gevamu.web.server.util.CompletableFutures;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
@@ -63,11 +63,11 @@ public class PaymentsControllerNegativeTest {
 
     @BeforeEach
     public void beforeEach() {
-        var registration = new ParticipantRegistration("test_p_id", "test_n_id");
+        ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
         when(registrationService.getRegistration())
             .thenReturn(Optional.of(registration));
         when(cordaRpcClientService.executePaymentFlow(any()))
-            .thenReturn(CompletableFuture.completedStage(null));
+            .thenReturn(CompletableFutures.completedStage(null));
     }
 
     @AfterEach
@@ -79,7 +79,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentNullCreditorAccount() {
-        var request = new PaymentRequest(null, TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
+        PaymentRequest request = new PaymentRequest(null, TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -90,7 +90,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentEmptyCreditorAccount() {
-        var request = new PaymentRequest("", TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
+        PaymentRequest request = new PaymentRequest("", TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -101,7 +101,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentBlankCreditorAccount() {
-        var request = new PaymentRequest(" ", TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
+        PaymentRequest request = new PaymentRequest(" ", TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -112,7 +112,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentNullDebtorAccount() {
-        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, null, BigDecimal.TEN);
+        PaymentRequest request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, null, BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -123,7 +123,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentEmptyDebtorAccount() {
-        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, "", BigDecimal.TEN);
+        PaymentRequest request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, "", BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -134,7 +134,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentBlankDebtorAccount() {
-        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, " ", BigDecimal.TEN);
+        PaymentRequest request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, " ", BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -145,7 +145,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentNullAmount() {
-        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, null);
+        PaymentRequest request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, null);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -156,7 +156,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentZeroAmount() {
-        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, BigDecimal.valueOf(0.0));
+        PaymentRequest request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, BigDecimal.valueOf(0.0));
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -167,7 +167,7 @@ public class PaymentsControllerNegativeTest {
 
     @Test
     public void testPostPaymentNegativeAmount() {
-        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, BigDecimal.valueOf(-100.0));
+        PaymentRequest request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, BigDecimal.valueOf(-100.0));
         webClient.post()
             .uri(PATH)
             .bodyValue(request)
@@ -180,7 +180,7 @@ public class PaymentsControllerNegativeTest {
     public void testPostPaymentParticipantNotRegistered() {
         when(registrationService.getRegistration())
             .thenReturn(Optional.empty());
-        var request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
+        PaymentRequest request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
             .bodyValue(request)

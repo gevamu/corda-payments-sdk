@@ -16,10 +16,10 @@ public class IdGeneratorService {
 
     public String generateId() {
         try {
-            var str = RandomStringUtils.randomAlphanumeric(ID_LENGTH);
-            var digest = MessageDigest.getInstance("MD5");
+            String str = RandomStringUtils.randomAlphanumeric(ID_LENGTH);
+            MessageDigest digest = MessageDigest.getInstance("MD5");
             digest.update(str.getBytes());
-            var bytes = digest.digest(str.getBytes());
+            byte[] bytes = digest.digest(str.getBytes());
             return DatatypeConverter.printHexBinary(bytes).toLowerCase(Locale.getDefault());
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -27,7 +27,7 @@ public class IdGeneratorService {
     }
 
     public String generateEndToEndId() {
-        var id = generateId();
+        String id = generateId();
         return id.substring(0, END_TO_END_ID_LENGTH);
     }
 }

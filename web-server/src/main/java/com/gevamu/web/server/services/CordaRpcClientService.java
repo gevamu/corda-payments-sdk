@@ -6,6 +6,7 @@ import com.gevamu.flows.PaymentInstruction;
 import com.gevamu.flows.RegisterParticipantFlow;
 import com.gevamu.states.Payment;
 import com.gevamu.web.server.config.CordaRpcClientConnection;
+import com.gevamu.web.server.util.MoreCollectors;
 import lombok.NonNull;
 import net.corda.client.rpc.CordaRPCClient;
 import net.corda.client.rpc.CordaRPCConnection;
@@ -18,10 +19,11 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotBlank;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 @Service
@@ -34,8 +36,8 @@ public class CordaRpcClientService implements AutoCloseable {
     private final transient CordaRPCOps proxy;
 
     public CordaRpcClientService(CordaRpcClientConnection cordaRpcClientConnection) {
-        var networkAddress = new NetworkHostAndPort(cordaRpcClientConnection.getHost(), cordaRpcClientConnection.getPort());
-        var client = new CordaRPCClient(networkAddress);
+        NetworkHostAndPort networkAddress = new NetworkHostAndPort(cordaRpcClientConnection.getHost(), cordaRpcClientConnection.getPort());
+        CordaRPCClient client = new CordaRPCClient(networkAddress);
         connection = client.start(cordaRpcClientConnection.getUser(), cordaRpcClientConnection.getPassword());
         proxy = connection.getProxy();
     }
@@ -53,20 +55,18 @@ public class CordaRpcClientService implements AutoCloseable {
     }
 
     public CompletionStage<Void> executePaymentFlow(@NonNull PaymentInstruction paymentInstruction) {
-        var gatewayParty = getParty(GATEWAY_PARTY_NAME);
+        Party gatewayParty = getParty(GATEWAY_PARTY_NAME);
         return proxy.startFlowDynamic(PaymentFlow.class, paymentInstruction, gatewayParty)
             .getReturnValue()
             .toCompletableFuture()
-            .thenApply(it -> (Void) null)
-            .minimalCompletionStage();
+            .thenApply(it -> (Void) null);
     }
 
     public CompletionStage<ParticipantRegistration> executeRegistrationFlow() {
-        var gatewayParty = getParty(GATEWAY_PARTY_NAME);
+        Party gatewayParty = getParty(GATEWAY_PARTY_NAME);
         return proxy.startFlowDynamic(RegisterParticipantFlow.class, gatewayParty)
             .getReturnValue()
-            .toCompletableFuture()
-            .minimalCompletionStage();
+            .toCompletableFuture();
     }
 
     public List<Payment> getPayments() {
@@ -74,24 +74,24 @@ public class CordaRpcClientService implements AutoCloseable {
             .getStates()
             .stream()
             .map(it -> it.getState().getData())
-            .collect(Collectors.toUnmodifiableList());
+            .collect(MoreCollectors.toUnmodifiableList());
     }
 
     public byte[] getAttachedPaymentInstruction(@NonNull SecureHash attachmentId) {
         try (
-            var inputStream = proxy.openAttachment(attachmentId);
-            var zipInputStream = new ZipInputStream(inputStream);
-            var outputStream = new ByteArrayOutputStream()
+            InputStream inputStream = proxy.openAttachment(attachmentId);
+            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream()
         ) {
             for (;;) {
-                var entry = zipInputStream.getNextEntry();
+                ZipEntry entry = zipInputStream.getNextEntry();
                 if (entry == null) {
                     break;
                 }
                 if (entry.isDirectory() || !PAYMENT_INSTRUCTION_ATTACHMENT.equals(entry.getName())) {
                     continue;
                 }
-                var buffer = new byte[1024];
+                byte[] buffer = new byte[1024];
                 int length;
                 do {
                     length = zipInputStream.read(buffer);

@@ -11,6 +11,7 @@ import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Configuration
 @Slf4j
@@ -24,10 +25,10 @@ public class WebConfig implements WebFluxConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        var staticPath = StringUtils.isNotBlank(staticResourcesPath) ?
-            Path.of(staticResourcesPath) :
-            Path.of(System.getProperty("user.dir"), STATIC_CONTENT_DIRECTORY_NAME);
-        var staticPathLocation = "file:" + staticPath + "/";
+        Path staticPath = StringUtils.isNotBlank(staticResourcesPath) ?
+            Paths.get(staticResourcesPath) :
+            Paths.get(System.getProperty("user.dir"), STATIC_CONTENT_DIRECTORY_NAME);
+        String staticPathLocation = "file:" + staticPath + "/";
         registry.addResourceHandler("/**")
             .addResourceLocations(staticPathLocation)
             .resourceChain(true);

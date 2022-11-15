@@ -21,13 +21,13 @@ public class IdGeneratorServiceTest {
 
     @Test
     public void testGenerateId() {
-        var id = idGeneratorService.generateId();
+        String id = idGeneratorService.generateId();
         assertId(id, 32);
     }
 
     @Test
     public void testGenerateEndToEndId() {
-        var id = idGeneratorService.generateEndToEndId();
+        String id = idGeneratorService.generateEndToEndId();
         assertId(id, 13);
     }
 
