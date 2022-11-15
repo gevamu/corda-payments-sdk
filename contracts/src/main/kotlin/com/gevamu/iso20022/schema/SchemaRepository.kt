@@ -10,7 +10,7 @@ import javax.xml.validation.Schema
 import javax.xml.validation.SchemaFactory
 
 object SchemaRepository {
-    val DEFAULT_NAMESPACE by lazy { Document::class.java.`package`.getDeclaredAnnotation(XmlSchema::class.java).namespace }
+    val CREDIT_TRANSFER_INIT_NAMESPACE by lazy { Document::class.java.`package`.getDeclaredAnnotation(XmlSchema::class.java).namespace }
 
     private val schemaFactory by lazy {  SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI) }
 
