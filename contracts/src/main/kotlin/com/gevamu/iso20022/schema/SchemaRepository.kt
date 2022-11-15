@@ -5,7 +5,7 @@ import kotlin.jvm.Throws
 import java.io.IOException
 
 object SchemaRepository {
-    const val CREDIT_TRANSFER_INIT_NAMESPACE = "urn:iso:std:iso:20022:tech:xsd:pain.001.001.11"
+    const val CREDIT_TRANSFER_INIT_NAMESPACE = "urn:iso:std:iso:20022:tech:xsd:pain.001.001.09"
 
     @Throws(IOException::class)
     private fun getSource(fileName: String): StreamSource {
