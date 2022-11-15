@@ -2,7 +2,7 @@
   "name": "corda-payments-gui",
   "version": "0.0.1",
   "description": "A Quasar Project",
-  "productName": "Corda Payments GUI",
+  "productName": "Gevamu Payments",
   "author": "Nikolay Dorofeev <nikolay.dorofeev@exactprosystems.com>",
   "private": true,
   "scripts": {

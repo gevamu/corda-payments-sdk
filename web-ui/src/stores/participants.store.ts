@@ -15,14 +15,16 @@ export const useParticipantsStore = defineStore('participants', {
       const result = await api.getCreditors()
       this.creditors = result.accounts.map(acc => ({
         id: acc.accountId,
-        name: acc.accountName
+        name: acc.accountName,
+        currency: acc.currency,
       }))
     },
     async fetchDebtors(){
       const result = await api.getDebtors()
       this.debtors = result.accounts.map(acc => ({
         id: acc.accountId,
-        name: acc.accountName
+        name: acc.accountName,
+        currency: acc.currency,
       }))
     }
   }

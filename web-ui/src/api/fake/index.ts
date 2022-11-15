@@ -18,13 +18,17 @@ export const fakeApi: ApiV1 = {
   },
   async submitPayment(request){
     await sleep(300)
+    const r = Math.random()
     paymentsDb.push({
       paymentId: `Payment ${paymentsDb.length + 1}`,
-      status: Math.random() > 0.5 ? 'PENDING': Math.random() > 0.5 ? 'ACCEPTED': Math.random() > 0.5 ? 'REJECTED' : 'SENT_TO_GATEWAY',
-      currency: 'GBP',
+      status: r < 0.25 ? 'PENDING': r < 0.5 ? 'ACCEPTED': r < 0.75 ? 'REJECTED' : 'SENT_TO_GATEWAY',
+      currency: 'USD',
       amount: request.amount,
       creditor: creditorsDb.find(cr => cr.accountId === request.creditorAccount) || creditorsDb[0],
-      debtor: debtorsDb.find(cr => cr.accountId === request.debtorAccount) || debtorsDb[0]
+      debtor: debtorsDb.find(cr => cr.accountId === request.debtorAccount) || debtorsDb[0],
+      endToEndId: Array.from(Array(16)).map(() => Number(Math.floor(Math.random()*13)).toString(16)).join('') ,
+      creationTime: new Date().toISOString(),
+      updateTime: new Date().toISOString()
     })
     return
   },
@@ -36,8 +40,8 @@ export const fakeApi: ApiV1 = {
   async register(){
     await sleep(300)
     registrationDb.registration = {
-      networkId: 'xxxxxxxxxxxxxxxxx',
-      participantId: 'xxxxxxxxxxxxxxxxx',
+      networkId: 'TAAS0010000030',
+      participantId: '363b72b48ada766f3c6',
       currency: 'USD'
     }
     return JSON.parse(JSON.stringify(registrationDb.registration))

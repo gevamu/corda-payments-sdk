@@ -5,6 +5,9 @@ import {PaymentStatus} from 'src/models/payment/PaymentStatus.type'
 import Timeout = NodeJS.Timeout
 
 import {api} from 'src/api'
+// import {useErrorHandler} from 'stores/errorHandler.store'
+//
+// const errorHandler = useErrorHandler()
 
 const status2Text = {
   SENT_TO_GATEWAY: 'Sent to Gateway',
@@ -45,7 +48,10 @@ export const usePaymentsStore = defineStore('payments', {
           amount: state.amount,
           currency: state.currency,
           status: mapStatus(state.status),
-          id: state.paymentId
+          id: state.paymentId,
+          endToEndId: state.endToEndId,
+          creationTime: new Date(state.creationTime),
+          updateTime: new Date(state.updateTime)
         }
       })
       this.loading = false

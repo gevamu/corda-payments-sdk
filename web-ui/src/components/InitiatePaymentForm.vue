@@ -1,37 +1,41 @@
 <template>
-  <div class="relative-position">
+  <div class="payment-form__section">
     <q-card-section>
-      <div class="text-h6"><q-icon name="eva-credit-card-outline" size="lg" /> Transfer Payment</div>
+      <div class="text-h6 payment-form__header">
+        <q-icon name="eva-credit-card-outline" size="sm" class="payment-form__icon" />
+        Transfer Payment
+      </div>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, itaque!
+        After submission, the payment cannot be amended or canceled
       </p>
     </q-card-section>
     <q-form @submit.prevent="submitPayment">
       <q-card-section class="row">
         <div class="q-mr-lg payment-form__field">
-          <label class="text-bold">Amount</label>
+          <div class="payment-form__label">Amount</div>
           <q-input type="number" v-model="amount" :disable="disabled"
                    dense outlined>
-            <template v-slot:prepend> <q-icon name="attach_money" /> </template>
-            <template v-slot:append> USD </template>
+            <template v-slot:append><div class="payment-form__field__currency">{{currency}}</div></template>
           </q-input>
         </div>
         <div class="q-mr-lg payment-form__field">
-          <label class="text-bold">Debtor</label>
+          <div class="payment-form__label">Debtor</div>
           <q-select v-model="debtorAccount" :disable="disabled"
                     :options="debtorOptions" map-options emit-value
                     dense outlined>
           </q-select>
         </div>
         <div class="q-mr-lg payment-form__field">
-          <label class="text-bold">Creditor</label>
+          <div class="payment-form__label">Creditor</div>
           <q-select v-model="creditorAccount" :disable="disabled"
                     :options="creditorOptions" map-options emit-value
                     dense outlined>
           </q-select>
+        </div>
+        <div class="payment-form__action">
           <q-btn type="submit" :disable="disabled"
                  class="q-mt-lg full-width"
-                 size="15.5px" unelevated
+                 unelevated
                  no-caps color="primary">
             Submit
           </q-btn>
@@ -52,13 +56,15 @@ import {useAuthStore} from 'stores/auth.store'
 import {useParticipantsStore} from 'stores/participants.store'
 import {usePaymentsStore} from 'stores/payments.store'
 import {QSelectOption} from 'quasar'
+import {useErrorHandler} from 'stores/errorHandler.store';
 
 export default defineComponent({
   name: 'InitiatePaymentForm',
-  setup(){
+  setup() {
     const amount = ref(0)
     const creditorAccount = ref('')
     const debtorAccount = ref('')
+    const errorHandler = useErrorHandler()
     const authStore = useAuthStore()
     const participantsStore = useParticipantsStore()
     const paymentsStore = usePaymentsStore()
@@ -67,14 +73,17 @@ export default defineComponent({
     return {
       amount, creditorAccount, debtorAccount,
       authStore, participantsStore, paymentsStore,
-      loading
+      loading, errorHandler
     }
   },
   computed: {
-    disabled(): boolean{
+    disabled(): boolean {
       return !this.authStore.isAuthorized
     },
-    creditorOptions(){
+    currency() {
+      return this.participantsStore.debtors.find((debtor) => debtor.id === this.debtorAccount)?.currency ?? 'USD'
+    },
+    creditorOptions() {
       return this.participantsStore.creditors
         .map((creditor): QSelectOption => {
           return {
@@ -83,41 +92,74 @@ export default defineComponent({
           }
         })
     },
-    debtorOptions(){
+    debtorOptions() {
       return this.participantsStore.debtors
-        .map((creditor): QSelectOption => {
+        .map((debtor): QSelectOption => {
           return {
-            label: creditor.name,
-            value: creditor.id
+            label: debtor.name,
+            value: debtor.id
           }
         })
     }
   },
   methods: {
-    async submitPayment(){
+    async submitPayment() {
       this.loading = true
-      await this.paymentsStore.submitPayment(this.debtorAccount, this.creditorAccount, this.amount)
-      this.resetForm()
+      try {
+        await this.paymentsStore.submitPayment(this.debtorAccount, this.creditorAccount, this.amount)
+        this.resetForm()
+      } catch (e) {
+        this.errorHandler.handleError(e)
+      } finally {
+        this.loading = false
+      }
       await this.paymentsStore.fetchPayments()
-      this.loading = false
     },
-    resetForm(){
+    resetForm() {
       this.amount = 0
-      this.creditorAccount = this.participantsStore.creditors[0]?.id || ''
-      this.debtorAccount = this.participantsStore.debtors[0]?.id || ''
+      this.creditorAccount = this.participantsStore.creditors[0]?.id ?? ''
+      this.debtorAccount = this.participantsStore.debtors[0]?.id ?? ''
     }
   },
   async created() {
-    await this.participantsStore.fetchCreditors()
-    await this.participantsStore.fetchDebtors()
+    await Promise.all([this.participantsStore.fetchCreditors(), this.participantsStore.fetchDebtors()])
     this.resetForm()
   }
 })
 </script>
 
-<style scoped>
-.payment-form__field{
-  width: 30%;
+<style>
+.payment-form__section {
+  padding-top: 32px;
+}
+.payment-form__field {
+  flex: 1;
   min-width: 15rem;
+}
+.payment-form__label {
+  color: #344A68;
+  padding-bottom: 3px;
+  font-weight: 500;
+}
+.payment-form__action {
+  min-width: 6rem;
+}
+.payment-form__action .q-btn__content {
+  line-height: 20px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.payment-form__header {
+  color: #246455;
+}
+.payment-form__icon {
+  color: #50B680;
+  bottom: 2px;
+}
+.payment-form__field__currency {
+  font-size: 14px;
+  line-height: 28px;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 </style>

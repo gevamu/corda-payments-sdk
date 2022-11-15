@@ -1,15 +1,19 @@
 <template>
-  <div>
+  <div class="payments__section">
     <q-card-section>
-      <div class="text-h6"> <q-icon name="eva-file-text-outline" size="lg" /> Payments</div>
+      <div class="text-h6 payments__header">
+        <q-icon name="eva-file-text-outline" size="sm" class="payments__icon" />
+        Payments
+      </div>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorum, ratione!
+        Some payments may take several business days to complete
       </p>
     </q-card-section>
     <q-markup-table class="text-left" separator="none" bordered flat>
       <thead class="bg-grey-2">
         <tr>
           <th>PAYMENT ID</th>
+          <th>CREATED</th>
           <th>AMOUNT</th>
           <th>STATUS</th>
           <th>DEBTOR ACCOUNT</th>
@@ -22,8 +26,9 @@
             :class="{
               'bg-grey-1': (index + 1) % 2 === 0
             }">
-          <td class="text-bold"># {{payment.id}}</td>
-          <td>{{payment.amount}} {{payment.currency}}</td>
+          <td class="payments__id-column"># {{payment.endToEndId}}</td>
+          <td>{{payment.creationTime.toLocaleString('en-UK')}}</td>
+          <td>{{payment.currency}} {{payment.amount}}</td>
           <td>
             <q-chip :style="getStatusColor(payment.status)"
                     dense>
@@ -45,13 +50,13 @@
       </p>
       <div class="row">
         <q-btn no-caps class="q-mx-md"
-               size="15.5px" unelevated outline
+               unelevated outline
                @click="currentPage--"
                :disable="firstItemOnPage === 1">
           Previous
         </q-btn>
         <q-btn no-caps class="q-mx-md"
-               size="15.5px" unelevated outline
+               unelevated outline
                @click="currentPage++"
                :disable="lastItemOnPage === paymentsStore.payments.length">
           Next
@@ -69,12 +74,12 @@ import {PaymentStatus} from 'src/models/payment/PaymentStatus.type';
 
 export default defineComponent({
   name: 'PaymentsTable',
-  setup(){
+  setup() {
     const paymentsStore = usePaymentsStore()
     const currentPage = ref(1)
     const itemsOnPages = 10
     const firstItemOnPage = computed<number>(() => {
-      return itemsOnPages * (currentPage.value - 1) + 1
+      return paymentsStore.payments.length === 0 ? 0 : itemsOnPages * (currentPage.value - 1) + 1
     })
     const lastItemOnPage = computed<number>(() => {
       const numberIfNotLastPage = itemsOnPages * currentPage.value
@@ -89,15 +94,33 @@ export default defineComponent({
     function getStatusColor(status: PaymentStatus): Partial<CSSStyleDeclaration> {
       if (positiveStatuses.includes(status))
         return {
-          color: '#065F46',
-          backgroundColor: '#D1FAE5'
+          color: '#246455',
+          backgroundColor: '#DCE6E4',
+          fontSize: '12px',
+          lineHeight: '1.5em',
+          height: '1.5em',
+          fontWeight: 400,
+          padding: '1em',
         }
       if (negativeStatuses.includes(status))
         return {
-          color: '#991B1B',
-          backgroundColor: '#FEE2E2'
+          color: '#B64C4C',
+          backgroundColor: '#F3E2E2',
+          fontSize: '12px',
+          lineHeight: '1.5em',
+          height: '1.5em',
+          fontWeight: 400,
+          padding: '1em',
         }
-      return {}
+      return {
+        color: '#374151',
+        backgroundColor: '#F3F4F6',
+        fontSize: '12px',
+        lineHeight: '1.5em',
+        height: '1.5em',
+        fontWeight: 400,
+        padding: '1em',
+      }
     }
     return {
       currentPage, itemsOnPages,
@@ -126,6 +149,22 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-
+<style>
+.payments__section {
+  padding-top: 32px;
+}
+.payments__header {
+  color: #246455;
+}
+.payments__icon {
+  color: #50B680;
+  bottom: 2px;
+}
+.payments__section .q-table__card {
+  color: #64758B;
+}
+.payments__id-column {
+  color: #344A68;
+  font-weight: 500;
+}
 </style>
