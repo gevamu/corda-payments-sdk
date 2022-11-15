@@ -1,36 +1,57 @@
 package com.gevamu.iso20022.schema
 
-import javax.xml.transform.Source
-import javax.xml.transform.sax.SAXSource
+import java.io.IOException
 import javax.xml.validation.Schema
-import javax.xml.validation.Validator
-import org.xml.sax.SAXException
-import kotlin.jvm.Throws
 import org.xml.sax.Attributes
 import org.xml.sax.InputSource
+import org.xml.sax.SAXException
 import org.xml.sax.SAXParseException
+import org.xml.sax.ext.Attributes2Impl
 import org.xml.sax.helpers.XMLFilterImpl
 
 class XmlValidator(schema: Schema, private val defaultNamespace: String) : XMLFilterImpl() {
-    private val validator: Validator = schema.newValidator()
 
-    @Throws(SAXException::class)
-    fun validate(xml: String) {
-        val xmlSource: Source = SAXSource(this, InputSource(xml.byteInputStream()))
-        validator.validate(xmlSource)
+    init {
+        this.contentHandler = schema.newValidatorHandler()
     }
 
+    /**
+     * Validate a document. Need to use this method to validate due correct order:
+     * 1. XmlValidator
+     * 2. SAXValidator
+     *
+     * In different order will be error because of Document tag,
+     * tag will not be passed to SAXValidator and processed as part of xml structure
+     *
+     * @param xml data as string, will be wrapped as stream and parsed
+     * @exception org.xml.sax.SAXException Any SAX exception, possibly
+     *            wrapping another exception.
+     * @exception java.io.IOException An IO exception from the parser,
+     *            possibly from a byte stream or character stream
+     *            supplied by the application.
+     */
+    @Throws(SAXException::class, IOException::class)
+    fun validate(xml: String) = parse(InputSource(xml.byteInputStream()))
+
     override fun startElement(uri: String, localName: String, qName: String, atts: Attributes) {
-        // Make the validator think the XML file's elements have a namespace
-        if (uri.isEmpty()) {
-            super.startElement(defaultNamespace, localName, qName, atts)
-        } else super.startElement(uri, localName, qName, atts)
+        super.startElement(defaultNamespace, localName, qName, atts)
     }
 
     override fun endElement(uri: String, localName: String, qName: String) {
-        if (uri.isEmpty()) {
-            super.endElement(defaultNamespace, localName, qName)
-        } else super.endElement(uri, localName, qName)
+        super.endElement(defaultNamespace, localName, qName)
+    }
+
+    override fun startDocument() {
+        // Make the validator think the XML file's elements have a root Document tag
+        super.startDocument()
+        super.startPrefixMapping("", defaultNamespace)
+        super.startElement(defaultNamespace, "Document", "Document", Attributes2Impl())
+    }
+
+    override fun endDocument() {
+        super.endElement(defaultNamespace, "Document", "Document")
+        super.endPrefixMapping("")
+        super.endDocument()
     }
 
     override fun error(excepction: SAXParseException) {

@@ -1,11 +1,13 @@
 package com.gevamu.iso20022.schema
 
+import com.gevamu.iso20022.pain.Document
 import javax.xml.transform.stream.StreamSource
 import kotlin.jvm.Throws
 import java.io.IOException
+import javax.xml.bind.annotation.XmlSchema
 
 object SchemaRepository {
-    const val CREDIT_TRANSFER_INIT_NAMESPACE = "urn:iso:std:iso:20022:tech:xsd:pain.001.001.09"
+    val DEFAULT_NAMESPACE = Document::class.java.`package`.getDeclaredAnnotation(XmlSchema::class.java).namespace
 
     @Throws(IOException::class)
     private fun getSource(fileName: String): StreamSource {
