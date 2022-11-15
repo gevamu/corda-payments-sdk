@@ -1,6 +1,8 @@
 package com.gevamu.iso20022.schema
 
+import com.gevamu.iso20022.pain.Document
 import java.io.IOException
+import javax.xml.bind.annotation.XmlType
 import javax.xml.validation.Schema
 import org.xml.sax.Attributes
 import org.xml.sax.InputSource
@@ -45,11 +47,11 @@ class XmlValidator(schema: Schema, private val defaultNamespace: String) : XMLFi
         // Make the validator think the XML file's elements have a root Document tag
         super.startDocument()
         super.startPrefixMapping("", defaultNamespace)
-        super.startElement(defaultNamespace, "Document", "Document", Attributes2Impl())
+        super.startElement(defaultNamespace, DOCUMENT_TAG, DOCUMENT_TAG, Attributes2Impl())
     }
 
     override fun endDocument() {
-        super.endElement(defaultNamespace, "Document", "Document")
+        super.endElement(defaultNamespace, DOCUMENT_TAG, DOCUMENT_TAG)
         super.endPrefixMapping("")
         super.endDocument()
     }
@@ -64,6 +66,10 @@ class XmlValidator(schema: Schema, private val defaultNamespace: String) : XMLFi
 
     override fun fatalError(excepction: SAXParseException) {
         throw excepction
+    }
+
+    companion object {
+        private val DOCUMENT_TAG by lazy { Document::class.java.getDeclaredAnnotation(XmlType::class.java).name }
     }
 
 }

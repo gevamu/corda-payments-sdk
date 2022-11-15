@@ -7,7 +7,7 @@ import java.io.IOException
 import javax.xml.bind.annotation.XmlSchema
 
 object SchemaRepository {
-    val DEFAULT_NAMESPACE = Document::class.java.`package`.getDeclaredAnnotation(XmlSchema::class.java).namespace
+    val DEFAULT_NAMESPACE by lazy { Document::class.java.`package`.getDeclaredAnnotation(XmlSchema::class.java).namespace }
 
     @Throws(IOException::class)
     private fun getSource(fileName: String): StreamSource {
@@ -22,4 +22,6 @@ object SchemaRepository {
     fun getCustomerCreditTransferInitiationSchema(): StreamSource {
         return getSource("pain.001.001.09.xsd")
     }
+
+
 }
