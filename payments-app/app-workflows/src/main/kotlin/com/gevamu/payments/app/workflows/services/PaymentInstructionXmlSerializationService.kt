@@ -9,9 +9,11 @@ import javax.xml.bind.Marshaller
 import javax.xml.namespace.QName
 import javax.xml.stream.XMLInputFactory
 import net.corda.core.node.AppServiceHub
+import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken
 import org.slf4j.LoggerFactory
 
+@CordaService
 class PaymentInstructionXmlSerializationService(
     private val serviceHub: AppServiceHub
 ) : SingletonSerializeAsToken() {
