@@ -1,21 +1,23 @@
 package com.gevamu.web.server.services;
 
 import com.gevamu.iso20022.pain.CreditTransferTransaction34;
-import com.gevamu.iso20022.pain.CustomerCreditTransferInitiationV09;
 import com.gevamu.iso20022.pain.PaymentInstruction30;
+import com.gevamu.payments.app.contracts.states.PaymentDetails;
+import com.gevamu.payments.app.workflows.flows.PaymentInitiationFlow;
+import com.gevamu.payments.app.workflows.flows.PaymentInitiationRequest;
 import com.gevamu.states.Payment;
 import com.gevamu.web.server.models.ParticipantAccount;
 import com.gevamu.web.server.models.PaymentRequest;
 import com.gevamu.web.server.models.PaymentState;
 import com.gevamu.web.server.util.CompletableFutures;
-import com.gevamu.web.server.util.MoreCollectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -26,67 +28,53 @@ public class PaymentService {
     @Autowired
     private transient CordaRpcClientService cordaRpcClientService;
 
-    //@Autowired
-    //private transient CustomerCreditTransferInitiationService customerCreditTransferInitiationService;
-
-    @Autowired
-    private transient XmlMarshallingService xmlMarshallingService;
-
     public CompletionStage<Void> processPayment(PaymentRequest paymentRequest) {
-        return CompletableFutures.completedStage(null);
-        /*try {
+        PaymentInitiationRequest request = new PaymentInitiationRequest(
+            paymentRequest.getCreditorAccount(),
+            paymentRequest.getDebtorAccount(),
+            paymentRequest.getAmount()
+        );
+        try {
             registrationService.getRegistration()
                 .orElseThrow(ParticipantNotRegisteredException::new);
-            CustomerCreditTransferInitiationV09 customerCreditTransferInitiation = customerCreditTransferInitiationService.createCustomerCreditTransferInitiation(paymentRequest);
-            byte[] bytes = xmlMarshallingService.marshal(customerCreditTransferInitiation);
-            PaymentInstruction paymentInstruction = new PaymentInstruction(PaymentInstructionFormat.ISO20022_V9_XML_UTF8, bytes);
-            return cordaRpcClientService.executePaymentFlow(paymentInstruction);
+            return cordaRpcClientService.executeFlow(PaymentInitiationFlow.class, request)
+                .thenApply(it -> null);
         }
         catch (Exception e) {
             return CompletableFutures.failedStage(e);
-        }*/
-    }
-
-    public List<PaymentState> getPaymentStates() {
-        return cordaRpcClientService.getPayments()
-            .stream()
-            .map(this::convert)
-            .collect(MoreCollectors.toUnmodifiableList());
-    }
-
-    private PaymentState convert(Payment payment) {
-        PaymentState.PaymentStateBuilder builder = PaymentState.builder()
-            .paymentId(payment.getEndToEndId())
-            .status(payment.getStatus())
-            .updateTime(payment.getTimestamp());
-
-        byte[] attachment = cordaRpcClientService.getAttachedPaymentInstruction(payment.getPaymentInstructionId());
-        CustomerCreditTransferInitiationV09 xml = xmlMarshallingService.unmarshal(attachment);
-        Instant creationTime = xml.getGrpHdr()
-            .getCreDtTm()
-            .toGregorianCalendar()
-            .toZonedDateTime()
-            .toInstant();
-        builder.creationTime(creationTime);
-
-        if (!xml.getPmtInf().isEmpty()) {
-            PaymentInstruction30 paymentInstruction = xml.getPmtInf().get(0);
-            if (!paymentInstruction.getCdtTrfTxInf().isEmpty()) {
-                CreditTransferTransaction34 transaction = paymentInstruction.getCdtTrfTxInf().get(0);
-                String endToEndId = transaction.getPmtId().getEndToEndId();
-                BigDecimal amount = transaction.getAmt().getInstdAmt().getValue();
-                String currency = transaction.getAmt().getInstdAmt().getCcy();
-                ParticipantAccount creditor = deriveCreditor(transaction);
-                ParticipantAccount debtor = deriveDebtor(paymentInstruction);
-                builder.endToEndId(endToEndId)
-                    .amount(amount)
-                    .currency(currency)
-                    .creditor(creditor)
-                    .debtor(debtor);
-            }
         }
+    }
 
-        return builder.build();
+    public Mono<List<PaymentState>> getPaymentStates() {
+        return Flux.zip(
+            Flux.fromIterable(cordaRpcClientService.getPaymentDetails()),
+            Flux.fromIterable(cordaRpcClientService.getPayments())
+        ).map(it -> {
+            PaymentDetails details = it.getT1();
+            Payment payment = it.getT2();
+            ParticipantAccount debtor = ParticipantAccount.builder()
+                .accountId(details.getDebtor().getAccountId())
+                .accountName(details.getDebtor().getAccountName())
+                .currency(details.getDebtor().getCurrency())
+                .build();
+            ParticipantAccount creditor = ParticipantAccount.builder()
+                .accountId(details.getCreditor().getAccountId())
+                .accountName(details.getCreditor().getAccountName())
+                .currency(details.getCreditor().getCurrency())
+                .build();
+            return PaymentState.builder()
+                .paymentId(payment.getLinearId().toString())
+                .status(payment.getStatus())
+                .updateTime(payment.getTimestamp())
+                .creationTime(details.getCreationTime())
+                .endToEndId(details.getEndToEndId())
+                .currency(details.getCurrency())
+                .debtor(debtor)
+                .creditor(creditor)
+                .amount(details.getAmount())
+                .build();
+
+        }).collect(Collectors.toList());
     }
 
     private ParticipantAccount deriveCreditor(CreditTransferTransaction34 transaction) {

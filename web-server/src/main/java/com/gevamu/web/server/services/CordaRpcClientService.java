@@ -4,6 +4,8 @@ import com.gevamu.flows.ParticipantRegistration;
 import com.gevamu.flows.PaymentFlow;
 import com.gevamu.flows.PaymentInstruction;
 import com.gevamu.flows.RegisterParticipantFlow;
+import com.gevamu.payments.app.contracts.states.PaymentDetails;
+import com.gevamu.payments.app.contracts.states.PaymentDetailsState;
 import com.gevamu.states.Payment;
 import com.gevamu.web.server.config.CordaRpcClientConnection;
 import com.gevamu.web.server.util.MoreCollectors;
@@ -16,6 +18,7 @@ import net.corda.core.flows.FlowLogic;
 import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
 import net.corda.core.utilities.NetworkHostAndPort;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotBlank;
@@ -70,11 +73,22 @@ public class CordaRpcClientService implements AutoCloseable {
             .toCompletableFuture();
     }
 
-    public <O> CompletionStage<O> executeFlow(@NonNull Class<? extends FlowLogic<O>> flowClass) {
+    public <O> CompletionStage<O> executeFlow(@NonNull Class<? extends FlowLogic<O>> flowClass, Object... args) {
         Party gatewayParty = getParty(GATEWAY_PARTY_NAME);
-        return proxy.startFlowDynamic(flowClass, gatewayParty)
+        Object[] flowArgs = ArrayUtils.isEmpty(args) ?
+            new Object[] { gatewayParty } :
+            ArrayUtils.add(args, gatewayParty);
+        return proxy.startFlowDynamic(flowClass, flowArgs)
             .getReturnValue()
             .toCompletableFuture();
+    }
+
+    public List<PaymentDetails> getPaymentDetails() {
+        return proxy.vaultQuery(PaymentDetailsState.class)
+            .getStates()
+            .stream()
+            .map(it -> it.getState().getData().getPaymentDetails())
+            .collect(MoreCollectors.toUnmodifiableList());
     }
 
     public List<Payment> getPayments() {
