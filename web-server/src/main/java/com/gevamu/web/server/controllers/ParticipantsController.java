@@ -16,7 +16,7 @@
 
 package com.gevamu.web.server.controllers;
 
-import com.gevamu.web.server.config.Participant;
+import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1;
 import com.gevamu.web.server.models.ParticipantAccount;
 import com.gevamu.web.server.models.ParticipantAccountResponse;
 import com.gevamu.web.server.services.ParticipantService;
@@ -29,9 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.function.Supplier;
+import java.util.List;
 
 @RestController
 @RequestMapping("/participants")
@@ -47,7 +45,8 @@ public class ParticipantsController {
     )
     public Mono<ParticipantAccountResponse> getCreditors() {
         log.debug("getCreditors");
-        return getAccounts(() -> participantService.getCreditors());
+        return Mono.defer(() -> Mono.fromCompletionStage(participantService.getCreditors()))
+            .map(this::toResponse);
     }
 
     @GetMapping(
@@ -56,23 +55,19 @@ public class ParticipantsController {
     )
     public Mono<ParticipantAccountResponse> getDebtors() {
         log.debug("getDebtors");
-        return getAccounts(() -> participantService.getDebtors());
+        return Mono.defer(() -> Mono.fromCompletionStage(participantService.getDebtors()))
+            .map(this::toResponse);
     }
 
-    private Mono<ParticipantAccountResponse> getAccounts(Supplier<Collection<Participant>> supplier) {
-        return Mono.defer(
-            () -> Mono.just(supplier.get())
-                .map(it -> it.stream()
-                    .map(p -> ParticipantAccount.builder()
-                        .accountId(p.getAccount())
-                        .accountName(p.getAccountName())
-                        .currency(p.getCurrency())
-                        .build()
-                    )
-                    .sorted(Comparator.comparing(ParticipantAccount::getAccountName))
-                    .collect(MoreCollectors.toUnmodifiableList())
-                )
-                .map(ParticipantAccountResponse::new)
-        );
+    private ParticipantAccountResponse toResponse(List<? extends AccountSchemaV1.Account> accounts) {
+        List<ParticipantAccount> participantAccounts = accounts.stream()
+            .map(it -> ParticipantAccount.builder()
+                .accountId(it.getAccount())
+                .accountName(it.getAccountName())
+                .currency(it.getCurrency().getIsoCode())
+                .build()
+            )
+            .collect(MoreCollectors.toUnmodifiableList());
+        return new ParticipantAccountResponse(participantAccounts);
     }
 }

@@ -23,8 +23,6 @@ class IdGeneratorServiceTest {
             MockNetworkParameters(
                 listOf(
                     findCordapp("com.gevamu.payments.app.workflows")
-                    //findCordapp("com.gevamu.payments.app.contracts.states"),
-                    //findCordapp("com.gevamu.payments.app.workflows.flows")
                 )
             )
         )
