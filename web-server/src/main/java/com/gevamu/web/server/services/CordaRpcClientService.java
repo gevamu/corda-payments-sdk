@@ -12,6 +12,7 @@ import net.corda.client.rpc.CordaRPCClient;
 import net.corda.client.rpc.CordaRPCConnection;
 import net.corda.core.CordaRuntimeException;
 import net.corda.core.crypto.SecureHash;
+import net.corda.core.flows.FlowLogic;
 import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
 import net.corda.core.utilities.NetworkHostAndPort;
@@ -69,6 +70,13 @@ public class CordaRpcClientService implements AutoCloseable {
             .toCompletableFuture();
     }
 
+    public <O> CompletionStage<O> executeFlow(@NonNull Class<? extends FlowLogic<O>> flowClass) {
+        Party gatewayParty = getParty(GATEWAY_PARTY_NAME);
+        return proxy.startFlowDynamic(flowClass, gatewayParty)
+            .getReturnValue()
+            .toCompletableFuture();
+    }
+
     public List<Payment> getPayments() {
         return proxy.vaultQuery(Payment.class)
             .getStates()
@@ -77,6 +85,7 @@ public class CordaRpcClientService implements AutoCloseable {
             .collect(MoreCollectors.toUnmodifiableList());
     }
 
+    @Deprecated
     public byte[] getAttachedPaymentInstruction(@NonNull SecureHash attachmentId) {
         try (
             InputStream inputStream = proxy.openAttachment(attachmentId);

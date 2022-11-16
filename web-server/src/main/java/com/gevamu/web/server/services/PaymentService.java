@@ -1,7 +1,5 @@
 package com.gevamu.web.server.services;
 
-import com.gevamu.flows.PaymentInstruction;
-import com.gevamu.flows.PaymentInstructionFormat;
 import com.gevamu.iso20022.pain.CreditTransferTransaction34;
 import com.gevamu.iso20022.pain.CustomerCreditTransferInitiationV09;
 import com.gevamu.iso20022.pain.PaymentInstruction30;
@@ -28,14 +26,15 @@ public class PaymentService {
     @Autowired
     private transient CordaRpcClientService cordaRpcClientService;
 
-    @Autowired
-    private transient CustomerCreditTransferInitiationService customerCreditTransferInitiationService;
+    //@Autowired
+    //private transient CustomerCreditTransferInitiationService customerCreditTransferInitiationService;
 
     @Autowired
     private transient XmlMarshallingService xmlMarshallingService;
 
     public CompletionStage<Void> processPayment(PaymentRequest paymentRequest) {
-        try {
+        return CompletableFutures.completedStage(null);
+        /*try {
             registrationService.getRegistration()
                 .orElseThrow(ParticipantNotRegisteredException::new);
             CustomerCreditTransferInitiationV09 customerCreditTransferInitiation = customerCreditTransferInitiationService.createCustomerCreditTransferInitiation(paymentRequest);
@@ -45,7 +44,7 @@ public class PaymentService {
         }
         catch (Exception e) {
             return CompletableFutures.failedStage(e);
-        }
+        }*/
     }
 
     public List<PaymentState> getPaymentStates() {

@@ -11,17 +11,19 @@ import com.gevamu.iso20022.pain.OrganisationIdentification29;
 import com.gevamu.iso20022.pain.Party38Choice;
 import com.gevamu.iso20022.pain.PartyIdentification135;
 import com.gevamu.iso20022.pain.PostalAddress24;
+import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1;
+import com.gevamu.payments.app.workflows.flows.CreditorRetrievalFlow;
+import com.gevamu.payments.app.workflows.flows.DebtorRetrievalFlow;
 import com.gevamu.web.server.config.Participant;
-import com.gevamu.web.server.config.Participants;
-import com.gevamu.web.server.util.MoreCollectors;
 import lombok.NonNull;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.concurrent.CompletionStage;
 
 @Service
 public class ParticipantService {
@@ -37,24 +39,18 @@ public class ParticipantService {
     }
 
     private final transient ObjectFactory objectFactory = new ObjectFactory();
-    private final transient Map<String, Participant> creditors;
-    private final transient Map<String, Participant> debtors;
+    private final transient Map<String, Participant> creditors = Collections.emptyMap();
+    private final transient Map<String, Participant> debtors = Collections.emptyMap();;
 
-    public ParticipantService(Participants participants) {
-        creditors = participants.getCreditors()
-            .stream()
-            .collect(MoreCollectors.toUnmodifiableMap(Participant::getAccount, Function.identity()));
-        debtors = participants.getDebtors()
-            .stream()
-            .collect(MoreCollectors.toUnmodifiableMap(Participant::getAccount, Function.identity()));
+    @Autowired
+    private transient CordaRpcClientService cordaRpcClientService;
+
+    public CompletionStage<List<? extends AccountSchemaV1.Account>> getCreditors() {
+        return cordaRpcClientService.executeFlow(CreditorRetrievalFlow.class);
     }
 
-    public Collection<Participant> getCreditors() {
-        return creditors.values();
-    }
-
-    public Collection<Participant> getDebtors() {
-        return debtors.values();
+    public CompletionStage<List<? extends AccountSchemaV1.Account>> getDebtors() {
+        return cordaRpcClientService.executeFlow(DebtorRetrievalFlow.class);
     }
 
     public ParticipantIdentification getCreditorIdentification(@NonNull String account) {

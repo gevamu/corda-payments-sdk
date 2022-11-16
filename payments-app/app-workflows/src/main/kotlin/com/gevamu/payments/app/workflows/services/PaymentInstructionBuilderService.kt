@@ -79,11 +79,11 @@ class PaymentInstructionBuilderService(
     }
 
     private fun getParticipantIdentification(creditor: Creditor): ParticipantIdentification {
-        return createParticipantIdentification(creditor.account)
+        return createParticipantIdentification(creditor.account!!)
     }
 
     private fun getParticipantIdentification(debtor: Debtor): ParticipantIdentification {
-        val identification = createParticipantIdentification(debtor.account)
+        val identification = createParticipantIdentification(debtor.account!!)
 
         val genericOrgId = objectFactory.createGenericOrganisationIdentification1()
         genericOrgId.id = "123"/*FIXME it.participantId*/
@@ -120,7 +120,7 @@ class PaymentInstructionBuilderService(
         val result = objectFactory.createPartyIdentification135()
         result.nm = account.accountName
         val pstlAdr = objectFactory.createPostalAddress24()
-        pstlAdr.ctry = account.country.isoCodeAlpha2
+        pstlAdr.ctry = account.country!!.isoCodeAlpha2
         result.pstlAdr = pstlAdr
         return result
     }
@@ -133,7 +133,7 @@ class PaymentInstructionBuilderService(
         val result = objectFactory.createCashAccount38()
         result.id = id
         result.nm = account.accountName
-        result.ccy = account.currency.isoCode
+        result.ccy = account.currency!!.isoCode
         return result
     }
 

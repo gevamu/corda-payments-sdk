@@ -21,36 +21,36 @@ class AccountSchemaV1 : MappedSchema(
 ), Serializable  {
 
     @CordaSerializable
-    @Entity
+    @Entity(name = "Account")
     @Table(name = "account")
     class Account(
 
         @Id
         @Column(name = "account")
-        var account: String,
+        var account: String? = null,
 
         @Column(name = "accountName", nullable = false)
-        var accountName: String,
+        var accountName: String? = null,
 
         @Column(name = "bic", nullable = false)
-        var bic: String,
+        var bic: String? = null,
 
         @OneToOne
         @JoinColumn(name = "country", referencedColumnName = "isoCodeAlpha2", nullable = false)
-        var country: Country,
+        var country: Country? = null,
 
         @OneToOne
         @JoinColumn(name = "currency", referencedColumnName = "isoCode", nullable = false)
-        var currency: Currency,
+        var currency: Currency? = null,
 
         @Column(name = "effectiveDate", nullable = false)
-        var effectiveDate: LocalDate,
+        var effectiveDate: LocalDate? = null,
 
         @Column(name = "expiryDate", nullable = false)
-        var expiryDate: LocalDate,
+        var expiryDate: LocalDate? = null,
 
         @Column(name = "paymentLimit", nullable = false)
-        var paymentLimit: Int
+        var paymentLimit: Int? = null
 
     ) : Serializable {
         companion object {
@@ -59,13 +59,13 @@ class AccountSchemaV1 : MappedSchema(
     }
 
     @CordaSerializable
-    @Entity
+    @Entity(name = "Debtor")
     @Table(name = "debtor")
     class Debtor(
         @Id
         @OneToOne
         @JoinColumn(name = "account", referencedColumnName = "account")
-        var account: Account
+        var account: Account? = null
     ) : Serializable {
         companion object {
             private const val serialVersionUID = 1L
@@ -73,13 +73,13 @@ class AccountSchemaV1 : MappedSchema(
     }
 
     @CordaSerializable
-    @Entity
+    @Entity(name = "Creditor")
     @Table(name = "creditor")
     class Creditor(
         @Id
         @OneToOne
         @JoinColumn(name = "account", referencedColumnName = "account")
-        var account: Account
+        var account: Account? = null
     ) : Serializable {
         companion object {
             private const val serialVersionUID = 1L
@@ -87,12 +87,12 @@ class AccountSchemaV1 : MappedSchema(
     }
 
     @CordaSerializable
-    @Entity
+    @Entity(name = "Currency")
     @Table(name = "currency")
     class Currency(
         @Id
         @Column(name = "isoCode", length = 3)
-        var isoCode: String
+        var isoCode: String? = null
     ) : Serializable {
         companion object {
             private const val serialVersionUID = 1L
@@ -100,12 +100,12 @@ class AccountSchemaV1 : MappedSchema(
     }
 
     @CordaSerializable
-    @Entity
+    @Entity(name = "Country")
     @Table(name = "country")
     class Country(
         @Id
         @Column(name = "isoCodeAlpha2", length = 2)
-        var isoCodeAlpha2: String
+        var isoCodeAlpha2: String? = null
     ) : Serializable {
         companion object {
             private const val serialVersionUID = 1L
