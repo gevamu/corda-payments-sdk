@@ -1,7 +1,6 @@
 import {defineStore} from 'pinia'
 import {Payment} from 'src/models/Payment.interface'
-import {PaymentStatus as ApiPaymentStatus} from 'src/api/v1/models/PaymentState.type'
-import {PaymentStatus} from 'src/models/payment/PaymentStatus.type'
+import {PaymentStatus} from 'src/api/v1/models/PaymentState.type'
 import Timeout = NodeJS.Timeout
 
 import {api} from 'src/api'
@@ -9,7 +8,7 @@ import {api} from 'src/api'
 //
 // const errorHandler = useErrorHandler()
 
-const status2Text = {
+const status2Text: Record<PaymentStatus, string> = {
   SENT_TO_GATEWAY: 'Sent to Gateway',
   PENDING: 'Pending',
   CREATED: 'Created',
@@ -19,7 +18,7 @@ const status2Text = {
 }
 
 export const usePaymentsStore = defineStore('payments', {
-  state(){
+  state() {
     return {
       payments: [] as Payment[],
       loading: false,
@@ -38,7 +37,7 @@ export const usePaymentsStore = defineStore('payments', {
     async fetchPayments() {
       this.loading = true
       const result = await api.getPayments()
-      function mapStatus(apiStatus: ApiPaymentStatus): PaymentStatus {
+      function mapStatus(apiStatus: PaymentStatus): string {
         return status2Text[apiStatus] ?? 'Unknown'
       }
       this.payments = result.states.map(state => {

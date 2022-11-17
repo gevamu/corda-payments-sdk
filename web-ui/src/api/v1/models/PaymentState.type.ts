@@ -20,4 +20,3 @@ export type PaymentState = {
 }
 
 export type PaymentStatus = 'CREATED' | 'SENT_TO_GATEWAY' | 'ACCEPTED' | 'PENDING' | 'COMPLETED' | 'REJECTED'
-
