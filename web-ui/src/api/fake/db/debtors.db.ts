@@ -2,7 +2,8 @@ import {ParticipantAccount} from 'src/api/v1/models/ParticipantAccount.type';
 
 const debtors: ParticipantAccount[] = [{
   accountId: '741071328201',
-  accountName: 'ASCENT WAYXXXXXXXXXX'
+  accountName: 'ASCENT WAYXXXXXXXXXX',
+  currency: 'USD'
 }]
 // for (let i = 0; i < 5; i++){
 //   debtors.push({

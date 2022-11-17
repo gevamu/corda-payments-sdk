@@ -18,7 +18,7 @@ export const useAuthStore = defineStore('auth', {
         this.payerProfile = result
       } catch (e) {
         const errorHandler = useErrorHandler()
-        errorHandler.handleError(e)
+        errorHandler.handleError(e as Error)
       } finally {
         this.loading = false
       }
@@ -30,7 +30,7 @@ export const useAuthStore = defineStore('auth', {
         this.payerProfile = result
       } catch (e) {
         const errorHandler = useErrorHandler()
-        errorHandler.handleError(e)
+        errorHandler.handleError(e as Error)
       } finally {
         this.loading = false
       }

@@ -109,7 +109,7 @@ export default defineComponent({
         await this.paymentsStore.submitPayment(this.debtorAccount, this.creditorAccount, this.amount)
         this.resetForm()
       } catch (e) {
-        this.errorHandler.handleError(e)
+        this.errorHandler.handleError(e as Error)
       } finally {
         this.loading = false
       }
