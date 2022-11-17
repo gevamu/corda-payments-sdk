@@ -28,6 +28,12 @@ CREATE TABLE creditor (
     account VARCHAR(64) NOT NULL UNIQUE REFERENCES account(account)
 );
 
+CREATE TABLE registration (
+    participantId VARCHAR(255) NOT NULL,
+    networkId VARCHAR(255) NOT NULL,
+    PRIMARY KEY (participantId)
+);
+
 INSERT INTO country (isoCodeAlpha2)
 VALUES
 ('CN'),

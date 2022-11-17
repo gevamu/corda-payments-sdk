@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-
 @RestController
 @RequestMapping("/registration")
 @Slf4j
@@ -25,18 +22,12 @@ public class RegistrationController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ParticipantRegistration> getRegistration() {
         log.debug("getRegistration");
-        return Mono.defer(() -> {
-            Optional<ParticipantRegistration> registration = registrationService.getRegistration();
-            return registration.map(Mono::just).orElseGet(Mono::empty);
-        });
+        return registrationService.getRegistration();
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ParticipantRegistration> postRegistration() {
         log.debug("postRegistration");
-        return Mono.defer(() -> {
-            CompletionStage<ParticipantRegistration> registration = registrationService.register();
-            return Mono.fromCompletionStage(registration);
-        });
+        return registrationService.register();
     }
 }

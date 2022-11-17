@@ -13,9 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
@@ -65,7 +65,7 @@ public class PaymentsControllerNegativeTest {
     public void beforeEach() {
         ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
         when(registrationService.getRegistration())
-            .thenReturn(Optional.of(registration));
+            .thenReturn(Mono.just(registration));
         when(cordaRpcClientService.executePaymentFlow(any()))
             .thenReturn(CompletableFutures.completedStage(null));
     }
@@ -179,7 +179,7 @@ public class PaymentsControllerNegativeTest {
     @Test
     public void testPostPaymentParticipantNotRegistered() {
         when(registrationService.getRegistration())
-            .thenReturn(Optional.empty());
+            .thenReturn(Mono.empty());
         PaymentRequest request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
         webClient.post()
             .uri(PATH)
