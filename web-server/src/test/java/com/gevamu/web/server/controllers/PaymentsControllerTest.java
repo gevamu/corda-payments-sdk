@@ -30,10 +30,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
@@ -82,7 +82,7 @@ public class PaymentsControllerTest {
     public void beforeEach() {
         ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
         when(registrationService.getRegistration())
-            .thenReturn(Optional.of(registration));
+            .thenReturn(Mono.just(registration));
     }
 
     @AfterEach

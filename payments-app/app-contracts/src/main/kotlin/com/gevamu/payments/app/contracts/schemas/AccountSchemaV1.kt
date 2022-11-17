@@ -16,9 +16,9 @@ object AccountSchema
 @CordaSerializable
 class AccountSchemaV1 : MappedSchema(
     schemaFamily = AccountSchema::class.java,
-    mappedTypes = listOf(Account::class.java, Debtor::class.java, Creditor::class.java, Currency::class.java, Country::class.java),
+    mappedTypes = listOf(Account::class.java, Debtor::class.java, Creditor::class.java, Currency::class.java, Country::class.java, Registration::class.java),
     version = 1
-), Serializable  {
+), Serializable {
 
     @CordaSerializable
     @Entity(name = "Account")
@@ -106,6 +106,24 @@ class AccountSchemaV1 : MappedSchema(
         @Id
         @Column(name = "isoCodeAlpha2", length = 2)
         var isoCodeAlpha2: String? = null
+    ) : Serializable {
+        companion object {
+            private const val serialVersionUID = 1L
+        }
+    }
+
+    @CordaSerializable
+    @Entity(name = "Registration")
+    @Table(name = "registration")
+    class Registration(
+
+        @Id
+        @Column(name = "participantId")
+        var participantId: String? = null,
+
+        @Column(name = "networkId", nullable = false)
+        var networkId: String? = null
+
     ) : Serializable {
         companion object {
             private const val serialVersionUID = 1L

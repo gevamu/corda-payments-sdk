@@ -17,11 +17,11 @@
 package com.gevamu.web.server.services;
 
 import com.gevamu.flows.ParticipantRegistration;
+import com.gevamu.payments.app.workflows.flows.RegistrationInitiationFlow;
+import com.gevamu.payments.app.workflows.flows.RegistrationRetrievalFlow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
+import reactor.core.publisher.Mono;
 
 @Service
 public class RegistrationService {
@@ -29,21 +29,23 @@ public class RegistrationService {
     @Autowired
     private transient CordaRpcClientService cordaRpcClientService;
 
-    @Autowired
-    private transient RegistrationStoreService store;
-
-    public Optional<ParticipantRegistration> getRegistration() {
-        return store.getRegistration();
+    public Mono<ParticipantRegistration> getRegistration() {
+        return Mono.defer(
+            () -> Mono.fromCompletionStage(
+                cordaRpcClientService.executeFlow(RegistrationRetrievalFlow.class)
+            )
+        );
     }
 
-    public CompletionStage<ParticipantRegistration> register() {
-        return doRegister().thenApply(it -> {
-            store.putRegistration(it);
-            return it;
-        });
+    public Mono<ParticipantRegistration> register() {
+        return getRegistration().switchIfEmpty(doRegister());
     }
 
-    private CompletionStage<ParticipantRegistration> doRegister() {
-        return cordaRpcClientService.executeRegistrationFlow();
+    private Mono<ParticipantRegistration> doRegister() {
+        return Mono.defer(
+            () -> Mono.fromCompletionStage(
+                cordaRpcClientService.executeFlow(RegistrationInitiationFlow.class)
+            )
+        );
     }
 }

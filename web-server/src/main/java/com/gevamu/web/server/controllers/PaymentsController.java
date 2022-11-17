@@ -47,7 +47,7 @@ public class PaymentsController {
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Void> postPayment(@Valid @RequestBody PaymentRequest paymentRequest) {
         log.debug("postPayment: {}", paymentRequest);
-        return Mono.defer(() -> Mono.fromCompletionStage(paymentService.processPayment(paymentRequest)));
+        return paymentService.processPayment(paymentRequest);
     }
 
     @GetMapping(

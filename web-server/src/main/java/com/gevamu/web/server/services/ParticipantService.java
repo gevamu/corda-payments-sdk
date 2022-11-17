@@ -75,7 +75,7 @@ public class ParticipantService {
     }
 
     public ParticipantIdentification getDebtorIdentification(@NonNull String account) {
-        return registrationService.getRegistration()
+        return registrationService.getRegistration().blockOptional()
             .map(it -> {
                 Participant debtor = debtors.get(account);
                 ParticipantIdentification identification = createIdentification(debtor);

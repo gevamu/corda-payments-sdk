@@ -25,14 +25,12 @@ import com.gevamu.states.Payment;
 import com.gevamu.web.server.models.ParticipantAccount;
 import com.gevamu.web.server.models.PaymentRequest;
 import com.gevamu.web.server.models.PaymentState;
-import com.gevamu.web.server.util.CompletableFutures;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,21 +42,24 @@ public class PaymentService {
     @Autowired
     private transient CordaRpcClientService cordaRpcClientService;
 
-    public CompletionStage<Void> processPayment(PaymentRequest paymentRequest) {
+    public Mono<Void> processPayment(PaymentRequest paymentRequest) {
+        return registrationService.getRegistration()
+            .switchIfEmpty(Mono.error(ParticipantNotRegisteredException::new))
+            .flatMap(it -> doProcessPayment(paymentRequest));
+    }
+
+    private Mono<Void> doProcessPayment(PaymentRequest paymentRequest) {
         PaymentInitiationRequest request = new PaymentInitiationRequest(
             paymentRequest.getCreditorAccount(),
             paymentRequest.getDebtorAccount(),
             paymentRequest.getAmount()
         );
-        try {
-            registrationService.getRegistration()
-                .orElseThrow(ParticipantNotRegisteredException::new);
-            return cordaRpcClientService.executeFlow(PaymentInitiationFlow.class, request)
-                .thenApply(it -> null);
-        }
-        catch (Exception e) {
-            return CompletableFutures.failedStage(e);
-        }
+        return Mono.defer(
+            () -> Mono.fromCompletionStage(
+                cordaRpcClientService.executeFlow(PaymentInitiationFlow.class, request)
+                    .thenApply(it -> null)
+            )
+        );
     }
 
     public Mono<List<PaymentState>> getPaymentStates() {
