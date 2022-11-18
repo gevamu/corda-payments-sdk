@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', {
         this.loading = false
       }
     },
-    async getRegistration(){
+    async getRegistration() {
       this.loading = true
       try {
         const result = await api.getRegistration()

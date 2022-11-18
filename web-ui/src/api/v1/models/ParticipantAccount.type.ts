@@ -1,4 +1,5 @@
 export interface ParticipantAccount {
-  accountId: string
-  accountName: string
+  accountId: string;
+  accountName: string;
+  currency: string;
 }

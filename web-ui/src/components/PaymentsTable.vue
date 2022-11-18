@@ -99,7 +99,7 @@ export default defineComponent({
           fontSize: '12px',
           lineHeight: '1.5em',
           height: '1.5em',
-          fontWeight: 400,
+          fontWeight: '400',
           padding: '1em',
         }
       if (negativeStatuses.includes(status))
@@ -109,7 +109,7 @@ export default defineComponent({
           fontSize: '12px',
           lineHeight: '1.5em',
           height: '1.5em',
-          fontWeight: 400,
+          fontWeight: '400',
           padding: '1em',
         }
       return {
@@ -118,7 +118,7 @@ export default defineComponent({
         fontSize: '12px',
         lineHeight: '1.5em',
         height: '1.5em',
-        fontWeight: 400,
+        fontWeight: '400',
         padding: '1em',
       }
     }
@@ -130,10 +130,10 @@ export default defineComponent({
     }
   },
   computed:{
-    loading(): boolean{
+    loading(): boolean {
       return this.paymentsStore.loading || !!this.paymentsStore.fetchingProcess
     },
-    currentPagePayments(){
+    currentPagePayments() {
       return this.paymentsStore.payments.slice(this.firstItemOnPage-1, this.lastItemOnPage)
     },
 

@@ -16,7 +16,7 @@ import {useErrorHandler} from 'stores/errorHandler.store';
 
 export default defineComponent({
   name: 'ErrorBanner',
-  setup(){
+  setup() {
     const errorHandler = useErrorHandler()
     return {
       errorHandler

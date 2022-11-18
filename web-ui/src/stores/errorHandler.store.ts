@@ -1,16 +1,20 @@
 import {defineStore} from 'pinia'
 
 export const useErrorHandler = defineStore('errorHandler', {
-  state(){
+  state() {
     return {
-      error: null as null | Error
+      error: null as null | string
     }
   },
   actions: {
-    handleError(error: Error){
-      this.error = error
+    handleError(error: unknown) {
+      if (error instanceof Error) {
+        this.error = error.message
+      } else {
+        this.error = `${error}`
+      }
     },
-    hideError(){
+    hideError() {
       this.error = null
     }
   }
