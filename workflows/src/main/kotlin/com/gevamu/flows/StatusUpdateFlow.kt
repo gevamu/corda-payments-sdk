@@ -3,19 +3,21 @@ package com.gevamu.flows
 import co.paralleluniverse.fibers.Suspendable
 import com.gevamu.contracts.PaymentContract
 import com.gevamu.states.Payment
+import java.time.Instant
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.flows.CollectSignaturesFlow
 import net.corda.core.flows.FinalityFlow
 import net.corda.core.flows.FlowLogic
 import net.corda.core.flows.InitiatingFlow
+import net.corda.core.flows.StartableByRPC
 import net.corda.core.flows.StartableByService
 import net.corda.core.node.services.Vault
 import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.transactions.TransactionBuilder
-import java.time.Instant
 
 @InitiatingFlow
 @StartableByService
+@StartableByRPC
 class StatusUpdateFlow(
     private val paymentId: UniqueIdentifier,
     private val paymentStatus: Payment.PaymentStatus,
