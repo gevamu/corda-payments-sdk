@@ -14,7 +14,7 @@ class DebtorRetrievalFlow(
 ) : FlowLogic<List<Account>>() {
     @Suspendable
     override fun call(): List<Account> = serviceHub.withEntityManager {
-        createQuery("SELECT d FROM Debtor d", Debtor::class.java).resultList
+        createQuery("FROM Debtor", Debtor::class.java).resultList
             .stream()
             .map(Debtor::account)
             .collect(Collectors.toList())

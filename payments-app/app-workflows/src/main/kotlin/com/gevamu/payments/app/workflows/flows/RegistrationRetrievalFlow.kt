@@ -13,7 +13,7 @@ class RegistrationRetrievalFlow(
 ) : FlowLogic<ParticipantRegistration?>() {
     @Suspendable
     override fun call(): ParticipantRegistration? = serviceHub.withEntityManager {
-        val resultList = createQuery("SELECT r FROM Registration r", Registration::class.java)
+        val resultList = createQuery("FROM Registration", Registration::class.java)
             .resultList
 
         if (resultList.any()) {
