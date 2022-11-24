@@ -17,11 +17,12 @@
 package com.gevamu.web.server.controllers;
 
 import com.gevamu.flows.ParticipantRegistration;
+import com.gevamu.payments.app.workflows.flows.RegistrationInitiationFlow;
+import com.gevamu.payments.app.workflows.flows.RegistrationRetrievalFlow;
 import com.gevamu.web.server.services.CordaRpcClientService;
 import com.gevamu.web.server.services.RegistrationService;
 import com.gevamu.web.server.util.CompletableFutures;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,20 +42,11 @@ public class RegistrationControllerTest {
 
     private transient RegistrationService registrationService;
 
-
-
     @Autowired
     private transient WebTestClient webClient;
 
     @MockBean
     private transient CordaRpcClientService cordaRpcClientService;
-
-    @BeforeEach
-    public void beforeEach() {
-        ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
-        when(cordaRpcClientService.executeRegistrationFlow())
-            .thenReturn(CompletableFutures.completedStage(registration));
-    }
 
     @AfterEach
     public void afterEach() {
@@ -62,7 +54,9 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    public void test() {
+    public void testGetRegistrationWhenNotRegistered() {
+        when(cordaRpcClientService.executeFlow(RegistrationRetrievalFlow.class))
+            .thenReturn(CompletableFutures.completedStage(null));
         webClient.get()
             .uri(PATH)
             .exchange()
@@ -72,8 +66,14 @@ public class RegistrationControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .expectBody()
             .isEmpty();
+    }
 
-        webClient.post()
+    @Test
+    public void testGetRegistrationWhenRegistered() {
+        ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
+        when(cordaRpcClientService.executeFlow(RegistrationRetrievalFlow.class))
+            .thenReturn(CompletableFutures.completedStage(registration));
+        webClient.get()
             .uri(PATH)
             .exchange()
             .expectStatus()
@@ -85,8 +85,16 @@ public class RegistrationControllerTest {
             .isEqualTo("test_p_id")
             .jsonPath("networkId")
             .isEqualTo("test_n_id");
+    }
 
-        webClient.get()
+    @Test
+    public void testPostRegistration() {
+        ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
+        when(cordaRpcClientService.executeFlow(RegistrationInitiationFlow.class))
+            .thenReturn(CompletableFutures.completedStage(registration));
+        when(cordaRpcClientService.executeFlow(RegistrationRetrievalFlow.class))
+            .thenReturn(CompletableFutures.completedStage(null));
+        webClient.post()
             .uri(PATH)
             .exchange()
             .expectStatus()

@@ -16,6 +16,7 @@
 
 package com.gevamu.web.server.models;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Value
+@EqualsAndHashCode
 public class PaymentRequest {
     @NotBlank
     String creditorAccount;

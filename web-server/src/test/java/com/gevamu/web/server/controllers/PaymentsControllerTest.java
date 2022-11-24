@@ -17,10 +17,21 @@
 package com.gevamu.web.server.controllers;
 
 import com.gevamu.flows.ParticipantRegistration;
+import com.gevamu.payments.app.contracts.states.ParticipantAccountDetails;
+import com.gevamu.payments.app.contracts.states.PaymentDetails;
+import com.gevamu.payments.app.contracts.states.PaymentDetailsState;
+import com.gevamu.payments.app.workflows.flows.PaymentInitiationFlow;
+import com.gevamu.payments.app.workflows.flows.RegistrationRetrievalFlow;
 import com.gevamu.web.server.models.PaymentRequest;
 import com.gevamu.web.server.services.CordaRpcClientService;
-import com.gevamu.web.server.services.RegistrationService;
 import com.gevamu.web.server.util.CompletableFutures;
+import net.corda.core.contracts.StateAndRef;
+import net.corda.core.contracts.StateRef;
+import net.corda.core.contracts.TransactionState;
+import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.crypto.SecureHash;
+import net.corda.core.identity.CordaX500Name;
+import net.corda.core.identity.Party;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,13 +41,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.security.PublicKey;
+import java.time.Instant;
 import java.util.Collections;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,28 +87,39 @@ public class PaymentsControllerTest {
     @MockBean
     private transient CordaRpcClientService cordaRpcClientService;
 
-    @MockBean
-    private transient RegistrationService registrationService;
-
     @BeforeEach
     public void beforeEach() {
         ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
-        when(registrationService.getRegistration())
-            .thenReturn(Mono.just(registration));
+        when(cordaRpcClientService.executeFlow(RegistrationRetrievalFlow.class))
+            .thenReturn(CompletableFutures.completedStage(registration));
     }
 
     @AfterEach
     public void afterEach() {
         clearInvocations(cordaRpcClientService);
-        clearInvocations(registrationService);
     }
 
     @Test
     public void testPostPayment() {
-        when(cordaRpcClientService.executePaymentFlow(any()))
-            .thenReturn(CompletableFutures.completedStage(null));
-
+        TransactionState<PaymentDetailsState> state = new TransactionState<>(
+            new PaymentDetailsState(
+                new UniqueIdentifier(),
+                Collections.emptyList(),
+                new PaymentDetails(
+                    Instant.now(),
+                    "",
+                    BigDecimal.TEN,
+                    "",
+                    new ParticipantAccountDetails("", "", ""),
+                    new ParticipantAccountDetails("", "", "")
+                )
+            ),
+            new Party(new CordaX500Name("test", "test", "GB"), mock(PublicKey.class))
+        );
+        StateAndRef<PaymentDetailsState> stateAndRef = new StateAndRef<>(state, new StateRef(SecureHash.zeroHash, 0));
         PaymentRequest request = new PaymentRequest("test_creditor_account", "test_debtor_account", BigDecimal.TEN);
+        when(cordaRpcClientService.executeFlow(PaymentInitiationFlow.class, request))
+            .thenReturn(CompletableFutures.completedStage(Collections.singletonList(stateAndRef)));
 
         webClient.post()
             .uri(PATH)
@@ -107,7 +130,8 @@ public class PaymentsControllerTest {
             .expectBody()
             .isEmpty();
 
-        verify(cordaRpcClientService, times(1)).executePaymentFlow(any());
+        verify(cordaRpcClientService, times(1)).executeFlow(RegistrationRetrievalFlow.class, request);
+        verify(cordaRpcClientService, times(1)).executeFlow(PaymentInitiationFlow.class, request);
     }
 
     @Test

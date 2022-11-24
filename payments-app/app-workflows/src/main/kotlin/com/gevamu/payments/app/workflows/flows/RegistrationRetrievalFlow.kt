@@ -2,7 +2,7 @@ package com.gevamu.payments.app.workflows.flows
 
 import co.paralleluniverse.fibers.Suspendable
 import com.gevamu.flows.ParticipantRegistration
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Registration
+import com.gevamu.payments.app.workflows.services.RegistrationService
 import net.corda.core.flows.FlowLogic
 import net.corda.core.flows.StartableByRPC
 import net.corda.core.identity.Party
@@ -12,15 +12,8 @@ class RegistrationRetrievalFlow(
     private val gateway: Party
 ) : FlowLogic<ParticipantRegistration?>() {
     @Suspendable
-    override fun call(): ParticipantRegistration? = serviceHub.withEntityManager {
-        val registration = createQuery("FROM Registration", Registration::class.java)
-            .resultList.firstOrNull()
-
-        if (registration != null)
-            ParticipantRegistration(
-                participantId = registration.participantId!!,
-                networkId = registration.networkId!!
-            )
-        else null
+    override fun call(): ParticipantRegistration? {
+        val registrationService: RegistrationService = serviceHub.cordaService(RegistrationService::class.java)
+        return registrationService.getRegistration()
     }
 }
