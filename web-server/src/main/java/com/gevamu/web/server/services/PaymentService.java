@@ -3,7 +3,6 @@ package com.gevamu.web.server.services;
 import com.gevamu.iso20022.pain.CreditTransferTransaction34;
 import com.gevamu.iso20022.pain.PaymentInstruction30;
 import com.gevamu.payments.app.contracts.states.PaymentDetails;
-import com.gevamu.payments.app.workflows.flows.PaymentInitiationFlow;
 import com.gevamu.payments.app.workflows.flows.PaymentInitiationRequest;
 import com.gevamu.states.Payment;
 import com.gevamu.web.server.models.ParticipantAccount;
@@ -33,17 +32,13 @@ public class PaymentService {
     }
 
     private Mono<Void> doProcessPayment(PaymentRequest paymentRequest) {
-        PaymentInitiationRequest request = new PaymentInitiationRequest(
-            paymentRequest.getCreditorAccount(),
-            paymentRequest.getDebtorAccount(),
-            paymentRequest.getAmount()
-        );
-        return Mono.defer(
-            () -> Mono.fromCompletionStage(
-                cordaRpcClientService.executeFlow(PaymentInitiationFlow.class, request)
-                    .thenApply(it -> null)
-            )
-        );
+        return Mono.just(paymentRequest)
+            .map(it -> new PaymentInitiationRequest(
+                paymentRequest.getCreditorAccount(),
+                paymentRequest.getDebtorAccount(),
+                paymentRequest.getAmount()
+            ))
+            .flatMap(it -> Mono.defer(() -> Mono.fromCompletionStage(cordaRpcClientService.sendPayment(it))));
     }
 
     public Mono<List<PaymentState>> getPaymentStates() {
