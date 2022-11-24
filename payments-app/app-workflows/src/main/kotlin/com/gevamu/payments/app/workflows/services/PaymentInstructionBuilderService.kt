@@ -25,7 +25,12 @@ class PaymentInstructionBuilderService(
     private val serviceHub: AppServiceHub
 ) : SingletonSerializeAsToken() {
 
-    private val idGeneratorService = serviceHub.cordaService(IdGeneratorService::class.java)
+    private val idGeneratorService: IdGeneratorService
+        get() = serviceHub.cordaService(IdGeneratorService::class.java)
+
+    private val registrationService: RegistrationService
+        get() = serviceHub.cordaService(RegistrationService::class.java)
+
     private val objectFactory = ObjectFactory()
     private val datatypeFactory = DatatypeFactory.newInstance()
 
@@ -86,7 +91,7 @@ class PaymentInstructionBuilderService(
         val identification = createParticipantIdentification(debtor.account!!)
 
         val genericOrgId = objectFactory.createGenericOrganisationIdentification1()
-        genericOrgId.id = "123"/*FIXME it.participantId*/
+        genericOrgId.id = registrationService.getRegistration()?.participantId
         val orgId = objectFactory.createOrganisationIdentification29()
         orgId.othr.add(genericOrgId)
         val id = objectFactory.createParty38Choice()

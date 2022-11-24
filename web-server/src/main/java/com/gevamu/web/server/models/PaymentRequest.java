@@ -1,5 +1,6 @@
 package com.gevamu.web.server.models;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import javax.validation.constraints.DecimalMin;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Value
+@EqualsAndHashCode
 public class PaymentRequest {
     @NotBlank
     String creditorAccount;
