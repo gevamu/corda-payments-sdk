@@ -40,6 +40,10 @@ public class RegistrationControllerTest {
 
     private static final String PATH = "/api/v1/registration";
 
+    private static final String TEST_PARTICIPANT_ID = "test_p_id";
+    private static final String TEST_NETWORK_ID = "test_p_id";
+    private static final ParticipantRegistration registration = new ParticipantRegistration(TEST_PARTICIPANT_ID, TEST_NETWORK_ID);
+
     private transient RegistrationService registrationService;
 
     @Autowired
@@ -70,7 +74,6 @@ public class RegistrationControllerTest {
 
     @Test
     public void testGetRegistrationWhenRegistered() {
-        ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
         when(cordaRpcClientService.executeFlow(RegistrationRetrievalFlow.class))
             .thenReturn(CompletableFutures.completedStage(registration));
         webClient.get()
@@ -82,14 +85,13 @@ public class RegistrationControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .expectBody()
             .jsonPath("participantId")
-            .isEqualTo("test_p_id")
+            .isEqualTo(TEST_PARTICIPANT_ID)
             .jsonPath("networkId")
-            .isEqualTo("test_n_id");
+            .isEqualTo(TEST_NETWORK_ID);
     }
 
     @Test
     public void testPostRegistration() {
-        ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
         when(cordaRpcClientService.executeFlow(RegistrationInitiationFlow.class))
             .thenReturn(CompletableFutures.completedStage(registration));
         when(cordaRpcClientService.executeFlow(RegistrationRetrievalFlow.class))
@@ -103,8 +105,8 @@ public class RegistrationControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .expectBody()
             .jsonPath("participantId")
-            .isEqualTo("test_p_id")
+            .isEqualTo(TEST_PARTICIPANT_ID)
             .jsonPath("networkId")
-            .isEqualTo("test_n_id");
+            .isEqualTo(TEST_NETWORK_ID);
     }
 }
