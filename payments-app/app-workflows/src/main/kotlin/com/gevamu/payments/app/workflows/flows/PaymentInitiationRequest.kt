@@ -5,7 +5,7 @@ import java.math.BigDecimal
 import net.corda.core.serialization.CordaSerializable
 
 @CordaSerializable
-class PaymentInitiationRequest(
+data class PaymentInitiationRequest(
     val creditorAccount: String,
     val debtorAccount: String,
     val amount: BigDecimal
