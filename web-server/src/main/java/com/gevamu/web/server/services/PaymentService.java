@@ -16,8 +16,6 @@
 
 package com.gevamu.web.server.services;
 
-import com.gevamu.iso20022.pain.CreditTransferTransaction34;
-import com.gevamu.iso20022.pain.PaymentInstruction30;
 import com.gevamu.payments.app.contracts.states.PaymentDetails;
 import com.gevamu.payments.app.workflows.flows.PaymentInitiationRequest;
 import com.gevamu.states.Payment;
@@ -85,29 +83,6 @@ public class PaymentService {
                 .creditor(creditor)
                 .amount(details.getAmount())
                 .build();
-
         }).collect(Collectors.toList());
-    }
-
-    private ParticipantAccount deriveCreditor(CreditTransferTransaction34 transaction) {
-        String creditor = transaction.getCdtr().getNm();
-        String creditorAccount = transaction.getCdtrAcct().getId().getOthr().getId();
-        String creditorCurrency = transaction.getCdtrAcct().getCcy();
-        return ParticipantAccount.builder()
-            .accountId(creditorAccount)
-            .accountName(creditor)
-            .currency(creditorCurrency)
-            .build();
-    }
-
-    private ParticipantAccount deriveDebtor(PaymentInstruction30 paymentInstruction) {
-        String creditor = paymentInstruction.getDbtr().getNm();
-        String creditorAccount = paymentInstruction.getDbtrAcct().getId().getOthr().getId();
-        String creditorCurrency = paymentInstruction.getDbtrAcct().getCcy();
-        return ParticipantAccount.builder()
-            .accountId(creditorAccount)
-            .accountName(creditor)
-            .currency(creditorCurrency)
-            .build();
     }
 }
