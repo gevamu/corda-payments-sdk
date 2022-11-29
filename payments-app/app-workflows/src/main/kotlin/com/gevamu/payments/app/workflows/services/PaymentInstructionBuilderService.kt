@@ -11,7 +11,7 @@ import com.gevamu.iso20022.pain.PaymentMethod3Code
 import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Account
 import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Creditor
 import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Debtor
-import java.math.BigDecimal
+import com.gevamu.payments.app.workflows.flows.PaymentInitiationRequest
 import java.time.LocalDate
 import java.util.GregorianCalendar
 import javax.xml.datatype.DatatypeFactory
@@ -31,10 +31,15 @@ class PaymentInstructionBuilderService(
     private val registrationService: RegistrationService
         get() = serviceHub.cordaService(RegistrationService::class.java)
 
+    private val entityManagerService: EntityManagerService
+        get() = serviceHub.cordaService(EntityManagerService::class.java)
+
     private val objectFactory = ObjectFactory()
     private val datatypeFactory = DatatypeFactory.newInstance()
 
-    fun buildPaymentInstruction(amount: BigDecimal, debtor: Debtor, creditor: Creditor): CustomerCreditTransferInitiationV09 {
+    fun buildPaymentInstruction(request: PaymentInitiationRequest): CustomerCreditTransferInitiationV09 {
+        val creditor = entityManagerService.getCreditor(request.creditorAccount)
+        val debtor = entityManagerService.getDebtor(request.debtorAccount)
         val creditorIdentification = getParticipantIdentification(creditor)
         val debtorIdentification = getParticipantIdentification(debtor)
 
@@ -47,7 +52,7 @@ class PaymentInstructionBuilderService(
         cdtTrfTxInf.cdtrAgt = creditorIdentification.branchAndFinancialInstitutionIdentification
         val currencyAndAmount = objectFactory.createActiveOrHistoricCurrencyAndAmount()
         currencyAndAmount.ccy = creditorIdentification.cashAccount.ccy
-        currencyAndAmount.value = amount
+        currencyAndAmount.value = request.amount
         val amountType = objectFactory.createAmountType4Choice()
         amountType.instdAmt = currencyAndAmount
         cdtTrfTxInf.amt = amountType

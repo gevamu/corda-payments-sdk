@@ -13,6 +13,8 @@ import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Country
 import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Creditor
 import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Currency
 import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Debtor
+import com.gevamu.payments.app.workflows.flows.PaymentInitiationRequest
+import com.gevamu.payments.app.workflows.services.EntityManagerService
 import com.gevamu.payments.app.workflows.services.PaymentInstructionBuilderService
 import com.gevamu.payments.app.workflows.services.RegistrationService
 import java.math.BigDecimal
@@ -33,13 +35,20 @@ class PaymentInstructionBuilderServiceTest {
         val registration = ParticipantRegistration("test_p_id", "test_n_id")
         val registrationService = services.cordaService(RegistrationService::class.java)
         doReturn(registration).`when`(registrationService).getRegistration()
+
+        val creditor = createCreditor()
+        val debtor = createDebtor()
+        val entityManagerService = services.cordaService(EntityManagerService::class.java)
+        doReturn(creditor).`when`(entityManagerService).getCreditor(creditor.account!!.account!!)
+        doReturn(debtor).`when`(entityManagerService).getDebtor(debtor.account!!.account!!)
+        doReturn(creditor.account!!.currency!!).`when`(entityManagerService).getCurrency(creditor.account!!.currency!!.isoCode!!)
+        doReturn(debtor.account!!.currency!!).`when`(entityManagerService).getCurrency(debtor.account!!.currency!!.isoCode!!)
     }
 
     @Test
     fun test() {
-        val creditorEntity = createCreditor()
-        val debtorEntity = createDebtor()
-        val result = paymentInstructionBuilderService.buildPaymentInstruction(BigDecimal.TEN, debtorEntity, creditorEntity)
+        val request = PaymentInitiationRequest("test_creditor_account", "test_debtor_account", BigDecimal.TEN)
+        val result = paymentInstructionBuilderService.buildPaymentInstruction(request)
 
         assertThat(result).isNotNull
 

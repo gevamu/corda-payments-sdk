@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - include:
+      file: migration/payment-details-v1/0001-init.yml

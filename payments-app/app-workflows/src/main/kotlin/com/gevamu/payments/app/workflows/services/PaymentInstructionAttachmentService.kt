@@ -1,9 +1,7 @@
 package com.gevamu.payments.app.workflows.services
 
-import com.gevamu.iso20022.pain.CreditTransferTransaction34
 import com.gevamu.iso20022.pain.CustomerCreditTransferInitiationV09
 import com.gevamu.iso20022.pain.PaymentInstruction30
-import com.gevamu.payments.app.contracts.states.ParticipantAccountDetails
 import com.gevamu.payments.app.contracts.states.PaymentDetails
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -41,6 +39,8 @@ class PaymentInstructionAttachmentService(
     }
 
     fun getPaymentDetails(entity: CustomerCreditTransferInitiationV09): PaymentDetails {
+        val entityManagerService = serviceHub.cordaService(EntityManagerService::class.java)
+
         val creationTime: Instant = entity.grpHdr
             .creDtTm
             .toGregorianCalendar()
@@ -53,9 +53,9 @@ class PaymentInstructionAttachmentService(
                 val transaction = paymentInstruction.cdtTrfTxInf[0]
                 val endToEndId = transaction.pmtId.endToEndId
                 val amount = transaction.amt.instdAmt.value
-                val currency = transaction.amt.instdAmt.ccy
-                val creditor = deriveCreditor(transaction)
-                val debtor = deriveDebtor(paymentInstruction)
+                val currency = entityManagerService.getCurrency(transaction.amt.instdAmt.ccy)
+                val creditor = entityManagerService.getCreditor(transaction.cdtrAcct.id.othr.id)
+                val debtor = entityManagerService.getDebtor(paymentInstruction.dbtrAcct.id.othr.id)
 
                 return PaymentDetails(
                     creationTime = creationTime,
@@ -69,28 +69,6 @@ class PaymentInstructionAttachmentService(
         }
 
         throw IllegalStateException("Malformed XML attachment")
-    }
-
-    private fun deriveCreditor(transaction: CreditTransferTransaction34): ParticipantAccountDetails {
-        val creditor = transaction.cdtr.nm
-        val creditorAccount = transaction.cdtrAcct.id.othr.id
-        val creditorCurrency = transaction.cdtrAcct.ccy
-        return ParticipantAccountDetails(
-            accountId = creditor,
-            accountName = creditorAccount,
-            currency = creditorCurrency
-        )
-    }
-
-    private fun deriveDebtor(paymentInstruction: PaymentInstruction30): ParticipantAccountDetails {
-        val debtor = paymentInstruction.dbtr.nm
-        val debtorAccount = paymentInstruction.dbtrAcct.id.othr.id
-        val debtorCurrency = paymentInstruction.dbtrAcct.ccy
-        return ParticipantAccountDetails(
-            accountId = debtor,
-            accountName = debtorAccount,
-            currency = debtorCurrency
-        )
     }
 
     private fun unzip(inputStream: InputStream): ByteArray {
