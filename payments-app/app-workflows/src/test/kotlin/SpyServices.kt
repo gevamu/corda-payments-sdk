@@ -1,4 +1,5 @@
 
+import com.gevamu.payments.app.workflows.services.EntityManagerService
 import com.gevamu.payments.app.workflows.services.IdGeneratorService
 import com.gevamu.payments.app.workflows.services.PaymentInstructionBuilderService
 import com.gevamu.payments.app.workflows.services.RegistrationService
@@ -14,6 +15,7 @@ class SpyServices(
         createMockCordaService(services) { spy(RegistrationService(it)) }
         createMockCordaService(services) { spy(PaymentInstructionBuilderService(it)) }
         createMockCordaService(services) { spy(IdGeneratorService(it)) }
+        createMockCordaService(services) { spy(EntityManagerService(it)) }
     }
 
     fun <T : SerializeAsToken> cordaService(type: Class<T>): T = services.cordaService(type)
