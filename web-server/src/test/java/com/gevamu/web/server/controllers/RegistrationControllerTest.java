@@ -17,8 +17,6 @@
 package com.gevamu.web.server.controllers;
 
 import com.gevamu.flows.ParticipantRegistration;
-import com.gevamu.payments.app.workflows.flows.RegistrationInitiationFlow;
-import com.gevamu.payments.app.workflows.flows.RegistrationRetrievalFlow;
 import com.gevamu.web.server.services.CordaRpcClientService;
 import com.gevamu.web.server.services.RegistrationService;
 import com.gevamu.web.server.util.CompletableFutures;
@@ -44,6 +42,7 @@ public class RegistrationControllerTest {
     private static final String TEST_NETWORK_ID = "test_p_id";
     private static final ParticipantRegistration registration = new ParticipantRegistration(TEST_PARTICIPANT_ID, TEST_NETWORK_ID);
 
+    @Autowired
     private transient RegistrationService registrationService;
 
     @Autowired
@@ -59,7 +58,7 @@ public class RegistrationControllerTest {
 
     @Test
     public void testGetRegistrationWhenNotRegistered() {
-        when(cordaRpcClientService.executeFlow(RegistrationRetrievalFlow.class))
+        when(cordaRpcClientService.getRegistration())
             .thenReturn(CompletableFutures.completedStage(null));
         webClient.get()
             .uri(PATH)
@@ -74,7 +73,7 @@ public class RegistrationControllerTest {
 
     @Test
     public void testGetRegistrationWhenRegistered() {
-        when(cordaRpcClientService.executeFlow(RegistrationRetrievalFlow.class))
+        when(cordaRpcClientService.getRegistration())
             .thenReturn(CompletableFutures.completedStage(registration));
         webClient.get()
             .uri(PATH)
@@ -92,9 +91,9 @@ public class RegistrationControllerTest {
 
     @Test
     public void testPostRegistration() {
-        when(cordaRpcClientService.executeFlow(RegistrationInitiationFlow.class))
+        when(cordaRpcClientService.register())
             .thenReturn(CompletableFutures.completedStage(registration));
-        when(cordaRpcClientService.executeFlow(RegistrationRetrievalFlow.class))
+        when(cordaRpcClientService.getRegistration())
             .thenReturn(CompletableFutures.completedStage(null));
         webClient.post()
             .uri(PATH)

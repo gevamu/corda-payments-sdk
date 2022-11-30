@@ -1,6 +1,9 @@
 package com.gevamu.payments.app.contracts.schemas
 
+import com.gevamu.payments.app.contracts.states.PaymentDetails
 import java.io.Serializable
+import java.math.BigDecimal
+import java.time.Instant
 import java.time.LocalDate
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -9,16 +12,26 @@ import javax.persistence.JoinColumn
 import javax.persistence.OneToOne
 import javax.persistence.Table
 import net.corda.core.schemas.MappedSchema
+import net.corda.core.schemas.PersistentState
 import net.corda.core.serialization.CordaSerializable
 
-object AccountSchema
+object AppSchema
 
 @CordaSerializable
-class AccountSchemaV1 : MappedSchema(
-    schemaFamily = AccountSchema::class.java,
-    mappedTypes = listOf(Account::class.java, Debtor::class.java, Creditor::class.java, Currency::class.java, Country::class.java, Registration::class.java),
+object AppSchemaV1 : MappedSchema(
+    schemaFamily = AppSchema::class.java,
+    mappedTypes = listOf(
+        Account::class.java,
+        Debtor::class.java,
+        Creditor::class.java,
+        Currency::class.java,
+        Country::class.java,
+        Registration::class.java,
+        PersistentPaymentDetails::class.java),
     version = 1
 ), Serializable {
+
+    private const val serialVersionUID = 1L
 
     @CordaSerializable
     @Entity(name = "Account")
@@ -130,7 +143,48 @@ class AccountSchemaV1 : MappedSchema(
         }
     }
 
-    companion object {
-        private const val serialVersionUID = 1L;
+    @CordaSerializable
+    @Entity(name = "PaymentDetails")
+    @Table(name = "payment_details")
+    class PersistentPaymentDetails(
+
+        @Column(name = "id", nullable = false)
+        var id: String? = null,
+
+        @Column(name = "creationTime", nullable = false)
+        var creationTime: Instant? = null,
+
+        @Column(name = "endToEndId", nullable = false)
+        var endToEndId: String? = null,
+
+        @Column(name = "amount", nullable = false)
+        var amount: BigDecimal? = null,
+
+        @OneToOne
+        @JoinColumn(name = "currency", referencedColumnName = "isoCode", nullable = false)
+        var currency: Currency? = null,
+
+        @OneToOne
+        @JoinColumn(name = "creditor", referencedColumnName = "account")
+        var creditor: Creditor? = null,
+
+        @OneToOne
+        @JoinColumn(name = "debtor", referencedColumnName = "account")
+        var debtor: Debtor? = null
+    ) : Serializable, PersistentState() {
+
+        constructor(id: String, paymentDetails: PaymentDetails) : this(
+            id = id,
+            creationTime = paymentDetails.creationTime,
+            endToEndId = paymentDetails.endToEndId,
+            amount = paymentDetails.amount,
+            currency = paymentDetails.currency,
+            creditor = paymentDetails.creditor,
+            debtor = paymentDetails.debtor
+        )
+
+        companion object {
+            private const val serialVersionUID = 1L
+        }
     }
 }

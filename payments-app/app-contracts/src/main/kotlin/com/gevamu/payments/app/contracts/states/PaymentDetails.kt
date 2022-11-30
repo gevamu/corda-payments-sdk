@@ -1,11 +1,11 @@
 package com.gevamu.payments.app.contracts.states
 
 import com.gevamu.payments.app.contracts.contracts.PaymentInitiationContract
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Creditor
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Currency
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Debtor
-import com.gevamu.payments.app.contracts.schemas.PaymentDetailsSchemaV1
-import com.gevamu.payments.app.contracts.schemas.PaymentDetailsSchemaV1.PersistentPaymentDetails
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Creditor
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Currency
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Debtor
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.PersistentPaymentDetails
 import java.io.Serializable
 import java.math.BigDecimal
 import java.time.Instant
@@ -25,14 +25,12 @@ class PaymentDetailsState(
 
     override fun generateMappedObject(schema: MappedSchema): PersistentState {
         return when (schema) {
-            is PaymentDetailsSchemaV1 -> PersistentPaymentDetails(id, paymentDetails)
+            is AppSchemaV1 -> PersistentPaymentDetails(id, paymentDetails)
             else -> throw IllegalArgumentException("Unrecognised schema $schema")
         }
     }
 
-    override fun supportedSchemas(): Iterable<MappedSchema> {
-        TODO("Not yet implemented")
-    }
+    override fun supportedSchemas(): Iterable<MappedSchema> = listOf(AppSchemaV1)
 }
 
 @CordaSerializable

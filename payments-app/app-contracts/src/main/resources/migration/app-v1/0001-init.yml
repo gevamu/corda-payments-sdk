@@ -4,4 +4,4 @@ databaseChangeLog:
       author: Exactpro Systems LLC
       changes:
         - sqlFile:
-            path: migration/account-v1/sql/0001-init.sql
+            path: migration/app-v1/sql/0001-init.sql

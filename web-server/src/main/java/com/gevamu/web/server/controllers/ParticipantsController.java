@@ -16,7 +16,7 @@
 
 package com.gevamu.web.server.controllers;
 
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1;
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1;
 import com.gevamu.web.server.models.ParticipantAccount;
 import com.gevamu.web.server.models.ParticipantAccountResponse;
 import com.gevamu.web.server.services.ParticipantService;
@@ -59,7 +59,7 @@ public class ParticipantsController {
             .map(this::toResponse);
     }
 
-    private ParticipantAccountResponse toResponse(List<? extends AccountSchemaV1.Account> accounts) {
+    private ParticipantAccountResponse toResponse(List<? extends AppSchemaV1.Account> accounts) {
         List<ParticipantAccount> participantAccounts = accounts.stream()
             .map(it -> ParticipantAccount.builder()
                 .accountId(it.getAccount())

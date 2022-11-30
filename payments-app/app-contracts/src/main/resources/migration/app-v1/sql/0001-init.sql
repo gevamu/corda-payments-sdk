@@ -34,6 +34,19 @@ CREATE TABLE registration (
     PRIMARY KEY (participantId)
 );
 
+CREATE TABLE payment_details (
+    transaction_id VARCHAR(144) NOT NULL,
+    output_index INT NOT NULL,
+    id VARCHAR(64) NOT NULL,
+    creationTime TIMESTAMP NOT NULL,
+    endToEndId VARCHAR(64) NOT NULL,
+    amount NUMERIC(20, 2) NOT NULL,
+    currency VARCHAR(3) NOT NULL REFERENCES currency(isoCode),
+    creditor VARCHAR(64) NOT NULL REFERENCES creditor(account),
+    debtor VARCHAR(64) NOT NULL REFERENCES debtor(account),
+    PRIMARY KEY (id)
+);
+
 INSERT INTO country (isoCodeAlpha2)
 VALUES
 ('CN'),

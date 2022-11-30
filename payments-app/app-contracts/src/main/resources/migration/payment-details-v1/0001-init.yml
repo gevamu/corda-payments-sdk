@@ -1,7 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: createTable-payment-details
-      author: Exactpro Systems LLC
-      changes:
-        - sqlFile:
-            path: migration/payment-details-v1/sql/0001-init.sql

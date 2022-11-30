@@ -19,8 +19,7 @@ package com.gevamu.web.server.services;
 import com.gevamu.flows.ParticipantRegistration;
 import com.gevamu.flows.PaymentFlow;
 import com.gevamu.flows.PaymentInstruction;
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1;
-import com.gevamu.payments.app.contracts.states.PaymentDetails;
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1;
 import com.gevamu.payments.app.contracts.states.PaymentDetailsState;
 import com.gevamu.payments.app.workflows.flows.CreditorRetrievalFlow;
 import com.gevamu.payments.app.workflows.flows.DebtorRetrievalFlow;
@@ -30,6 +29,8 @@ import com.gevamu.payments.app.workflows.flows.RegistrationInitiationFlow;
 import com.gevamu.payments.app.workflows.flows.RegistrationRetrievalFlow;
 import com.gevamu.states.Payment;
 import com.gevamu.web.server.config.CordaRpcClientConnection;
+import com.gevamu.web.server.models.ParticipantAccount;
+import com.gevamu.web.server.models.PaymentState;
 import com.gevamu.web.server.util.MoreCollectors;
 import lombok.NonNull;
 import net.corda.client.rpc.CordaRPCClient;
@@ -88,11 +89,11 @@ public class CordaRpcClientService implements AutoCloseable {
             .thenApply(it -> null);
     }
 
-    public CompletionStage<List<? extends AccountSchemaV1.Account>> getCreditors() {
+    public CompletionStage<List<? extends AppSchemaV1.Account>> getCreditors() {
         return executeFlow(CreditorRetrievalFlow.class);
     }
 
-    public CompletionStage<List<? extends AccountSchemaV1.Account>> getDebtors() {
+    public CompletionStage<List<? extends AppSchemaV1.Account>> getDebtors() {
         return executeFlow(DebtorRetrievalFlow.class);
     }
 
@@ -119,21 +120,34 @@ public class CordaRpcClientService implements AutoCloseable {
             .toCompletableFuture();
     }
 
-    public List<PaymentDetails> getPaymentDetails() {
+    public List<PaymentState> getPaymentStates() {
         return proxy.vaultQuery(PaymentDetailsState.class)
             .getStates()
             .stream()
             .map(it -> it.getState().getData().getPaymentDetails())
+            .map(it -> PaymentState.builder()
+                .paymentId(it.getEndToEndId())//fixme
+                .endToEndId(it.getEndToEndId())
+                .status(Payment.PaymentStatus.CREATED)//fixme
+                .debtor(ParticipantAccount.fromDebtor(it.getDebtor()))
+                .creditor(ParticipantAccount.fromCreditor(it.getCreditor()))
+                .currency(it.getCurrency().getIsoCode())
+                .amount(it.getAmount())
+                .creationTime(it.getCreationTime())
+                .updateTime(it.getCreationTime())
+                .build()
+            )
             .collect(MoreCollectors.toUnmodifiableList());
     }
 
-    public List<Payment> getPayments() {
+    //todo remove
+    /*public List<Payment> getPayments() {
         return proxy.vaultQuery(Payment.class)
             .getStates()
             .stream()
             .map(it -> it.getState().getData())
             .collect(MoreCollectors.toUnmodifiableList());
-    }
+    }*/
 
     @Deprecated
     public byte[] getAttachedPaymentInstruction(@NonNull SecureHash attachmentId) {

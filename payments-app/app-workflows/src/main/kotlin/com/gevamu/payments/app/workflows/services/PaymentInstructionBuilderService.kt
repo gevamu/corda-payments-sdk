@@ -8,9 +8,9 @@ import com.gevamu.iso20022.pain.GroupHeader85
 import com.gevamu.iso20022.pain.ObjectFactory
 import com.gevamu.iso20022.pain.PartyIdentification135
 import com.gevamu.iso20022.pain.PaymentMethod3Code
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Account
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Creditor
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Debtor
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Account
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Creditor
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Debtor
 import com.gevamu.payments.app.workflows.flows.PaymentInitiationRequest
 import java.time.LocalDate
 import java.util.GregorianCalendar
