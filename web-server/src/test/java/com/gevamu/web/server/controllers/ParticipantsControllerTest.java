@@ -1,8 +1,6 @@
 package com.gevamu.web.server.controllers;
 
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1;
-import com.gevamu.payments.app.workflows.flows.CreditorRetrievalFlow;
-import com.gevamu.payments.app.workflows.flows.DebtorRetrievalFlow;
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1;
 import com.gevamu.web.server.services.CordaRpcClientService;
 import com.gevamu.web.server.util.CompletableFutures;
 import org.junit.jupiter.api.Test;
@@ -32,8 +30,8 @@ public class ParticipantsControllerTest {
 
     @Test
     public void testCreditors() {
-        List<AccountSchemaV1.Account> creditors = createCreditors();
-        when(cordaRpcClientService.executeFlow(CreditorRetrievalFlow.class))
+        List<AppSchemaV1.Account> creditors = createCreditors();
+        when(cordaRpcClientService.getCreditors())
             .thenReturn(CompletableFutures.completedStage(creditors));
         webClient.get()
             .uri(PATH + "/creditors")
@@ -57,8 +55,8 @@ public class ParticipantsControllerTest {
 
     @Test
     public void testDebtors() {
-        List<AccountSchemaV1.Account> debtors = createDebtors();
-        when(cordaRpcClientService.executeFlow(DebtorRetrievalFlow.class))
+        List<AppSchemaV1.Account> debtors = createDebtors();
+        when(cordaRpcClientService.getDebtors())
             .thenReturn(CompletableFutures.completedStage(debtors));
         webClient.get()
             .uri(PATH + "/debtors")
@@ -80,21 +78,21 @@ public class ParticipantsControllerTest {
             .isEqualTo("test_debtor_currency");
     }
 
-    private List<AccountSchemaV1.Account> createCreditors() {
-        AccountSchemaV1.Account account = new AccountSchemaV1.Account();
+    private List<AppSchemaV1.Account> createCreditors() {
+        AppSchemaV1.Account account = new AppSchemaV1.Account();
         account.setBic("test_creditor_bic");
-        account.setCountry(new AccountSchemaV1.Country("test_creditor_country"));
-        account.setCurrency(new AccountSchemaV1.Currency("test_creditor_currency"));
+        account.setCountry(new AppSchemaV1.Country("test_creditor_country"));
+        account.setCurrency(new AppSchemaV1.Currency("test_creditor_currency"));
         account.setAccount("test_creditor_account");
         account.setAccountName("test_creditor_accountName");
         return Collections.singletonList(account);
     }
 
-    private List<AccountSchemaV1.Account> createDebtors() {
-        AccountSchemaV1.Account account = new AccountSchemaV1.Account();
+    private List<AppSchemaV1.Account> createDebtors() {
+        AppSchemaV1.Account account = new AppSchemaV1.Account();
         account.setBic("test_debtor_bic");
-        account.setCountry(new AccountSchemaV1.Country("test_debtor_country"));
-        account.setCurrency(new AccountSchemaV1.Currency("test_debtor_currency"));
+        account.setCountry(new AppSchemaV1.Country("test_debtor_country"));
+        account.setCurrency(new AppSchemaV1.Currency("test_debtor_currency"));
         account.setAccount("test_debtor_account");
         account.setAccountName("test_debtor_accountName");
         return Collections.singletonList(account);

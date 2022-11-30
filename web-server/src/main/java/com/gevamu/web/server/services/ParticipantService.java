@@ -1,6 +1,6 @@
 package com.gevamu.web.server.services;
 
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1;
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +13,11 @@ public class ParticipantService {
     @Autowired
     private transient CordaRpcClientService cordaRpcClientService;
 
-    public CompletionStage<List<? extends AccountSchemaV1.Account>> getCreditors() {
+    public CompletionStage<List<? extends AppSchemaV1.Account>> getCreditors() {
         return cordaRpcClientService.getCreditors();
     }
 
-    public CompletionStage<List<? extends AccountSchemaV1.Account>> getDebtors() {
+    public CompletionStage<List<? extends AppSchemaV1.Account>> getDebtors() {
         return cordaRpcClientService.getDebtors();
     }
 }

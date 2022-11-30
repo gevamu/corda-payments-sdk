@@ -1,7 +1,7 @@
 package com.gevamu.payments.app.workflows.services
 
 import com.gevamu.flows.ParticipantRegistration
-import com.gevamu.payments.app.contracts.schemas.AccountSchemaV1.Registration
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Registration
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken

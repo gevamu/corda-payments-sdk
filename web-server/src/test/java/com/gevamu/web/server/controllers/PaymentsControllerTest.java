@@ -70,7 +70,7 @@ public class PaymentsControllerTest {
 
     @Test
     public void testGetPaymentStates() {
-        when(cordaRpcClientService.getPayments())
+        when(cordaRpcClientService.getPaymentStates())
             .thenReturn(Collections.emptyList());
 
         webClient.get()
