@@ -23,7 +23,7 @@ import javax.xml.namespace.QName
 open class XmlService protected constructor(
     protected val serviceHub: AppServiceHub, xmlClasses: List<Class<*>>
 ) : SingletonSerializeAsToken() {
-    protected val jaxbContext: JAXBContext = JAXBContext.newInstance(
+    protected val isoJaxbContext: JAXBContext = JAXBContext.newInstance(
         *(listOf<Class<*>>(CustomerCreditTransferInitiationV09::class.java) + xmlClasses).toTypedArray()
     )
 
@@ -40,7 +40,7 @@ open class XmlService protected constructor(
     }
 
     private fun toXmlBytes(paymentInstruction: CustomerCreditTransferInitiationV09): ByteArray {
-        val marshaller = jaxbContext.createMarshaller()
+        val marshaller = isoJaxbContext.createMarshaller()
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
         val outputStream = ByteArrayOutputStream()
         marshaller.marshal(
