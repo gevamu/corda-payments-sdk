@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: createTable-account
+      id: init-app-schema
       author: Exactpro Systems LLC
       changes:
         - sqlFile:
