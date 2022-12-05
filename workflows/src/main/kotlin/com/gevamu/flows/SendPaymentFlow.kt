@@ -2,8 +2,10 @@ package com.gevamu.flows
 
 import co.paralleluniverse.fibers.Suspendable
 import com.gevamu.contracts.PaymentContract
+import com.gevamu.schema.PaymentSchemaV1
 import com.gevamu.states.Payment
-import net.corda.core.contracts.UniqueIdentifier
+import java.time.Instant
+import java.util.UUID
 import net.corda.core.flows.CollectSignaturesFlow
 import net.corda.core.flows.FinalityFlow
 import net.corda.core.flows.FlowLogic
@@ -11,26 +13,32 @@ import net.corda.core.flows.FlowSession
 import net.corda.core.flows.InitiatingFlow
 import net.corda.core.flows.StartableByService
 import net.corda.core.node.services.Vault
+import net.corda.core.node.services.queryBy
 import net.corda.core.node.services.vault.QueryCriteria
+import net.corda.core.node.services.vault.builder
 import net.corda.core.transactions.TransactionBuilder
-import net.corda.core.utilities.ProgressTracker
-import java.time.Instant
 
 @InitiatingFlow
 @StartableByService
-class SendPaymentFlow(private val paymentId: UniqueIdentifier) : FlowLogic<Unit>() {
-    override val progressTracker = ProgressTracker()
-
+class SendPaymentFlow(private val uniquePaymentId: UUID) : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
-        // Get payment from the vault
-        val inputCriteria: QueryCriteria.LinearStateQueryCriteria = QueryCriteria.LinearStateQueryCriteria()
-            .withUuid(listOf(paymentId.id))
-            // Shouldn't be archived
-            .withStatus(Vault.StateStatus.UNCONSUMED)
-            // Payer should be a participant
-            .withRelevancyStatus(Vault.RelevancyStatus.RELEVANT)
-        val paymentStateAndRef = serviceHub.vaultService.queryBy(Payment::class.java, inputCriteria).states.first()
+        logger.debug("Send payment id=$uniquePaymentId")
+        val paymentStateAndRef = builder {
+            // Find all active Payments for the given ID using its JPA entity
+            val criteria = QueryCriteria.VaultCustomQueryCriteria(
+                expression = PaymentSchemaV1.PersistentPayment::uniquePaymentId.equal(uniquePaymentId),
+                // Do not use archived consumed states
+                // Because we will use the newest Payment state as input
+                status = Vault.StateStatus.UNCONSUMED,
+                // Payer node is a participant
+                relevancyStatus = Vault.RelevancyStatus.RELEVANT,
+            )
+            // TODO Check that only one is returned
+            //      and status is CREATED or add status to the query criteria
+            serviceHub.vaultService.queryBy<Payment>(criteria).states.first()
+        }
+        logger.debug("Found payment stateAndRef=$paymentStateAndRef")
 
         // Mutate it to change status and timestamp
         val payment = paymentStateAndRef.state.data.copy(
@@ -54,6 +62,7 @@ class SendPaymentFlow(private val paymentId: UniqueIdentifier) : FlowLogic<Unit>
 
         // Notify gateway about incoming payment tx
         val gatewaySession: FlowSession = initiateFlow(gateway)
+        logger.debug("initiateFlow(gateway)")
 
         // Expect gateway to sign the transaction
         val fullySignedTransaction = subFlow(CollectSignaturesFlow(partiallySignedTransaction, listOf(gatewaySession)))
