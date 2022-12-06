@@ -10,6 +10,7 @@ group = rootProject.group
 
 kotlinter {
     ignoreFailures = false
+    disabledRules = arrayOf("import-ordering")
 }
 
 tasks {
