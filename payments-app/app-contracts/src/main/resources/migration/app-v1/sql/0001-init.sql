@@ -37,7 +37,7 @@ CREATE TABLE registration (
 CREATE TABLE payment_details (
     transaction_id VARCHAR(144) NOT NULL,
     output_index INT NOT NULL,
-    id VARCHAR(64) NOT NULL,
+    id UUID NOT NULL,
     creationTime TIMESTAMP NOT NULL,
     endToEndId VARCHAR(64) NOT NULL,
     amount NUMERIC(20, 2) NOT NULL,
