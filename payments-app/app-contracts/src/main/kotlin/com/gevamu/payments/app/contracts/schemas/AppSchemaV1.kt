@@ -37,36 +37,35 @@ object AppSchemaV1 : MappedSchema(
     @CordaSerializable
     @Entity(name = "Account")
     @Table(name = "account")
-    class Account(
+    class Account : Serializable {
 
         @Id
         @Column(name = "account")
-        var account: String? = null,
+        lateinit var account: String
 
-        @Column(name = "accountName", nullable = false)
-        var accountName: String? = null,
+        @Column(name = "account_name", nullable = false)
+        lateinit var accountName: String
 
         @Column(name = "bic", nullable = false)
-        var bic: String? = null,
+        lateinit var bic: String
 
         @OneToOne
-        @JoinColumn(name = "country", referencedColumnName = "isoCodeAlpha2", nullable = false)
-        var country: Country? = null,
+        @JoinColumn(name = "country", referencedColumnName = "iso_code_alpha2", nullable = false)
+        lateinit var country: Country
 
         @OneToOne
-        @JoinColumn(name = "currency", referencedColumnName = "isoCode", nullable = false)
-        var currency: Currency? = null,
+        @JoinColumn(name = "currency", referencedColumnName = "iso_code", nullable = false)
+        lateinit var currency: Currency
 
-        @Column(name = "effectiveDate", nullable = false)
-        var effectiveDate: LocalDate? = null,
+        @Column(name = "effective_date", nullable = false)
+        lateinit var effectiveDate: LocalDate
 
-        @Column(name = "expiryDate", nullable = false)
-        var expiryDate: LocalDate? = null,
+        @Column(name = "expiry_date", nullable = false)
+        lateinit var expiryDate: LocalDate
 
-        @Column(name = "paymentLimit", nullable = false)
-        var paymentLimit: Int? = null
+        @Column(name = "payment_limit", nullable = false)
+        var paymentLimit: Int = 0
 
-    ) : Serializable {
         companion object {
             private const val serialVersionUID = 1L
         }
@@ -75,12 +74,13 @@ object AppSchemaV1 : MappedSchema(
     @CordaSerializable
     @Entity(name = "Debtor")
     @Table(name = "debtor")
-    class Debtor(
+    class Debtor : Serializable {
+
         @Id
         @OneToOne
         @JoinColumn(name = "account", referencedColumnName = "account")
-        var account: Account? = null
-    ) : Serializable {
+        lateinit var account: Account
+
         companion object {
             private const val serialVersionUID = 1L
         }
@@ -89,12 +89,13 @@ object AppSchemaV1 : MappedSchema(
     @CordaSerializable
     @Entity(name = "Creditor")
     @Table(name = "creditor")
-    class Creditor(
+    class Creditor : Serializable {
+
         @Id
         @OneToOne
         @JoinColumn(name = "account", referencedColumnName = "account")
-        var account: Account? = null
-    ) : Serializable {
+        lateinit var account: Account
+
         companion object {
             private const val serialVersionUID = 1L
         }
@@ -103,11 +104,12 @@ object AppSchemaV1 : MappedSchema(
     @CordaSerializable
     @Entity(name = "Currency")
     @Table(name = "currency")
-    class Currency(
+    class Currency : Serializable {
+
         @Id
-        @Column(name = "isoCode", length = 3)
-        var isoCode: String? = null
-    ) : Serializable {
+        @Column(name = "iso_code", length = 3)
+        lateinit var isoCode: String
+
         companion object {
             private const val serialVersionUID = 1L
         }
@@ -116,11 +118,12 @@ object AppSchemaV1 : MappedSchema(
     @CordaSerializable
     @Entity(name = "Country")
     @Table(name = "country")
-    class Country(
+    class Country : Serializable {
+
         @Id
-        @Column(name = "isoCodeAlpha2", length = 2)
-        var isoCodeAlpha2: String? = null
-    ) : Serializable {
+        @Column(name = "iso_code_alpha2", length = 2)
+        lateinit var isoCodeAlpha2: String
+
         companion object {
             private const val serialVersionUID = 1L
         }
@@ -129,16 +132,15 @@ object AppSchemaV1 : MappedSchema(
     @CordaSerializable
     @Entity(name = "Registration")
     @Table(name = "registration")
-    class Registration(
+    class Registration : Serializable {
 
         @Id
-        @Column(name = "participantId")
-        var participantId: String? = null,
+        @Column(name = "participant_id")
+        lateinit var participantId: String
 
-        @Column(name = "networkId", nullable = false)
-        var networkId: String? = null
+        @Column(name = "network_id", nullable = false)
+        lateinit var networkId: String
 
-    ) : Serializable {
         companion object {
             private const val serialVersionUID = 1L
         }
@@ -147,42 +149,41 @@ object AppSchemaV1 : MappedSchema(
     @CordaSerializable
     @Entity(name = "PaymentDetails")
     @Table(name = "payment_details")
-    class PersistentPaymentDetails(
+    class PersistentPaymentDetails private constructor() : Serializable, PersistentState() {
 
         @Column(name = "id", nullable = false)
-        var id: UUID? = null,
+        lateinit var id: UUID
 
-        @Column(name = "creationTime", nullable = false)
-        var creationTime: Instant? = null,
+        @Column(name = "creation_time", nullable = false)
+        lateinit var creationTime: Instant
 
-        @Column(name = "endToEndId", nullable = false)
-        var endToEndId: String? = null,
+        @Column(name = "end_to_end_id", nullable = false)
+        lateinit var endToEndId: String
 
         @Column(name = "amount", nullable = false)
-        var amount: BigDecimal? = null,
+        lateinit var amount: BigDecimal
 
         @OneToOne
-        @JoinColumn(name = "currency", referencedColumnName = "isoCode", nullable = false)
-        var currency: Currency? = null,
+        @JoinColumn(name = "currency", referencedColumnName = "iso_code", nullable = false)
+        lateinit var currency: Currency
 
         @OneToOne
         @JoinColumn(name = "creditor", referencedColumnName = "account")
-        var creditor: Creditor? = null,
+        lateinit var creditor: Creditor
 
         @OneToOne
         @JoinColumn(name = "debtor", referencedColumnName = "account")
-        var debtor: Debtor? = null
-    ) : Serializable, PersistentState() {
+        lateinit var debtor: Debtor
 
-        constructor(id: UUID, paymentDetails: PaymentDetails) : this(
-            id = id,
-            creationTime = paymentDetails.creationTime,
-            endToEndId = paymentDetails.endToEndId,
-            amount = paymentDetails.amount,
-            currency = paymentDetails.currency,
-            creditor = paymentDetails.creditor,
-            debtor = paymentDetails.debtor
-        )
+        constructor(id: UUID, paymentDetails: PaymentDetails) : this() {
+            this.id = id
+            this.creationTime = paymentDetails.creationTime
+            this.endToEndId = paymentDetails.endToEndId
+            this.amount = paymentDetails.amount
+            this.currency = paymentDetails.currency
+            this.creditor = paymentDetails.creditor
+            this.debtor = paymentDetails.debtor
+        }
 
         companion object {
             private const val serialVersionUID = 1L

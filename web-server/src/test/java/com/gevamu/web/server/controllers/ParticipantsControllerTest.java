@@ -79,20 +79,28 @@ public class ParticipantsControllerTest {
     }
 
     private List<AppSchemaV1.Account> createCreditors() {
+        AppSchemaV1.Country country = new AppSchemaV1.Country();
+        country.setIsoCodeAlpha2("test_creditor_country");
+        AppSchemaV1.Currency currency = new AppSchemaV1.Currency();
+        currency.setIsoCode("test_creditor_currency");
         AppSchemaV1.Account account = new AppSchemaV1.Account();
         account.setBic("test_creditor_bic");
-        account.setCountry(new AppSchemaV1.Country("test_creditor_country"));
-        account.setCurrency(new AppSchemaV1.Currency("test_creditor_currency"));
+        account.setCountry(country);
+        account.setCurrency(currency);
         account.setAccount("test_creditor_account");
         account.setAccountName("test_creditor_accountName");
         return Collections.singletonList(account);
     }
 
     private List<AppSchemaV1.Account> createDebtors() {
+        AppSchemaV1.Country country = new AppSchemaV1.Country();
+        country.setIsoCodeAlpha2("test_debtor_country");
+        AppSchemaV1.Currency currency = new AppSchemaV1.Currency();
+        currency.setIsoCode("test_debtor_currency");
         AppSchemaV1.Account account = new AppSchemaV1.Account();
         account.setBic("test_debtor_bic");
-        account.setCountry(new AppSchemaV1.Country("test_debtor_country"));
-        account.setCurrency(new AppSchemaV1.Currency("test_debtor_currency"));
+        account.setCountry(country);
+        account.setCurrency(currency);
         account.setAccount("test_debtor_account");
         account.setAccountName("test_debtor_accountName");
         return Collections.singletonList(account);

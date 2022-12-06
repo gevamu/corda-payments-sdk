@@ -24,10 +24,9 @@ class RegistrationService(
     }
 
     fun saveRegistration(registration: ParticipantRegistration) = serviceHub.withEntityManager {
-        val entity = Registration(
-            participantId = registration.participantId,
-            networkId = registration.networkId
-        )
+        val entity = Registration()
+        entity.participantId = registration.participantId
+        entity.networkId = registration.networkId
         persist(entity)
     }
 }
