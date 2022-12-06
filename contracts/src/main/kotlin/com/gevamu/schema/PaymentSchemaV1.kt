@@ -1,6 +1,7 @@
 package com.gevamu.schema
 
 import com.gevamu.states.Payment
+import java.time.Instant
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -40,16 +41,21 @@ object PaymentSchemaV1 : MappedSchema(
         @Enumerated(EnumType.STRING)
         lateinit var status: Payment.PaymentStatus
 
+        @Column(name = "timestamp", nullable = false)
+        lateinit var timestamp: Instant
+
         constructor(
             uniquePaymentId: UUID,
             payer: Party,
             endToEndId: String,
             status: Payment.PaymentStatus,
+            timestamp: Instant
         ) : this() {
             this.uniquePaymentId = uniquePaymentId
             this.payer = payer
             this.endToEndId = endToEndId
             this.status = status
+            this.timestamp = timestamp
         }
     }
 }
