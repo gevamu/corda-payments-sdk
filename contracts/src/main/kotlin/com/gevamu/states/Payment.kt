@@ -57,6 +57,7 @@ data class Payment(
                     payer = payer,
                     endToEndId = endToEndId,
                     status = status,
+                    timestamp = timestamp
                 )
             }
             else -> throw IllegalArgumentException("Unrecognised schema $schema")

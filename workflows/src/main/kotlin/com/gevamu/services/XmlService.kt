@@ -38,6 +38,7 @@ open class XmlService protected constructor(
     protected val jaxbContext: JAXBContext = JAXBContext.newInstance(
         *(listOf<Class<*>>(CustomerCreditTransferInitiationV09::class.java) + xmlClasses).toTypedArray()
     )
+    protected val xmlInputFactory = XMLInputFactory.newFactory()
 
     constructor(serviceHub: AppServiceHub) : this(serviceHub, listOf())
 
@@ -49,11 +50,10 @@ open class XmlService protected constructor(
     fun unmarshalPaymentRequest(bytes: ByteArray): CustomerCreditTransferInitiationV09 {
         val unmarshaller = jaxbContext.createUnmarshaller()
         // XXX store factory in class; there is newDefaultFactory()
-        val factory = XMLInputFactory.newFactory()
         val inputStream = ByteArrayInputStream(bytes)
         val jaxbElement = unmarshaller.unmarshal(
             // XXX pass encoding as 2nd argument
-            factory.createXMLStreamReader(inputStream),
+            xmlInputFactory.createXMLStreamReader(inputStream),
             CustomerCreditTransferInitiationV09::class.java
         )
         // XXX Do we need to close XML stream reader?

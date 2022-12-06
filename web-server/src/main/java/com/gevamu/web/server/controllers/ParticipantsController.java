@@ -18,6 +18,7 @@ import com.gevamu.web.server.config.Participant;
 import com.gevamu.web.server.models.ParticipantAccount;
 import com.gevamu.web.server.models.ParticipantAccountResponse;
 import com.gevamu.web.server.services.ParticipantService;
+import com.gevamu.web.server.util.MoreCollectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -29,7 +30,6 @@ import reactor.core.publisher.Mono;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/participants")
@@ -68,7 +68,7 @@ public class ParticipantsController {
                         .build()
                     )
                     .sorted(Comparator.comparing(ParticipantAccount::getAccountName))
-                    .collect(Collectors.toUnmodifiableList())
+                    .collect(MoreCollectors.toUnmodifiableList())
                 )
                 .map(ParticipantAccountResponse::new)
         );

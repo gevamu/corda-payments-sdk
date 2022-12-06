@@ -36,6 +36,11 @@ databaseChangeLog:
                   type: varchar
                   constraints:
                     nullable: false
+              - column:
+                  name: timestamp
+                  type: timestamp
+                  constraints:
+                    nullable: false
         - addPrimaryKey:
             constraintName: payment_states_pkey
             tableName: payment_states
