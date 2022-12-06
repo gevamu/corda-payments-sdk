@@ -7,6 +7,7 @@ import lombok.Value;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.UUID;
 
 @Value
 @Builder
@@ -16,7 +17,7 @@ public class PaymentState {
     @NonNull
     Instant updateTime;
     @NonNull
-    String paymentId;
+    UUID paymentId;
     @NonNull
     String endToEndId;
     @NonNull

@@ -37,7 +37,7 @@ class PaymentInitiationFlow(
         val paymentDetails = paymentInstructionAttachmentService.getPaymentDetails(paymentInstruction)
 
         val paymentDetailsState = PaymentDetailsState(
-            id = payment.linearId.id.toString(),
+            id = payment.uniquePaymentId,
             paymentDetails = paymentDetails,
             participants = payment.participants,
         )

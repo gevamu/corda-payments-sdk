@@ -5,6 +5,7 @@ import java.io.Serializable
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
+import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -149,7 +150,7 @@ object AppSchemaV1 : MappedSchema(
     class PersistentPaymentDetails(
 
         @Column(name = "id", nullable = false)
-        var id: String? = null,
+        var id: UUID? = null,
 
         @Column(name = "creationTime", nullable = false)
         var creationTime: Instant? = null,
@@ -173,7 +174,7 @@ object AppSchemaV1 : MappedSchema(
         var debtor: Debtor? = null
     ) : Serializable, PersistentState() {
 
-        constructor(id: String, paymentDetails: PaymentDetails) : this(
+        constructor(id: UUID, paymentDetails: PaymentDetails) : this(
             id = id,
             creationTime = paymentDetails.creationTime,
             endToEndId = paymentDetails.endToEndId,

@@ -9,6 +9,7 @@ import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.PersistentPaymentDe
 import java.io.Serializable
 import java.math.BigDecimal
 import java.time.Instant
+import java.util.UUID
 import net.corda.core.contracts.BelongsToContract
 import net.corda.core.identity.AbstractParty
 import net.corda.core.schemas.MappedSchema
@@ -18,7 +19,7 @@ import net.corda.core.serialization.CordaSerializable
 
 @BelongsToContract(PaymentInitiationContract::class)
 class PaymentDetailsState(
-    val id: String,
+    val id: UUID,
     val paymentDetails: PaymentDetails,
     override val participants: List<AbstractParty>
 ) : QueryableState {
