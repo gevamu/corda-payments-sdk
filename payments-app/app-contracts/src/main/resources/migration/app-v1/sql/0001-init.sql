@@ -1,22 +1,22 @@
 CREATE TABLE country (
-    isoCodeAlpha2 VARCHAR(2) NOT NULL,
+    iso_code_alpha2 VARCHAR(2) NOT NULL,
     PRIMARY KEY (isoCodeAlpha2)
 );
 
 CREATE TABLE currency (
-    isoCode VARCHAR(3) NOT NULL,
+    iso_code VARCHAR(3) NOT NULL,
     PRIMARY KEY (isoCode)
 );
 
 CREATE TABLE account (
     account VARCHAR(64) NOT NULL,
-    accountName VARCHAR(64) NOT NULL,
+    account_name VARCHAR(64) NOT NULL,
     bic VARCHAR(16) NOT NULL,
     country VARCHAR(2) NOT NULL REFERENCES country(isoCodeAlpha2),
     currency VARCHAR(3) NOT NULL REFERENCES currency(isoCode),
-    effectiveDate DATE NOT NULL,
-    expiryDate DATE NOT NULL,
-    paymentLimit INTEGER NOT NULL,
+    effective_date DATE NOT NULL,
+    expiry_date DATE NOT NULL,
+    payment_limit INTEGER NOT NULL,
     PRIMARY KEY (account)
 );
 
@@ -29,8 +29,8 @@ CREATE TABLE creditor (
 );
 
 CREATE TABLE registration (
-    participantId VARCHAR(255) NOT NULL,
-    networkId VARCHAR(255) NOT NULL,
+    participant_id VARCHAR(255) NOT NULL,
+    network_id VARCHAR(255) NOT NULL,
     PRIMARY KEY (participantId)
 );
 
@@ -38,8 +38,8 @@ CREATE TABLE payment_details (
     transaction_id VARCHAR(144) NOT NULL,
     output_index INT NOT NULL,
     id UUID NOT NULL,
-    creationTime TIMESTAMP NOT NULL,
-    endToEndId VARCHAR(64) NOT NULL,
+    timestamp TIMESTAMP NOT NULL,
+    end_to_end_id VARCHAR(64) NOT NULL,
     amount NUMERIC(20, 2) NOT NULL,
     currency VARCHAR(3) NOT NULL REFERENCES currency(isoCode),
     creditor VARCHAR(64) NOT NULL REFERENCES creditor(account),
@@ -47,7 +47,7 @@ CREATE TABLE payment_details (
     PRIMARY KEY (id)
 );
 
-INSERT INTO country (isoCodeAlpha2)
+INSERT INTO country(iso_code_alpha2)
 VALUES
 ('CN'),
 ('GB'),
@@ -56,12 +56,12 @@ VALUES
 ('SG'),
 ('US');
 
-INSERT INTO currency (isoCode)
+INSERT INTO currency(iso_code)
 VALUES
 ('GBP'),
 ('USD');
 
-INSERT INTO account(account, accountName, bic, country, currency, effectiveDate, expiryDate, paymentLimit)
+INSERT INTO account(account, account_name, bic, country, currency, effective_date, expiry_date, payment_limit)
 VALUES
 ('741071328201', 'ASCENT WAYXXXXXXXXXX', 'HSBCHKHH', 'HK', 'USD', '2022-10-01', '2023-10-01', 1000000),
 ('260183041178', 'DFACSNSG ACU 260-183041-178', 'HSBCSGSG', 'SG', 'USD', '2022-10-01', '2023-10-01', 1000000),
@@ -91,7 +91,7 @@ VALUES
 ('001000389201'),
 ('LU851670001001775145');
 
-INSERT INTO account(account, accountName, bic, country, currency, effectiveDate, expiryDate, paymentLimit)
+INSERT INTO account(account, account_name, bic, country, currency, effective_date, expiry_date, payment_limit)
 VALUES
 ('004531117838', 'XXXX XXXX XXXX XXXX', 'HSBCHKHH', 'HK', 'USD', '2022-10-01', '2023-10-01', 1000000),
 ('260028006178', 'DFACSNSG ACU 260-028006-178', 'HSBCSGSG', 'SG', 'USD', '2022-10-01', '2023-10-01', 1000000),

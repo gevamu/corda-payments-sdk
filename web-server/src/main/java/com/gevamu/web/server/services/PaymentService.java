@@ -50,6 +50,6 @@ public class PaymentService {
     }
 
     public Flux<PaymentState> getPaymentStates() {
-        return Flux.fromIterable(cordaRpcClientService.getPaymentStates());
+        return Flux.fromIterable(cordaRpcClientService.getPaymentDetails());
     }
 }
