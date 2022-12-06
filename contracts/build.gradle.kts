@@ -8,18 +8,14 @@ plugins {
 
 group = rootProject.group
 
-buildscript {
-    dependencies {
-        project(":license-kotlinter-rule")
-    }
+kotlinter {
+    ignoreFailures = false
 }
 
-kotlinter {
-    ignoreFailures = true
-    indentSize = 4
-    reporters = arrayOf("checkstyle", "plain")
-    experimentalRules = true
-    disabledRules = emptyArray<String>()
+tasks {
+    compileKotlin {
+        dependsOn(lintKotlin)
+    }
 }
 
 cordapp {

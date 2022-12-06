@@ -1,11 +1,23 @@
+// Copyright 2022 Exactpro Systems Limited
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package com.gevamu.flows
 
 import co.paralleluniverse.fibers.Suspendable
 import com.gevamu.contracts.PaymentContract
 import com.gevamu.schema.PaymentSchemaV1
 import com.gevamu.states.Payment
-import java.time.Instant
-import java.util.UUID
 import net.corda.core.flows.CollectSignaturesFlow
 import net.corda.core.flows.FinalityFlow
 import net.corda.core.flows.FlowLogic
@@ -17,6 +29,8 @@ import net.corda.core.node.services.vault.Builder.equal
 import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.node.services.vault.builder
 import net.corda.core.transactions.TransactionBuilder
+import java.time.Instant
+import java.util.UUID
 
 @InitiatingFlow
 @StartableByService
@@ -85,7 +99,7 @@ class StatusUpdateFlow(
         // Initiate update status flow with original participants
         val paymentSession = initiateFlow(paymentUpdate.payer)
         // TODO As of 2022/10/26 it has only the payer party and should use [participants] instead going forward
-        //val sessions = paymentUpdate.participants.map { initiateFlow(it) }
+        // val sessions = paymentUpdate.participants.map { initiateFlow(it) }
 
         // Ask participating payer to sign
         val signedTx = subFlow(CollectSignaturesFlow(partSignedTx, listOf(paymentSession)))

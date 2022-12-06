@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath(files("libs/license-kotlinter-rule-0.1.2.jar"))
+    }
+}
+
 plugins {
     // Add lifecycle tasks
     base

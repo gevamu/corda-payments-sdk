@@ -8,6 +8,16 @@ plugins {
 
 group = rootProject.group
 
+kotlinter {
+    ignoreFailures = false
+}
+
+tasks {
+    compileKotlin {
+        dependsOn(lintKotlin)
+    }
+}
+
 dependencies {
     cordapp(project(":contracts"))
 
