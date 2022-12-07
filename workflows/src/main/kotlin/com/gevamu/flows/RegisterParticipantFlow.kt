@@ -15,7 +15,7 @@ import net.corda.core.utilities.unwrap
  * @param gateway Identification of the Gevamu Gateway Corda node to register
  * @see Party
  *
- * @return Participant registration note
+ * @return Participant registration record
  * @see ParticipantRegistration
  */
 @InitiatingFlow

@@ -3,8 +3,22 @@ package com.gevamu.flows
 import java.io.Serializable
 import net.corda.core.serialization.CordaSerializable
 
+/**
+ * Data class for Participant Corda node registration record
+ *
+ * @param participantId
+ * @param networkId
+ */
 @CordaSerializable
-data class ParticipantRegistration(val participantId: String, val networkId: String): Serializable {
+data class ParticipantRegistration(
+    /**
+     * Unique id for Participant node in scope of Corda business network
+     */
+    val participantId: String,
+    /**
+     * Corda business network id
+     */
+    val networkId: String): Serializable {
     override fun equals(other: Any?): Boolean =
         (other is ParticipantRegistration) && this.participantId == other.participantId
 
