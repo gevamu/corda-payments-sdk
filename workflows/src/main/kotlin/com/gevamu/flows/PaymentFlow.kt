@@ -39,8 +39,8 @@ class PaymentFlow(
 
         val paymentRequest: CustomerCreditTransferInitiationV09 =
             xmlService.unmarshalPaymentRequest(paymentInstruction.paymentInstruction)
-        val endToEndId: String = paymentRequest.pmtInf.first().cdtTrfTxInf.first().pmtId.endToEndId
-        logger.info("Save new payment id=$uniquePaymentId, endToEndId=${endToEndId}")
+        val pmtInfId: String = paymentRequest.pmtInf.first().pmtInfId
+        logger.info("Save new payment id=$uniquePaymentId, pmtInfId(mappedId)=${pmtInfId}")
         val attachmentId = xmlService.storePaymentInstruction(paymentInstruction, ourIdentity)
         // TODO Check participant id
 
@@ -49,7 +49,7 @@ class PaymentFlow(
             payer = ourIdentity,
             gateway = gateway,
             paymentInstructionId = attachmentId,
-            endToEndId = endToEndId,
+            mappedId = pmtInfId,
             status = Payment.PaymentStatus.CREATED,
         )
 
