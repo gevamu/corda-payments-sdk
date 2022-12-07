@@ -2,7 +2,6 @@ package com.gevamu.payments.app.workflows.services
 
 import com.gevamu.payments.app.contracts.schemas.AppSchemaV1
 import com.gevamu.schema.PaymentSchemaV1
-import java.util.Optional
 import java.util.UUID
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.CordaService
@@ -34,7 +33,7 @@ class EntityManagerService(
         createQuery(query.select(root)).resultList
     }
 
-    fun getPaymentStatus(id: UUID): Optional<PaymentSchemaV1.PersistentPayment> = serviceHub.withEntityManager {
+    fun getPaymentStatus(id: UUID): PaymentSchemaV1.PersistentPayment = serviceHub.withEntityManager {
         val query = criteriaBuilder.createQuery(PaymentSchemaV1.PersistentPayment::class.java)
         val root = query.from(PaymentSchemaV1.PersistentPayment::class.java)
         val equal = criteriaBuilder.equal(root.get<UUID>("uniquePaymentId"), id)
@@ -42,5 +41,8 @@ class EntityManagerService(
             .resultList
             .stream()
             .max(Comparator.comparing(PaymentSchemaV1.PersistentPayment::timestamp))
+            .orElseThrow {
+                NoSuchElementException("No status found for payment $id")
+            }
     }
 }
