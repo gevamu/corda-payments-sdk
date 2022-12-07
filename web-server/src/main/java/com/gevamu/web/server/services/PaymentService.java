@@ -57,7 +57,7 @@ public class PaymentService {
 
     private PaymentState convert(Payment payment) {
         PaymentState.PaymentStateBuilder builder = PaymentState.builder()
-            .paymentId(payment.getLinearId().toString())
+            .paymentId(payment.getEndToEndId())
             .status(payment.getStatus())
             .updateTime(payment.getTimestamp());
 
