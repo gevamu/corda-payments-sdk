@@ -20,19 +20,15 @@ import com.gevamu.flows.ParticipantRegistration;
 import com.gevamu.flows.PaymentFlow;
 import com.gevamu.flows.PaymentInstruction;
 import com.gevamu.payments.app.contracts.schemas.AppSchemaV1;
-import com.gevamu.payments.app.contracts.states.PaymentDetails;
-import com.gevamu.payments.app.contracts.states.PaymentDetailsState;
 import com.gevamu.payments.app.workflows.flows.CreditorRetrievalFlow;
 import com.gevamu.payments.app.workflows.flows.DebtorRetrievalFlow;
+import com.gevamu.payments.app.workflows.flows.PaymentDetailsRetrievalFlow;
 import com.gevamu.payments.app.workflows.flows.PaymentInitiationFlow;
 import com.gevamu.payments.app.workflows.flows.PaymentInitiationRequest;
 import com.gevamu.payments.app.workflows.flows.RegistrationInitiationFlow;
 import com.gevamu.payments.app.workflows.flows.RegistrationRetrievalFlow;
-import com.gevamu.states.Payment;
+import com.gevamu.payments.app.workflows.services.PaymentState;
 import com.gevamu.web.server.config.CordaRpcClientConnection;
-import com.gevamu.web.server.models.ParticipantAccount;
-import com.gevamu.web.server.models.PaymentState;
-import com.gevamu.web.server.util.MoreCollectors;
 import lombok.NonNull;
 import net.corda.client.rpc.CordaRPCClient;
 import net.corda.client.rpc.CordaRPCConnection;
@@ -49,7 +45,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -122,38 +117,8 @@ public class CordaRpcClientService implements AutoCloseable {
             .toCompletableFuture();
     }
 
-    public List<PaymentState> getPaymentDetails() {
-        return proxy.vaultQuery(PaymentDetailsState.class)
-            .getStates()
-            .stream()
-            .map(it -> {
-                UUID paymentId = it.getState().getData().getId();
-                PaymentDetails paymentDetails = it.getState().getData().getPaymentDetails();
-                return PaymentState.builder()
-                    .paymentId(paymentId)
-                    .endToEndId(paymentDetails.getEndToEndId())
-                    .debtor(ParticipantAccount.fromDebtor(paymentDetails.getDebtor()))
-                    .creditor(ParticipantAccount.fromCreditor(paymentDetails.getCreditor()))
-                    .currency(paymentDetails.getCurrency().getIsoCode())
-                    .amount(paymentDetails.getAmount())
-                    .creationTime(paymentDetails.getCreationTime())
-                    .status(Payment.PaymentStatus.CREATED)//fixme
-                    .updateTime(paymentDetails.getCreationTime())//fixme
-                    .build();
-            })
-            .collect(MoreCollectors.toUnmodifiableList());
-    }
-
-    public List<Payment> getPaymentStatus(UUID paymentId) {
-        /*CriteriaExpression expression = CriteriaExpression.ColumnPredicateExpression("uniquePaymentId", UUID.class);
-        QueryCriteria queryCriteria = QueryCriteria.VaultCustomQueryCriteria(
-            PaymentSchemaV1.PersistentPayment.getUniquePaymentId().equal(paymentId)
-        );*/
-        return proxy.vaultQuery(Payment.class)
-            .getStates()
-            .stream()
-            .map(it -> it.getState().getData())
-            .collect(MoreCollectors.toUnmodifiableList());
+    public CompletionStage<List<? extends PaymentState>> getPaymentDetails() {
+        return executeFlow(PaymentDetailsRetrievalFlow.class);
     }
 
     @Deprecated

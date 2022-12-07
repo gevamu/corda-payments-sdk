@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/payments")
@@ -58,7 +57,6 @@ public class PaymentsController {
     public Mono<PaymentStateResponse> getStates() {
         log.debug("getStates");
         return paymentService.getPaymentStates()
-            .collect(Collectors.toList())
             .map(PaymentStateResponse::new);
     }
 
