@@ -36,7 +36,7 @@ class PaymentDetailsState(
 
 @CordaSerializable
 class PaymentDetails(
-    var creationTime: Instant,
+    var timestamp: Instant,
     var endToEndId: String,
     var amount: BigDecimal,
     var currency: Currency,

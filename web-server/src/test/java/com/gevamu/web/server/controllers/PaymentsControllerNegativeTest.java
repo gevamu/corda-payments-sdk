@@ -3,7 +3,6 @@ package com.gevamu.web.server.controllers;
 import com.gevamu.flows.ParticipantRegistration;
 import com.gevamu.web.server.models.PaymentRequest;
 import com.gevamu.web.server.services.CordaRpcClientService;
-import com.gevamu.web.server.util.CompletableFutures;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
+import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
@@ -40,9 +40,9 @@ public class PaymentsControllerNegativeTest {
     public void beforeEach() {
         ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
         when(cordaRpcClientService.getRegistration())
-            .thenReturn(CompletableFutures.completedStage(registration));
+            .thenReturn(CompletableFuture.completedFuture(registration));
         when(cordaRpcClientService.sendPayment(any()))
-            .thenReturn(CompletableFutures.completedStage(null));
+            .thenReturn(CompletableFuture.completedFuture(null));
     }
 
     @AfterEach
@@ -153,7 +153,7 @@ public class PaymentsControllerNegativeTest {
     @Test
     public void testPostPaymentParticipantNotRegistered() {
         when(cordaRpcClientService.getRegistration())
-            .thenReturn(CompletableFutures.completedStage(null));
+            .thenReturn(CompletableFuture.completedFuture(null));
         PaymentRequest request = new PaymentRequest(TEST_CREDITOR_ACCOUNT, TEST_DEBTOR_ACCOUNT, BigDecimal.TEN);
         webClient.post()
             .uri(PATH)

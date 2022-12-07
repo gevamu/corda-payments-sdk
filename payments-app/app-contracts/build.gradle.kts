@@ -5,6 +5,10 @@ plugins {
 
 group = rootProject.group
 
+dependencies {
+    cordapp(project(":contracts"))
+}
+
 cordapp {
     contract {
         name("Payments Application Contracts")

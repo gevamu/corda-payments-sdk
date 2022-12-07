@@ -4,7 +4,6 @@ import com.gevamu.flows.ParticipantRegistration;
 import com.gevamu.payments.app.workflows.flows.PaymentInitiationRequest;
 import com.gevamu.web.server.models.PaymentRequest;
 import com.gevamu.web.server.services.CordaRpcClientService;
-import com.gevamu.web.server.util.CompletableFutures;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.times;
@@ -39,7 +39,7 @@ public class PaymentsControllerTest {
     public void beforeEach() {
         ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
         when(cordaRpcClientService.getRegistration())
-            .thenReturn(CompletableFutures.completedStage(registration));
+            .thenReturn(CompletableFuture.completedFuture(registration));
     }
 
     @AfterEach
@@ -53,7 +53,7 @@ public class PaymentsControllerTest {
         PaymentRequest paymentRequest = new PaymentRequest("test_creditor_account", "test_debtor_account", BigDecimal.TEN);
         PaymentInitiationRequest paymentInitiationRequest = new PaymentInitiationRequest("test_creditor_account", "test_debtor_account", BigDecimal.TEN);
         when(cordaRpcClientService.sendPayment(paymentInitiationRequest))
-            .thenReturn(CompletableFutures.completedStage(null));
+            .thenReturn(CompletableFuture.completedFuture(null));
 
         webClient.post()
             .uri(PATH)
@@ -70,8 +70,8 @@ public class PaymentsControllerTest {
 
     @Test
     public void testGetPaymentStates() {
-        when(cordaRpcClientService.getPaymentStates())
-            .thenReturn(Collections.emptyList());
+        when(cordaRpcClientService.getPaymentDetails())
+            .thenReturn(CompletableFuture.completedFuture(Collections.emptyList()));
 
         webClient.get()
             .uri(PATH + "/states")

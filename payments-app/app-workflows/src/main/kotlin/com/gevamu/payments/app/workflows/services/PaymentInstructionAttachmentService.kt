@@ -58,7 +58,7 @@ class PaymentInstructionAttachmentService(
                 val debtor = entityManagerService.getDebtor(paymentInstruction.dbtrAcct.id.othr.id)
 
                 return PaymentDetails(
-                    creationTime = creationTime,
+                    timestamp = creationTime,
                     endToEndId = endToEndId,
                     amount = amount,
                     currency = currency,

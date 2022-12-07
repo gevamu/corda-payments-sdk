@@ -146,7 +146,6 @@ object AppSchemaV1 : MappedSchema(
         }
     }
 
-    @CordaSerializable
     @Entity(name = "PaymentDetails")
     @Table(name = "payment_details")
     class PersistentPaymentDetails private constructor() : Serializable, PersistentState() {
@@ -154,8 +153,8 @@ object AppSchemaV1 : MappedSchema(
         @Column(name = "id", nullable = false)
         lateinit var id: UUID
 
-        @Column(name = "creation_time", nullable = false)
-        lateinit var creationTime: Instant
+        @Column(name = "timestamp", nullable = false)
+        lateinit var timestamp: Instant
 
         @Column(name = "end_to_end_id", nullable = false)
         lateinit var endToEndId: String
@@ -177,7 +176,7 @@ object AppSchemaV1 : MappedSchema(
 
         constructor(id: UUID, paymentDetails: PaymentDetails) : this() {
             this.id = id
-            this.creationTime = paymentDetails.creationTime
+            this.timestamp = paymentDetails.timestamp
             this.endToEndId = paymentDetails.endToEndId
             this.amount = paymentDetails.amount
             this.currency = paymentDetails.currency

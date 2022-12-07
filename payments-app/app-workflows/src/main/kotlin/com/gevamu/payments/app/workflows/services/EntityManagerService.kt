@@ -1,6 +1,9 @@
 package com.gevamu.payments.app.workflows.services
 
 import com.gevamu.payments.app.contracts.schemas.AppSchemaV1
+import com.gevamu.schema.PaymentSchemaV1
+import java.util.Optional
+import java.util.UUID
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken
@@ -23,5 +26,21 @@ class EntityManagerService(
     fun getCurrency(isoCode: String): AppSchemaV1.Currency = serviceHub.withEntityManager {
         find(AppSchemaV1.Currency::class.java, isoCode) ?:
         throw NoSuchElementException("Currency not found $isoCode")
+    }
+
+    fun getPaymentDetails(): List<AppSchemaV1.PersistentPaymentDetails> = serviceHub.withEntityManager {
+        var query = criteriaBuilder.createQuery(AppSchemaV1.PersistentPaymentDetails::class.java)
+        val root = query.from(AppSchemaV1.PersistentPaymentDetails::class.java)
+        createQuery(query.select(root)).resultList
+    }
+
+    fun getPaymentStatus(id: UUID): Optional<PaymentSchemaV1.PersistentPayment> = serviceHub.withEntityManager {
+        val query = criteriaBuilder.createQuery(PaymentSchemaV1.PersistentPayment::class.java)
+        val root = query.from(PaymentSchemaV1.PersistentPayment::class.java)
+        val equal = criteriaBuilder.equal(root.get<UUID>("uniquePaymentId"), id)
+        createQuery(query.select(root).where(equal))
+            .resultList
+            .stream()
+            .max(Comparator.comparing(PaymentSchemaV1.PersistentPayment::timestamp))
     }
 }

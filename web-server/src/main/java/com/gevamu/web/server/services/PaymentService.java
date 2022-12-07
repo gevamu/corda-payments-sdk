@@ -1,12 +1,13 @@
 package com.gevamu.web.server.services;
 
 import com.gevamu.payments.app.workflows.flows.PaymentInitiationRequest;
+import com.gevamu.payments.app.workflows.services.PaymentState;
 import com.gevamu.web.server.models.PaymentRequest;
-import com.gevamu.web.server.models.PaymentState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Service
 public class PaymentService {
@@ -33,7 +34,9 @@ public class PaymentService {
             .flatMap(it -> Mono.defer(() -> Mono.fromCompletionStage(cordaRpcClientService.sendPayment(it))));
     }
 
-    public Flux<PaymentState> getPaymentStates() {
-        return Flux.fromIterable(cordaRpcClientService.getPaymentDetails());
+    public Mono<List<? extends PaymentState>> getPaymentStates() {
+        return Mono.defer(
+            () -> Mono.fromCompletionStage(cordaRpcClientService.getPaymentDetails())
+        );
     }
 }

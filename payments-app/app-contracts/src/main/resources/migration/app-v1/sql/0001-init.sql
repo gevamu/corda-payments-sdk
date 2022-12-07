@@ -1,19 +1,19 @@
 CREATE TABLE country (
     iso_code_alpha2 VARCHAR(2) NOT NULL,
-    PRIMARY KEY (isoCodeAlpha2)
+    PRIMARY KEY (iso_code_alpha2)
 );
 
 CREATE TABLE currency (
     iso_code VARCHAR(3) NOT NULL,
-    PRIMARY KEY (isoCode)
+    PRIMARY KEY (iso_code)
 );
 
 CREATE TABLE account (
     account VARCHAR(64) NOT NULL,
     account_name VARCHAR(64) NOT NULL,
     bic VARCHAR(16) NOT NULL,
-    country VARCHAR(2) NOT NULL REFERENCES country(isoCodeAlpha2),
-    currency VARCHAR(3) NOT NULL REFERENCES currency(isoCode),
+    country VARCHAR(2) NOT NULL REFERENCES country(iso_code_alpha2),
+    currency VARCHAR(3) NOT NULL REFERENCES currency(iso_code),
     effective_date DATE NOT NULL,
     expiry_date DATE NOT NULL,
     payment_limit INTEGER NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE creditor (
 CREATE TABLE registration (
     participant_id VARCHAR(255) NOT NULL,
     network_id VARCHAR(255) NOT NULL,
-    PRIMARY KEY (participantId)
+    PRIMARY KEY (participant_id)
 );
 
 CREATE TABLE payment_details (
@@ -41,7 +41,7 @@ CREATE TABLE payment_details (
     timestamp TIMESTAMP NOT NULL,
     end_to_end_id VARCHAR(64) NOT NULL,
     amount NUMERIC(20, 2) NOT NULL,
-    currency VARCHAR(3) NOT NULL REFERENCES currency(isoCode),
+    currency VARCHAR(3) NOT NULL REFERENCES currency(iso_code),
     creditor VARCHAR(64) NOT NULL REFERENCES creditor(account),
     debtor VARCHAR(64) NOT NULL REFERENCES debtor(account),
     PRIMARY KEY (id)

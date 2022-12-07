@@ -2,7 +2,6 @@ package com.gevamu.web.server.controllers;
 
 import com.gevamu.payments.app.contracts.schemas.AppSchemaV1;
 import com.gevamu.web.server.services.CordaRpcClientService;
-import com.gevamu.web.server.util.CompletableFutures;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +12,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.Mockito.when;
 
@@ -32,7 +32,7 @@ public class ParticipantsControllerTest {
     public void testCreditors() {
         List<AppSchemaV1.Account> creditors = createCreditors();
         when(cordaRpcClientService.getCreditors())
-            .thenReturn(CompletableFutures.completedStage(creditors));
+            .thenReturn(CompletableFuture.completedFuture(creditors));
         webClient.get()
             .uri(PATH + "/creditors")
             .exchange()
@@ -57,7 +57,7 @@ public class ParticipantsControllerTest {
     public void testDebtors() {
         List<AppSchemaV1.Account> debtors = createDebtors();
         when(cordaRpcClientService.getDebtors())
-            .thenReturn(CompletableFutures.completedStage(debtors));
+            .thenReturn(CompletableFuture.completedFuture(debtors));
         webClient.get()
             .uri(PATH + "/debtors")
             .exchange()
