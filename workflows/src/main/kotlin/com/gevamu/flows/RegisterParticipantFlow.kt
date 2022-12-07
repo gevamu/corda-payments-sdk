@@ -9,11 +9,26 @@ import net.corda.core.identity.Party
 import net.corda.core.utilities.ProgressTracker
 import net.corda.core.utilities.unwrap
 
+/**
+ * Register your participant node in Gevamu Gateway node
+ *
+ * @param gateway Identification of the Gevamu Gateway Corda node to register
+ * @see Party
+ *
+ * @return Participant registration note
+ * @see ParticipantRegistration
+ */
 @InitiatingFlow
 @StartableByRPC
 class RegisterParticipantFlow(private val gateway: Party) : FlowLogic<ParticipantRegistration>() {
     override val progressTracker = ProgressTracker()
 
+    /**
+     * Start main flow logic
+     *
+     * @return Participant registration note
+     * @see ParticipantRegistration
+     */
     @Suspendable
     override fun call(): ParticipantRegistration {
         val gatewaySession: FlowSession = initiateFlow(gateway)
