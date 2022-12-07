@@ -16,9 +16,7 @@ import net.corda.core.serialization.CordaSerializable
 import net.corda.core.transactions.TransactionBuilder
 
 /**
- * Combinations of XSD documents describing payments and encoding types (for transformation to ByteArray)
- *
- * @see ByteArray
+ * Combinations of XSD documents, describing payments, and encoding types (for cast from [ByteArray])
  */
 @CordaSerializable
 enum class PaymentInstructionFormat {
@@ -32,7 +30,6 @@ enum class PaymentInstructionFormat {
     ISO20022_V9_XML_UTF8
 }
 
-// Inline link {@link ByteArray byte array} is not rendered in IntelliJ Idea :(
 /**
  * Dataclass describing payment instruction
  *
@@ -40,7 +37,7 @@ enum class PaymentInstructionFormat {
  * @see PaymentInstructionFormat
  *
  * @param paymentInstruction XML document created due to specified XSD
- * and cast to ByteArray in specified encoding
+ * and cast to [ByteArray] in specified encoding
  */
 @CordaSerializable
 class PaymentInstruction(
@@ -57,9 +54,9 @@ class PaymentInstruction(
  * @param gateway Identification of the Gevamu Gateway Corda node to process payment
  * @see Party
  *
- * @param uniquePaymentId Identification of the new payment; generated automatically by default
+ * @param uniquePaymentId Identification of the new payment; generated with [UUID.randomUUID] by default
  *
- * @return List with single created payment state
+ * @return List with single created [Payment] state
  * @see Payment
  */
 @StartableByRPC
