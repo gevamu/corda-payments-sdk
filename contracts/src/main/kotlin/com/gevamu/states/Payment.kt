@@ -15,21 +15,43 @@ import net.corda.core.serialization.CordaSerializable
 
 @BelongsToContract(PaymentContract::class)
 data class Payment(
+    /**
+     * Participant Corda node, which initiated payment
+     */
     val payer: Party,
+    /**
+     * Gateway Corda node, which processes payment
+     */
     val gateway: Party,
+    /**
+     * Unique value for the payment in debtor-creditor scope
+     */
     val endToEndId: String,
+    /**
+     * Link to payment instruction, stored as attachment
+     *
+     * @see AttachmentId
+     */
     val paymentInstructionId: AttachmentId,
+    /**
+     * Status of the payment in workflow
+     */
     val status: PaymentStatus,
     /**
      * Payment info provided by the bank.
+     *
      * Null by default since initial payment doesn't have any bank response
      */
     val additionalInfo: String? = null,
     /**
-     * Timestamp to record when payment state was proposed/changed.
-     * [Instant.now()] by default
+     * Unique value for the payment in Corda business network
      */
     val uniquePaymentId: UUID = UUID.randomUUID(),
+    /**
+     * Timestamp to record when payment state was proposed/changed.
+     *
+     * Generated with [Instant.now] by default
+     */
     val timestamp: Instant = Instant.now(),
 ) : QueryableState {
     override val participants: List<AbstractParty>
@@ -52,6 +74,18 @@ data class Payment(
 
     override fun supportedSchemas(): Iterable<MappedSchema> = listOf(PaymentSchemaV1)
 
+    /**
+     * Possible payment statuses
+     *
+     * Workflow:
+     * 1. Created
+     * 2. Sent to gateway
+     * 3. Pending
+     * 4. Accepted / Rejected
+     *
+     * If Accepted:
+     * 5. Completed
+     */
     @CordaSerializable
     enum class PaymentStatus {
         CREATED,
