@@ -19,43 +19,38 @@ class PaymentStateService(
         val entityManagerService = serviceHub.cordaService(EntityManagerService::class.java)
         return entityManagerService.getPaymentDetails().stream()
             .map {
-                val paymentState = PaymentState(
+                val status = entityManagerService.getPaymentStatus(it.id)
+                PaymentState(
                     creationTime = it.timestamp,
                     paymentId = it.id,
                     endToEndId = it.endToEndId,
                     amount = it.amount,
                     currency = it.currency.isoCode,
                     creditor = ParticipantAccount.fromCreditor(it.creditor),
-                    debtor = ParticipantAccount.fromDebtor(it.debtor)
+                    debtor = ParticipantAccount.fromDebtor(it.debtor),
+                    updateTime = status.timestamp,
+                    status = status.status
                 )
-
-                entityManagerService.getPaymentStatus(it.id).ifPresent { status ->
-                    paymentState.updateTime = status.timestamp
-                    paymentState.status = status.status
-                }
-
-                paymentState
             }
             .collect(Collectors.toList());
     }
 }
 
 @CordaSerializable
-class PaymentState(
+data class PaymentState(
     val creationTime: Instant,
     val paymentId: UUID,
     val endToEndId: String,
     val amount: BigDecimal,
     val currency: String,
     val creditor: ParticipantAccount,
-    val debtor: ParticipantAccount
-) {
-    var updateTime: Instant? = null
-    var status: PaymentStatus? = null
-}
+    val debtor: ParticipantAccount,
+    val updateTime: Instant,
+    val status: PaymentStatus
+)
 
 @CordaSerializable
-class ParticipantAccount(
+data class ParticipantAccount(
     val accountId: String,
     val accountName: String,
     val currency: String
