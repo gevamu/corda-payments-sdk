@@ -29,6 +29,18 @@ import net.corda.core.serialization.CordaSerializable
 import java.time.Instant
 import java.util.UUID
 
+/**
+ * Data class describing Payment state in Corda business network
+ *
+ * @param payer
+ * @param gateway
+ * @param endToEndId
+ * @param paymentInstructionId
+ * @param status
+ * @param additionalInfo
+ * @param uniquePaymentId
+ * @param timestamp
+ */
 @BelongsToContract(PaymentContract::class)
 data class Payment(
     /**
