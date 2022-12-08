@@ -12,21 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/cache@v3
-        id: npm-cache
-        with:
-          path: web-ui/node_modules/
-          key: ${{ runner.os }}-node-${{ hashFiles('web-ui/**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - uses: actions/setup-java@v3
         with:
           distribution: 'corretto'
           java-version: '11'
           cache: 'gradle'
       - name: 'Build'
-        run: ./gradlew build --no-daemon
+        run: ./gradlew :contracts:build :workflows:build -Pversion=${GITHUB_REF_NAME:1} --no-daemon
 
       - name: 'Create checksum'
         run: |
@@ -38,7 +30,6 @@ jobs:
 
       - name: 'Release'
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             contracts/build/libs/*
