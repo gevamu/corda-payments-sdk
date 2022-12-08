@@ -4,8 +4,6 @@ import co.paralleluniverse.fibers.Suspendable
 import com.gevamu.contracts.PaymentContract
 import com.gevamu.schema.PaymentSchemaV1
 import com.gevamu.states.Payment
-import java.time.Instant
-import java.util.UUID
 import net.corda.core.flows.CollectSignaturesFlow
 import net.corda.core.flows.FinalityFlow
 import net.corda.core.flows.FlowLogic
@@ -18,6 +16,7 @@ import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.node.services.vault.builder
 import net.corda.core.transactions.TransactionBuilder
 import java.time.Instant
+import java.util.UUID
 
 @InitiatingFlow
 @StartableByService
