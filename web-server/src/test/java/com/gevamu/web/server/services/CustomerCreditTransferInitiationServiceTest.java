@@ -72,6 +72,9 @@ public class CustomerCreditTransferInitiationServiceTest {
     @MockBean
     private transient RegistrationService registrationService;
 
+    @MockBean
+    private transient CordaRpcClientService cordaRpcClientService;
+
     @BeforeEach
     public void beforeEach() {
         ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
