@@ -156,22 +156,34 @@ class PaymentInstructionBuilderServiceTest {
     }
 
     private fun createCreditor(): Creditor {
+        val country = Country()
+        country.isoCodeAlpha2 = "test_creditor_country"
+        val currency = Currency()
+        currency.isoCode = "test_creditor_currency"
         val account = Account()
         account.bic = "test_creditor_bic"
-        account.country = Country("test_creditor_country")
-        account.currency = Currency("test_creditor_currency")
+        account.country = country
+        account.currency = currency
         account.account = "test_creditor_account"
         account.accountName = "test_creditor_accountName"
-        return Creditor(account)
+        val creditor = Creditor()
+        creditor.account = account
+        return creditor
     }
 
     private fun createDebtor(): Debtor {
+        val country = Country()
+        country.isoCodeAlpha2 = "test_debtor_country"
+        val currency = Currency()
+        currency.isoCode = "test_debtor_currency"
         val account = Account()
         account.bic = "test_debtor_bic"
-        account.country = Country("test_debtor_country")
-        account.currency = Currency("test_debtor_currency")
+        account.country = country
+        account.currency = currency
         account.account = "test_debtor_account"
         account.accountName = "test_debtor_accountName"
-        return Debtor(account)
+        val debtor = Debtor()
+        debtor.account = account
+        return debtor
     }
 }
