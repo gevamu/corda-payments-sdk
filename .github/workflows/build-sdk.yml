@@ -1,8 +1,9 @@
+# On pull request, call build to check if pull request can be accepted
+# Build master all the time it is being pushed or merged into
+
 name: GitHub Actions - Build
 on:
-  # On pull request, call build to check if pull request can be accepted
   pull_request:
-  # Build master all the time it is being pushed or merged into
   push:
     branches:
       master

@@ -1,6 +1,7 @@
+# On tag push, build and publish new release
+
 name: GitHub Actions - Tagged release
 on:
-  # On tag push, build and publish new release
   create:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
