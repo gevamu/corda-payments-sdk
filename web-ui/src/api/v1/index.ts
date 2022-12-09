@@ -1,12 +1,4 @@
-import {ApiV1} from 'src/api/v1/models/ApiV1.interface'
-import {axiosInstance} from 'src/api/v1/axiosInstance';
-import {
-  GetCreditorsResponse, GetDebtorsResponse,
-  GetPaymentsResponse,
-  GetRegistrationResponse,
-  RegisterResponse
-} from 'src/api/v1/models/responses';
-/*******************************************************************************
+/*
  * Copyright 2022 Exactpro Systems Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +12,15 @@ import {
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ */
+import {ApiV1} from 'src/api/v1/models/ApiV1.interface'
+import {axiosInstance} from 'src/api/v1/axiosInstance';
+import {
+  GetCreditorsResponse, GetDebtorsResponse,
+  GetPaymentsResponse,
+  GetRegistrationResponse,
+  RegisterResponse
+} from 'src/api/v1/models/responses';
 
 export const apiV1: ApiV1 = {
   async getDebtors(){
