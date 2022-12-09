@@ -91,7 +91,7 @@ class StatusUpdateFlow(
             // FIXME change to reference flow?
             .addInputState(paymentStateAndRef)
             .addOutputState(paymentUpdate)
-            .addCommand(PaymentContract.Commands.UpdateStatus(), ourIdentity.owningKey, paymentUpdate.payer.owningKey)
+            .addCommand(PaymentContract.Commands.UpdateStatus(uniquePaymentId), ourIdentity.owningKey, paymentUpdate.payer.owningKey)
             .addAttachment(paymentUpdate.paymentInstructionId)
         builder.verify(serviceHub)
 
