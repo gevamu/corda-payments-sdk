@@ -44,30 +44,30 @@ object AppSchemaV1 :
 
         @Id
         @Column(name = "account")
-        lateinit var account: String
+        var account: String? = null
 
         @Column(name = "account_name", nullable = false)
-        lateinit var accountName: String
+        var accountName: String? = null
 
         @Column(name = "bic", nullable = false)
-        lateinit var bic: String
+        var bic: String? = null
 
         @OneToOne
         @JoinColumn(name = "country", referencedColumnName = "iso_code_alpha2", nullable = false)
-        lateinit var country: Country
+        var country: Country? = null
 
         @OneToOne
         @JoinColumn(name = "currency", referencedColumnName = "iso_code", nullable = false)
-        lateinit var currency: Currency
+        var currency: Currency? = null
 
         @Column(name = "effective_date", nullable = false)
-        lateinit var effectiveDate: LocalDate
+        var effectiveDate: LocalDate? = null
 
         @Column(name = "expiry_date", nullable = false)
-        lateinit var expiryDate: LocalDate
+        var expiryDate: LocalDate? = null
 
         @Column(name = "payment_limit", nullable = false)
-        var paymentLimit: Int = 0
+        var paymentLimit: Int? = 0
 
         companion object {
             private const val serialVersionUID = 1L
@@ -82,7 +82,7 @@ object AppSchemaV1 :
         @Id
         @OneToOne
         @JoinColumn(name = "account", referencedColumnName = "account")
-        lateinit var account: Account
+        var account: Account? = null
 
         companion object {
             private const val serialVersionUID = 1L
@@ -97,7 +97,7 @@ object AppSchemaV1 :
         @Id
         @OneToOne
         @JoinColumn(name = "account", referencedColumnName = "account")
-        lateinit var account: Account
+        var account: Account? = null
 
         companion object {
             private const val serialVersionUID = 1L
@@ -111,7 +111,7 @@ object AppSchemaV1 :
 
         @Id
         @Column(name = "iso_code", length = 3)
-        lateinit var isoCode: String
+        var isoCode: String? = null
 
         companion object {
             private const val serialVersionUID = 1L
@@ -125,7 +125,7 @@ object AppSchemaV1 :
 
         @Id
         @Column(name = "iso_code_alpha2", length = 2)
-        lateinit var isoCodeAlpha2: String
+        var isoCodeAlpha2: String? = null
 
         companion object {
             private const val serialVersionUID = 1L
@@ -139,10 +139,10 @@ object AppSchemaV1 :
 
         @Id
         @Column(name = "participant_id")
-        lateinit var participantId: String
+        var participantId: String? = null
 
         @Column(name = "network_id", nullable = false)
-        lateinit var networkId: String
+        var networkId: String? = null
 
         companion object {
             private const val serialVersionUID = 1L
@@ -154,28 +154,28 @@ object AppSchemaV1 :
     class PersistentPaymentDetails private constructor() : Serializable, PersistentState() {
 
         @Column(name = "id", nullable = false)
-        lateinit var id: UUID
+        var id: UUID? = null
 
         @Column(name = "timestamp", nullable = false)
-        lateinit var timestamp: Instant
+        var timestamp: Instant? = null
 
         @Column(name = "end_to_end_id", nullable = false)
-        lateinit var endToEndId: String
+        var endToEndId: String? = null
 
         @Column(name = "amount", nullable = false)
-        lateinit var amount: BigDecimal
+        var amount: BigDecimal? = null
 
         @OneToOne
         @JoinColumn(name = "currency", referencedColumnName = "iso_code", nullable = false)
-        lateinit var currency: Currency
+        var currency: Currency? = null
 
         @OneToOne
         @JoinColumn(name = "creditor", referencedColumnName = "account")
-        lateinit var creditor: Creditor
+        var creditor: Creditor? = null
 
         @OneToOne
         @JoinColumn(name = "debtor", referencedColumnName = "account")
-        lateinit var debtor: Debtor
+        var debtor: Debtor? = null
 
         constructor(id: UUID, paymentDetails: PaymentDetails) : this() {
             this.id = id

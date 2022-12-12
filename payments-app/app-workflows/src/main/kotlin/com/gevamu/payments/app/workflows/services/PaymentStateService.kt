@@ -19,15 +19,15 @@ class PaymentStateService(
         val entityManagerService = serviceHub.cordaService(EntityManagerService::class.java)
         return entityManagerService.getPaymentDetails().stream()
             .map {
-                val status = entityManagerService.getPaymentStatus(it.id)
+                val status = entityManagerService.getPaymentStatus(it.id!!)
                 PaymentState(
-                    creationTime = it.timestamp,
-                    paymentId = it.id,
-                    endToEndId = it.endToEndId,
-                    amount = it.amount,
-                    currency = it.currency.isoCode,
-                    creditor = ParticipantAccount.fromCreditor(it.creditor),
-                    debtor = ParticipantAccount.fromDebtor(it.debtor),
+                    creationTime = it.timestamp!!,
+                    paymentId = it.id!!,
+                    endToEndId = it.endToEndId!!,
+                    amount = it.amount!!,
+                    currency = it.currency!!.isoCode!!,
+                    creditor = ParticipantAccount.fromCreditor(it.creditor!!),
+                    debtor = ParticipantAccount.fromDebtor(it.debtor!!),
                     updateTime = status.timestamp,
                     status = status.status
                 )
@@ -58,18 +58,18 @@ data class ParticipantAccount(
 
     companion object {
         fun fromDebtor(debtor: AppSchemaV1.Debtor): ParticipantAccount {
-            return fromAccount(debtor.account)
+            return fromAccount(debtor.account!!)
         }
 
         fun fromCreditor(creditor: AppSchemaV1.Creditor): ParticipantAccount {
-            return fromAccount(creditor.account)
+            return fromAccount(creditor.account!!)
         }
 
         private fun fromAccount(account: AppSchemaV1.Account): ParticipantAccount {
             return ParticipantAccount(
-                accountId = account.account,
-                accountName = account.accountName,
-                currency = account.currency.isoCode
+                accountId = account.account!!,
+                accountName = account.accountName!!,
+                currency = account.currency!!.isoCode!!
             )
         }
     }

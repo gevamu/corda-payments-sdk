@@ -39,10 +39,10 @@ class PaymentInstructionBuilderServiceTest {
         val creditor = createCreditor()
         val debtor = createDebtor()
         val entityManagerService = services.cordaService(EntityManagerService::class.java)
-        doReturn(creditor).`when`(entityManagerService).getCreditor(creditor.account.account)
-        doReturn(debtor).`when`(entityManagerService).getDebtor(debtor.account.account)
-        doReturn(creditor.account.currency).`when`(entityManagerService).getCurrency(creditor.account.currency.isoCode)
-        doReturn(debtor.account.currency).`when`(entityManagerService).getCurrency(debtor.account.currency.isoCode)
+        doReturn(creditor).`when`(entityManagerService).getCreditor(creditor.account!!.account!!)
+        doReturn(debtor).`when`(entityManagerService).getDebtor(debtor.account!!.account!!)
+        doReturn(creditor.account!!.currency).`when`(entityManagerService).getCurrency(creditor.account!!.currency!!.isoCode!!)
+        doReturn(debtor.account!!.currency).`when`(entityManagerService).getCurrency(debtor.account!!.currency!!.isoCode!!)
     }
 
     @Test
