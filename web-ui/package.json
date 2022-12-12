@@ -1,8 +1,8 @@
 {
   "name": "corda-payments-gui",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Gevamu Payments",
+  "description": "Sample Debtor UI",
+  "productName": "Gevamu Payments SDK",
   "author": "Nikolay Dorofeev <nikolay.dorofeev@exactprosystems.com>",
   "private": true,
   "scripts": {
