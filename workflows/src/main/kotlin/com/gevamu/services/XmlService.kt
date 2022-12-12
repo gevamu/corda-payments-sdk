@@ -40,9 +40,9 @@ open class XmlService protected constructor(
     protected val jaxbContext: JAXBContext = JAXBContext.newInstance(
         *(listOf<Class<*>>(CustomerCreditTransferInitiationV09::class.java) + xmlClasses).toTypedArray()
     )
-    protected val xmlInputFactory = XMLInputFactory.newFactory()
-
-    constructor(serviceHub: AppServiceHub) : this(serviceHub, listOf())
+    protected val xmlInputFactory: XMLInputFactory = XMLInputFactory.newFactory()
+    
+    constructor(serviceHub: AppServiceHub) : this(serviceHub, emptyList())
 
     fun storePaymentInstruction(paymentInstruction: PaymentInstruction, ourIdentity: Party): AttachmentId {
         val zipBytes = zip(listOf(ZipFileEntry("paymentInstruction.xml", paymentInstruction.paymentInstruction)))
