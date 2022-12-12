@@ -1,11 +1,35 @@
+/*******************************************************************************
+ * Copyright 2022 Exactpro Systems Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.gevamu.web.server.services;
 
+import com.gevamu.iso20022.pain.AccountIdentification4Choice;
 import com.gevamu.iso20022.pain.BranchAndFinancialInstitutionIdentification6;
 import com.gevamu.iso20022.pain.CashAccount38;
+import com.gevamu.iso20022.pain.FinancialInstitutionIdentification18;
+import com.gevamu.iso20022.pain.GenericAccountIdentification1;
+import com.gevamu.iso20022.pain.GenericOrganisationIdentification1;
 import com.gevamu.iso20022.pain.ObjectFactory;
+import com.gevamu.iso20022.pain.OrganisationIdentification29;
+import com.gevamu.iso20022.pain.Party38Choice;
 import com.gevamu.iso20022.pain.PartyIdentification135;
+import com.gevamu.iso20022.pain.PostalAddress24;
 import com.gevamu.web.server.config.Participant;
 import com.gevamu.web.server.config.Participants;
+import com.gevamu.web.server.util.MoreCollectors;
 import lombok.NonNull;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +38,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class ParticipantService {
@@ -36,10 +59,10 @@ public class ParticipantService {
     public ParticipantService(Participants participants) {
         creditors = participants.getCreditors()
             .stream()
-            .collect(Collectors.toUnmodifiableMap(Participant::getAccount, Function.identity()));
+            .collect(MoreCollectors.toUnmodifiableMap(Participant::getAccount, Function.identity()));
         debtors = participants.getDebtors()
             .stream()
-            .collect(Collectors.toUnmodifiableMap(Participant::getAccount, Function.identity()));
+            .collect(MoreCollectors.toUnmodifiableMap(Participant::getAccount, Function.identity()));
     }
 
     public Collection<Participant> getCreditors() {
@@ -51,21 +74,21 @@ public class ParticipantService {
     }
 
     public ParticipantIdentification getCreditorIdentification(@NonNull String account) {
-        var creditor = creditors.get(account);
+        Participant creditor = creditors.get(account);
         return createIdentification(creditor);
     }
 
     public ParticipantIdentification getDebtorIdentification(@NonNull String account) {
         return registrationService.getRegistration()
             .map(it -> {
-                var debtor = debtors.get(account);
-                var identification = createIdentification(debtor);
+                Participant debtor = debtors.get(account);
+                ParticipantIdentification identification = createIdentification(debtor);
 
-                var genericOrgId = objectFactory.createGenericOrganisationIdentification1();
+                GenericOrganisationIdentification1 genericOrgId = objectFactory.createGenericOrganisationIdentification1();
                 genericOrgId.setId(it.getParticipantId());
-                var orgId = objectFactory.createOrganisationIdentification29();
+                OrganisationIdentification29 orgId = objectFactory.createOrganisationIdentification29();
                 orgId.getOthr().add(genericOrgId);
-                var id = objectFactory.createParty38Choice();
+                Party38Choice id = objectFactory.createParty38Choice();
                 id.setOrgId(orgId);
                 identification.getPartyIdentification().setId(id);
 
@@ -75,25 +98,25 @@ public class ParticipantService {
     }
 
     private ParticipantIdentification createIdentification(@NonNull Participant participant) {
-        var branchAndFinancialInstitutionIdentification = createBranchAndFinancialInstitutionIdentification(participant);
-        var partyIdentification = createPartyIdentification(participant);
-        var cashAccount = createCashAccount(participant);
+        BranchAndFinancialInstitutionIdentification6 branchAndFinancialInstitutionIdentification = createBranchAndFinancialInstitutionIdentification(participant);
+        PartyIdentification135 partyIdentification = createPartyIdentification(participant);
+        CashAccount38 cashAccount = createCashAccount(participant);
         return new ParticipantIdentification(branchAndFinancialInstitutionIdentification, partyIdentification, cashAccount);
     }
 
     private BranchAndFinancialInstitutionIdentification6 createBranchAndFinancialInstitutionIdentification(Participant participant) {
-        var financialInstitutionIdentification = objectFactory.createFinancialInstitutionIdentification18();
+        FinancialInstitutionIdentification18 financialInstitutionIdentification = objectFactory.createFinancialInstitutionIdentification18();
         financialInstitutionIdentification.setBICFI(participant.getBic());
-        var result = objectFactory.createBranchAndFinancialInstitutionIdentification6();
+        BranchAndFinancialInstitutionIdentification6 result = objectFactory.createBranchAndFinancialInstitutionIdentification6();
         result.setFinInstnId(financialInstitutionIdentification);
         return result;
     }
 
     private PartyIdentification135 createPartyIdentification(Participant participant) {
-        var result = objectFactory.createPartyIdentification135();
+        PartyIdentification135 result = objectFactory.createPartyIdentification135();
         result.setNm(participant.getAccountName());
 
-        var pstlAdr = objectFactory.createPostalAddress24();
+        PostalAddress24 pstlAdr = objectFactory.createPostalAddress24();
         pstlAdr.setCtry(participant.getCountry());
         result.setPstlAdr(pstlAdr);
 
@@ -101,13 +124,13 @@ public class ParticipantService {
     }
 
     private CashAccount38 createCashAccount(Participant participant) {
-        var othr = objectFactory.createGenericAccountIdentification1();
+        GenericAccountIdentification1 othr = objectFactory.createGenericAccountIdentification1();
         othr.setId(participant.getAccount());
 
-        var id = objectFactory.createAccountIdentification4Choice();
+        AccountIdentification4Choice id = objectFactory.createAccountIdentification4Choice();
         id.setOthr(othr);
 
-        var result = objectFactory.createCashAccount38();
+        CashAccount38 result = objectFactory.createCashAccount38();
         result.setId(id);
         result.setNm(participant.getAccountName());
         result.setCcy(participant.getCurrency());

@@ -1,9 +1,27 @@
+/*******************************************************************************
+ * Copyright 2022 Exactpro Systems Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.gevamu.web.server.services;
 
 import com.gevamu.flows.ParticipantRegistration;
 import com.gevamu.iso20022.pain.BranchAndFinancialInstitutionIdentification6;
 import com.gevamu.iso20022.pain.CashAccount38;
 import com.gevamu.iso20022.pain.CreditTransferTransaction34;
+import com.gevamu.iso20022.pain.CustomerCreditTransferInitiationV09;
+import com.gevamu.iso20022.pain.GenericOrganisationIdentification1;
 import com.gevamu.iso20022.pain.GroupHeader85;
 import com.gevamu.iso20022.pain.PartyIdentification135;
 import com.gevamu.iso20022.pain.PaymentInstruction30;
@@ -18,6 +36,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -53,9 +72,12 @@ public class CustomerCreditTransferInitiationServiceTest {
     @MockBean
     private transient RegistrationService registrationService;
 
+    @MockBean
+    private transient CordaRpcClientService cordaRpcClientService;
+
     @BeforeEach
     public void beforeEach() {
-        var registration = new ParticipantRegistration("test_p_id", "test_n_id");
+        ParticipantRegistration registration = new ParticipantRegistration("test_p_id", "test_n_id");
         when(registrationService.getRegistration())
             .thenReturn(Optional.of(registration));
     }
@@ -67,28 +89,28 @@ public class CustomerCreditTransferInitiationServiceTest {
 
     @Test
     public void test() {
-        var request = new PaymentRequest("test_creditor_account", "test_debtor_account", BigDecimal.TEN);
-        var result = customerCreditTransferInitiationService.createCustomerCreditTransferInitiation(request);
+        PaymentRequest request = new PaymentRequest("test_creditor_account", "test_debtor_account", BigDecimal.TEN);
+        CustomerCreditTransferInitiationV09 result = customerCreditTransferInitiationService.createCustomerCreditTransferInitiation(request);
         assertThat(result).isNotNull();
 
         validateGrpHdr(result.getGrpHdr());
 
         assertThat(result.getPmtInf().size()).isEqualTo(1);
-        var payment = result.getPmtInf().get(0);
+        PaymentInstruction30 payment = result.getPmtInf().get(0);
         validatePaymentInstruction(payment);
 
-        var debtor = payment.getDbtr();
+        PartyIdentification135 debtor = payment.getDbtr();
         validateDebtor(debtor);
 
-        var debtorAcct = payment.getDbtrAcct();
+        CashAccount38 debtorAcct = payment.getDbtrAcct();
         validateDebtorAcct(debtorAcct);
 
-        var debtorAgt = payment.getDbtrAgt();
+        BranchAndFinancialInstitutionIdentification6 debtorAgt = payment.getDbtrAgt();
         validateDebtorAgt(debtorAgt);
 
-        var transactions = payment.getCdtTrfTxInf();
+        List<CreditTransferTransaction34> transactions = payment.getCdtTrfTxInf();
         assertThat(transactions.size()).isEqualTo(1);
-        var transaction = transactions.get(0);
+        CreditTransferTransaction34 transaction = transactions.get(0);
         validateTransaction(transaction);
     }
 
@@ -118,7 +140,7 @@ public class CustomerCreditTransferInitiationServiceTest {
         assertThat(debtor.getId()).isNotNull();
         assertThat(debtor.getId().getOrgId()).isNotNull();
         assertThat(debtor.getId().getOrgId().getOthr().size()).isEqualTo(1);
-        var debtorOrg = debtor.getId().getOrgId().getOthr().get(0);
+        GenericOrganisationIdentification1 debtorOrg = debtor.getId().getOrgId().getOthr().get(0);
         assertThat(debtorOrg).isNotNull();
         assertThat(debtorOrg.getId()).isEqualTo("test_p_id");
     }
@@ -148,18 +170,18 @@ public class CustomerCreditTransferInitiationServiceTest {
         assertThat(transaction.getAmt().getInstdAmt().getValue()).isEqualTo(BigDecimal.TEN);
         assertThat(transaction.getAmt().getInstdAmt().getCcy()).isEqualTo("test_creditor_currency");
 
-        var creditorAgt = transaction.getCdtrAgt();
+        BranchAndFinancialInstitutionIdentification6 creditorAgt = transaction.getCdtrAgt();
         assertThat(creditorAgt).isNotNull();
         assertThat(creditorAgt.getFinInstnId()).isNotNull();
         assertThat(creditorAgt.getFinInstnId().getBICFI()).isEqualTo("test_creditor_bic");
 
-        var creditor = transaction.getCdtr();
+        PartyIdentification135 creditor = transaction.getCdtr();
         assertThat(creditor).isNotNull();
         assertThat(creditor.getNm()).isEqualTo("test_creditor_accountName");
         assertThat(creditor.getPstlAdr()).isNotNull();
         assertThat(creditor.getPstlAdr().getCtry()).isEqualTo("test_creditor_country");
 
-        var creditorAcct = transaction.getCdtrAcct();
+        CashAccount38 creditorAcct = transaction.getCdtrAcct();
         assertThat(creditorAcct).isNotNull();
         assertThat(creditorAcct.getId()).isNotNull();
         assertThat(creditorAcct.getId().getOthr()).isNotNull();

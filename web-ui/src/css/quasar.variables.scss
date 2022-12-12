@@ -12,7 +12,7 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary   : #6366F1;
+$primary   : #50B680;
 $secondary : #26A69A;
 $accent    : #03a9f4;
 
@@ -23,3 +23,10 @@ $positive  : #21BA45;
 $negative  : #C10015;
 $info      : #31CCEC;
 $warning   : #F2C037;
+
+$gray-1    : #F8F8F8;
+$gray-2    : #F0F0F0;
+
+$input-text-color: #64758B;
+
+$h6: (size: 16px, line-height: 2rem, letter-spacing: .0125em, weight: 500) !default;
