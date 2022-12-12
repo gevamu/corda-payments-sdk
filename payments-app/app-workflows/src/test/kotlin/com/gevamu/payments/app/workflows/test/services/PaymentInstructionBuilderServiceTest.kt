@@ -17,12 +17,12 @@ import com.gevamu.payments.app.workflows.flows.PaymentInitiationRequest
 import com.gevamu.payments.app.workflows.services.EntityManagerService
 import com.gevamu.payments.app.workflows.services.PaymentInstructionBuilderService
 import com.gevamu.payments.app.workflows.services.RegistrationService
-import java.math.BigDecimal
 import org.apache.commons.lang3.StringUtils
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doReturn
+import java.math.BigDecimal
 
 class PaymentInstructionBuilderServiceTest {
 
@@ -39,10 +39,10 @@ class PaymentInstructionBuilderServiceTest {
         val creditor = createCreditor()
         val debtor = createDebtor()
         val entityManagerService = services.cordaService(EntityManagerService::class.java)
-        doReturn(creditor).`when`(entityManagerService).getCreditor(creditor.account!!.account!!)
-        doReturn(debtor).`when`(entityManagerService).getDebtor(debtor.account!!.account!!)
-        doReturn(creditor.account!!.currency!!).`when`(entityManagerService).getCurrency(creditor.account!!.currency!!.isoCode!!)
-        doReturn(debtor.account!!.currency!!).`when`(entityManagerService).getCurrency(debtor.account!!.currency!!.isoCode!!)
+        doReturn(creditor).`when`(entityManagerService).getCreditor(creditor.account.account)
+        doReturn(debtor).`when`(entityManagerService).getDebtor(debtor.account.account)
+        doReturn(creditor.account.currency).`when`(entityManagerService).getCurrency(creditor.account.currency.isoCode)
+        doReturn(debtor.account.currency).`when`(entityManagerService).getCurrency(debtor.account.currency.isoCode)
     }
 
     @Test
@@ -144,7 +144,7 @@ class PaymentInstructionBuilderServiceTest {
         assertThat(creditorAcct.ccy).isEqualTo("test_creditor_currency")
         assertThat(creditorAcct.nm).isEqualTo("test_creditor_accountName")
 
-        //FIXME the following values are hard-coded in the service
+        // FIXME the following values are hard-coded in the service
         assertThat(transaction.instrForCdtrAgt.size).isEqualTo(1)
         assertThat(transaction.instrForCdtrAgt[0].instrInf).isEqualTo("ACC/SERVICE TRADE")
         assertThat(transaction.instrForDbtrAgt).isEqualTo("Instr For Debtor Agent")

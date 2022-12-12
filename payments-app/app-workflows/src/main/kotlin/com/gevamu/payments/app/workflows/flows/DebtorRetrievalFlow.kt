@@ -3,10 +3,10 @@ package com.gevamu.payments.app.workflows.flows
 import co.paralleluniverse.fibers.Suspendable
 import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Account
 import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Debtor
-import java.util.stream.Collectors
 import net.corda.core.flows.FlowLogic
 import net.corda.core.flows.StartableByRPC
 import net.corda.core.identity.Party
+import java.util.stream.Collectors
 
 @StartableByRPC
 class DebtorRetrievalFlow(

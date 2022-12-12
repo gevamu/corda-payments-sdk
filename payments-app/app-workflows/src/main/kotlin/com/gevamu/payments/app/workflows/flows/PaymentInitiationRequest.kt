@@ -1,8 +1,8 @@
 package com.gevamu.payments.app.workflows.flows
 
+import net.corda.core.serialization.CordaSerializable
 import java.io.Serializable
 import java.math.BigDecimal
-import net.corda.core.serialization.CordaSerializable
 
 @CordaSerializable
 data class PaymentInitiationRequest(

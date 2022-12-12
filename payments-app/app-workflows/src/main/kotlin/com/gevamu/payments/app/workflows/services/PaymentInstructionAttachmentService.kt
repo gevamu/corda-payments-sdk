@@ -3,16 +3,16 @@ package com.gevamu.payments.app.workflows.services
 import com.gevamu.iso20022.pain.CustomerCreditTransferInitiationV09
 import com.gevamu.iso20022.pain.PaymentInstruction30
 import com.gevamu.payments.app.contracts.states.PaymentDetails
+import net.corda.core.node.AppServiceHub
+import net.corda.core.node.services.AttachmentId
+import net.corda.core.node.services.CordaService
+import net.corda.core.serialization.SingletonSerializeAsToken
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.time.Instant
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import javax.xml.bind.JAXBContext
-import net.corda.core.node.AppServiceHub
-import net.corda.core.node.services.AttachmentId
-import net.corda.core.node.services.CordaService
-import net.corda.core.serialization.SingletonSerializeAsToken
 
 @CordaService
 class PaymentInstructionAttachmentService(
@@ -93,6 +93,6 @@ class PaymentInstructionAttachmentService(
     }
 
     companion object {
-        private const val PAYMENT_INSTRUCTION_ATTACHMENT = "paymentInstruction.xml";
+        private const val PAYMENT_INSTRUCTION_ATTACHMENT = "paymentInstruction.xml"
     }
 }

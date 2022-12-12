@@ -2,14 +2,14 @@ package com.gevamu.payments.app.workflows.services
 
 import com.gevamu.payments.app.contracts.schemas.AppSchemaV1
 import com.gevamu.states.Payment.PaymentStatus
-import java.math.BigDecimal
-import java.time.Instant
-import java.util.UUID
-import java.util.stream.Collectors
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.CordaSerializable
 import net.corda.core.serialization.SingletonSerializeAsToken
+import java.math.BigDecimal
+import java.time.Instant
+import java.util.UUID
+import java.util.stream.Collectors
 
 @CordaService
 class PaymentStateService(
@@ -32,7 +32,7 @@ class PaymentStateService(
                     status = status.status
                 )
             }
-            .collect(Collectors.toList());
+            .collect(Collectors.toList())
     }
 }
 

@@ -1,6 +1,9 @@
 package com.gevamu.payments.app.contracts.schemas
 
 import com.gevamu.payments.app.contracts.states.PaymentDetails
+import net.corda.core.schemas.MappedSchema
+import net.corda.core.schemas.PersistentState
+import net.corda.core.serialization.CordaSerializable
 import java.io.Serializable
 import java.math.BigDecimal
 import java.time.Instant
@@ -12,25 +15,25 @@ import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.OneToOne
 import javax.persistence.Table
-import net.corda.core.schemas.MappedSchema
-import net.corda.core.schemas.PersistentState
-import net.corda.core.serialization.CordaSerializable
 
 object AppSchema
 
 @CordaSerializable
-object AppSchemaV1 : MappedSchema(
-    schemaFamily = AppSchema::class.java,
-    mappedTypes = listOf(
-        Account::class.java,
-        Debtor::class.java,
-        Creditor::class.java,
-        Currency::class.java,
-        Country::class.java,
-        Registration::class.java,
-        PersistentPaymentDetails::class.java),
-    version = 1
-), Serializable {
+object AppSchemaV1 :
+    MappedSchema(
+        schemaFamily = AppSchema::class.java,
+        mappedTypes = listOf(
+            Account::class.java,
+            Debtor::class.java,
+            Creditor::class.java,
+            Currency::class.java,
+            Country::class.java,
+            Registration::class.java,
+            PersistentPaymentDetails::class.java
+        ),
+        version = 1
+    ),
+    Serializable {
 
     private const val serialVersionUID = 1L
 

@@ -6,16 +6,16 @@ import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Creditor
 import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Currency
 import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.Debtor
 import com.gevamu.payments.app.contracts.schemas.AppSchemaV1.PersistentPaymentDetails
-import java.io.Serializable
-import java.math.BigDecimal
-import java.time.Instant
-import java.util.UUID
 import net.corda.core.contracts.BelongsToContract
 import net.corda.core.identity.AbstractParty
 import net.corda.core.schemas.MappedSchema
 import net.corda.core.schemas.PersistentState
 import net.corda.core.schemas.QueryableState
 import net.corda.core.serialization.CordaSerializable
+import java.io.Serializable
+import java.math.BigDecimal
+import java.time.Instant
+import java.util.UUID
 
 @BelongsToContract(PaymentInitiationContract::class)
 class PaymentDetailsState(

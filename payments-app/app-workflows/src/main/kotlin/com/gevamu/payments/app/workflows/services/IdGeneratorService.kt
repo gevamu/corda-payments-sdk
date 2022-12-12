@@ -1,13 +1,13 @@
 package com.gevamu.payments.app.workflows.services
 
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
-import java.util.Locale
-import javax.xml.bind.DatatypeConverter
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken
 import org.apache.commons.lang3.RandomStringUtils
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import java.util.Locale
+import javax.xml.bind.DatatypeConverter
 
 @CordaService
 class IdGeneratorService(
