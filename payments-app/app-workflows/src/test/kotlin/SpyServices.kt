@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 import com.gevamu.payments.app.workflows.services.EntityManagerService
 import com.gevamu.payments.app.workflows.services.IdGeneratorService
 import com.gevamu.payments.app.workflows.services.PaymentInstructionBuilderService
