@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package com.gevamu.web.server.services;
+package com.gevamu.payments.app.workflows.flows
 
-import com.gevamu.flows.ParticipantRegistration;
-import org.springframework.beans.factory.InitializingBean;
+import net.corda.core.serialization.CordaSerializable
+import java.io.Serializable
+import java.math.BigDecimal
 
-import java.util.Optional;
-
-public interface RegistrationStoreService extends InitializingBean, AutoCloseable {
-    Optional<ParticipantRegistration> getRegistration();
-    void putRegistration(ParticipantRegistration registration);
+@CordaSerializable
+data class PaymentInitiationRequest(
+    val creditorAccount: String,
+    val debtorAccount: String,
+    val amount: BigDecimal
+) : Serializable {
+    companion object {
+        private const val serialVersionUID = 1L
+    }
 }

@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package com.gevamu.web.server.config;
+package com.gevamu.payments.app.contracts.contracts
 
-import lombok.Value;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.context.annotation.Scope;
+import net.corda.core.contracts.CommandData
+import net.corda.core.contracts.Contract
+import net.corda.core.transactions.LedgerTransaction
 
-import java.util.List;
-
-@ConfigurationProperties("participants")
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@ConstructorBinding
-@Value
-public class Participants {
-    List<Participant> creditors;
-    List<Participant> debtors;
+class PaymentInitiationContract : Contract {
+    override fun verify(tx: LedgerTransaction) {
+    }
+    interface Commands : CommandData {
+        class Create : Commands
+    }
 }

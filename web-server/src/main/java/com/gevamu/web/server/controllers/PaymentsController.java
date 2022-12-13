@@ -45,10 +45,9 @@ public class PaymentsController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-
     public Mono<Void> postPayment(@Valid @RequestBody PaymentRequest paymentRequest) {
         log.debug("postPayment: {}", paymentRequest);
-        return Mono.defer(() -> Mono.fromCompletionStage(paymentService.processPayment(paymentRequest)));
+        return paymentService.processPayment(paymentRequest);
     }
 
     @GetMapping(
@@ -57,9 +56,8 @@ public class PaymentsController {
     )
     public Mono<PaymentStateResponse> getStates() {
         log.debug("getStates");
-        return Mono.defer(
-            () -> Mono.just(new PaymentStateResponse(paymentService.getPaymentStates()))
-        );
+        return paymentService.getPaymentStates()
+            .map(PaymentStateResponse::new);
     }
 
     @ResponseStatus(

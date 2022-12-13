@@ -19,18 +19,26 @@ package com.gevamu.web.server.services;
 import com.gevamu.flows.ParticipantRegistration;
 import com.gevamu.flows.PaymentFlow;
 import com.gevamu.flows.PaymentInstruction;
-import com.gevamu.flows.RegisterParticipantFlow;
-import com.gevamu.states.Payment;
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1;
+import com.gevamu.payments.app.workflows.flows.CreditorRetrievalFlow;
+import com.gevamu.payments.app.workflows.flows.DebtorRetrievalFlow;
+import com.gevamu.payments.app.workflows.flows.PaymentDetailsRetrievalFlow;
+import com.gevamu.payments.app.workflows.flows.PaymentInitiationFlow;
+import com.gevamu.payments.app.workflows.flows.PaymentInitiationRequest;
+import com.gevamu.payments.app.workflows.flows.RegistrationInitiationFlow;
+import com.gevamu.payments.app.workflows.flows.RegistrationRetrievalFlow;
+import com.gevamu.payments.app.workflows.services.PaymentState;
 import com.gevamu.web.server.config.CordaRpcClientConnection;
-import com.gevamu.web.server.util.MoreCollectors;
 import lombok.NonNull;
 import net.corda.client.rpc.CordaRPCClient;
 import net.corda.client.rpc.CordaRPCConnection;
 import net.corda.core.CordaRuntimeException;
 import net.corda.core.crypto.SecureHash;
+import net.corda.core.flows.FlowLogic;
 import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
 import net.corda.core.utilities.NetworkHostAndPort;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -78,21 +86,42 @@ public class CordaRpcClientService implements AutoCloseable {
             .thenApply(it -> null);
     }
 
-    public CompletionStage<ParticipantRegistration> executeRegistrationFlow() {
+    public CompletionStage<List<? extends AppSchemaV1.Account>> getCreditors() {
+        return executeFlow(CreditorRetrievalFlow.class);
+    }
+
+    public CompletionStage<List<? extends AppSchemaV1.Account>> getDebtors() {
+        return executeFlow(DebtorRetrievalFlow.class);
+    }
+
+    public CompletionStage<Void> sendPayment(PaymentInitiationRequest request) {
+        return executeFlow(PaymentInitiationFlow.class, request)
+            .thenApply(it -> null);
+    }
+
+    public CompletionStage<ParticipantRegistration> getRegistration() {
+        return executeFlow(RegistrationRetrievalFlow.class);
+    }
+
+    public CompletionStage<ParticipantRegistration> register() {
+        return executeFlow(RegistrationInitiationFlow.class);
+    }
+
+    public <O> CompletionStage<O> executeFlow(@NonNull Class<? extends FlowLogic<O>> flowClass, Object... args) {
         Party gatewayParty = getParty(GATEWAY_PARTY_NAME);
-        return proxy.startFlowDynamic(RegisterParticipantFlow.class, gatewayParty)
+        Object[] flowArgs = ArrayUtils.isEmpty(args) ?
+            new Object[] { gatewayParty } :
+            ArrayUtils.add(args, gatewayParty);
+        return proxy.startFlowDynamic(flowClass, flowArgs)
             .getReturnValue()
             .toCompletableFuture();
     }
 
-    public List<Payment> getPayments() {
-        return proxy.vaultQuery(Payment.class)
-            .getStates()
-            .stream()
-            .map(it -> it.getState().getData())
-            .collect(MoreCollectors.toUnmodifiableList());
+    public CompletionStage<List<? extends PaymentState>> getPaymentDetails() {
+        return executeFlow(PaymentDetailsRetrievalFlow.class);
     }
 
+    @Deprecated
     public byte[] getAttachedPaymentInstruction(@NonNull SecureHash attachmentId) {
         try (
             InputStream inputStream = proxy.openAttachment(attachmentId);

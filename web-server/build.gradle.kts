@@ -45,10 +45,11 @@ dependencies {
 
     implementation(project(":contracts"))
     implementation(project(":workflows"))
+    implementation(project(":payments-app:app-contracts"))
+    implementation(project(":payments-app:app-workflows"))
 
     implementation("co.paralleluniverse:quasar-core:0.8.0")
     implementation("net.corda:corda-rpc:4.9.3")
-    implementation("net.openhft:chronicle-map:3.24ea0")
 
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webflux")

@@ -14,35 +14,22 @@
  * limitations under the License.
  */
 
-package com.gevamu.web.server.models;
+plugins {
+    id("com.gevamu.kotlin-common-conventions")
+    id("com.gevamu.kotlin-cordapp-conventions")
+}
 
-import com.gevamu.states.Payment;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.Value;
+group = rootProject.group
 
-import java.math.BigDecimal;
-import java.time.Instant;
+dependencies {
+    cordapp(project(":contracts"))
+}
 
-@Value
-@Builder
-public class PaymentState {
-    @NonNull
-    Instant creationTime;
-    @NonNull
-    Instant updateTime;
-    @NonNull
-    String paymentId;
-    @NonNull
-    String endToEndId;
-    @NonNull
-    BigDecimal amount;
-    @NonNull
-    String currency;
-    @NonNull
-    Payment.PaymentStatus status;
-    @NonNull
-    ParticipantAccount creditor;
-    @NonNull
-    ParticipantAccount debtor;
+cordapp {
+    contract {
+        name("Payments Application Contracts")
+        vendor("Exactpro Systems LLC")
+        licence("Apache License, Version 2.0")
+        versionId(1)
+    }
 }

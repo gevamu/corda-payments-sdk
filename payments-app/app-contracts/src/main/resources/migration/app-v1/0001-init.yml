@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: init-app-schema
+      author: Exactpro Systems LLC
+      changes:
+        - sqlFile:
+            path: migration/app-v1/sql/0001-init.sql

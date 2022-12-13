@@ -11,4 +11,4 @@ pluginManagement {
 }
 
 rootProject.name = "corda-payments-sdk"
-include("contracts", "workflows", "web-server", "web-ui")
+include("contracts", "workflows", "web-server", "web-ui", "payments-app:app-contracts", "payments-app:app-workflows")

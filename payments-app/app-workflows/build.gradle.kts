@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package com.gevamu.web.server.config;
+plugins {
+    id("com.gevamu.kotlin-common-conventions")
+    id("com.gevamu.kotlin-cordapp-conventions")
+}
 
-import lombok.Value;
-import org.springframework.boot.context.properties.ConstructorBinding;
+group = rootProject.group
 
-@ConstructorBinding
-@Value
-public class Participant {
-    String bic;
-    String country;
-    String currency;
-    String account;
-    String accountName;
-    String effectiveDate;
-    String expiryDate;
-    String paymentLimit;
+dependencies {
+    cordapp(project(":contracts"))
+    cordapp(project(":workflows"))
+    cordapp(project(":payments-app:app-contracts"))
+    api("javax.xml.bind:jaxb-api:2.3.1")
+}
+
+cordapp {
+    contract {
+        name("Payments Application Workflows")
+        vendor("Exactpro Systems LLC")
+        licence("Apache License, Version 2.0")
+        versionId(1)
+    }
 }

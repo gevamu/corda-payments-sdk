@@ -16,6 +16,7 @@
 
 package com.gevamu.web.server.controllers;
 
+import com.gevamu.payments.app.contracts.schemas.AppSchemaV1;
 import com.gevamu.web.server.services.CordaRpcClientService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,28 +26,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = {
-        "participants.creditors[0].bic=test_creditor_bic",
-        "participants.creditors[0].country=test_creditor_country",
-        "participants.creditors[0].currency=test_creditor_currency",
-        "participants.creditors[0].account=test_creditor_account",
-        "participants.creditors[0].accountName=test_creditor_accountName",
-        "participants.creditors[0].effectiveDate=test_creditor_effectiveDate",
-        "participants.creditors[0].expiryDate=test_creditor_expiryDate",
-        "participants.creditors[0].paymentLimit=test_creditor_paymentLimit",
-        "participants.debtors[0].bic=test_debtor_bic",
-        "participants.debtors[0].country=test_debtor_country",
-        "participants.debtors[0].currency=test_debtor_currency",
-        "participants.debtors[0].participantId=test_debtor_participantId",
-        "participants.debtors[0].account=test_debtor_account",
-        "participants.debtors[0].accountName=test_debtor_accountName",
-        "participants.debtors[0].effectiveDate=test_debtor_effectiveDate",
-        "participants.debtors[0].expiryDate=test_debtor_expiryDate",
-        "participants.debtors[0].paymentLimit=test_debtor_paymentLimit"
-    }
-)
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import static org.mockito.Mockito.when;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class ParticipantsControllerTest {
 
@@ -60,6 +46,9 @@ public class ParticipantsControllerTest {
 
     @Test
     public void testCreditors() {
+        List<AppSchemaV1.Account> creditors = createCreditors();
+        when(cordaRpcClientService.getCreditors())
+            .thenReturn(CompletableFuture.completedFuture(creditors));
         webClient.get()
             .uri(PATH + "/creditors")
             .exchange()
@@ -82,6 +71,9 @@ public class ParticipantsControllerTest {
 
     @Test
     public void testDebtors() {
+        List<AppSchemaV1.Account> debtors = createDebtors();
+        when(cordaRpcClientService.getDebtors())
+            .thenReturn(CompletableFuture.completedFuture(debtors));
         webClient.get()
             .uri(PATH + "/debtors")
             .exchange()
@@ -100,5 +92,33 @@ public class ParticipantsControllerTest {
             .isEqualTo("test_debtor_accountName")
             .jsonPath("accounts[0].currency")
             .isEqualTo("test_debtor_currency");
+    }
+
+    private List<AppSchemaV1.Account> createCreditors() {
+        AppSchemaV1.Country country = new AppSchemaV1.Country();
+        country.setIsoCodeAlpha2("test_creditor_country");
+        AppSchemaV1.Currency currency = new AppSchemaV1.Currency();
+        currency.setIsoCode("test_creditor_currency");
+        AppSchemaV1.Account account = new AppSchemaV1.Account();
+        account.setBic("test_creditor_bic");
+        account.setCountry(country);
+        account.setCurrency(currency);
+        account.setAccount("test_creditor_account");
+        account.setAccountName("test_creditor_accountName");
+        return Collections.singletonList(account);
+    }
+
+    private List<AppSchemaV1.Account> createDebtors() {
+        AppSchemaV1.Country country = new AppSchemaV1.Country();
+        country.setIsoCodeAlpha2("test_debtor_country");
+        AppSchemaV1.Currency currency = new AppSchemaV1.Currency();
+        currency.setIsoCode("test_debtor_currency");
+        AppSchemaV1.Account account = new AppSchemaV1.Account();
+        account.setBic("test_debtor_bic");
+        account.setCountry(country);
+        account.setCurrency(currency);
+        account.setAccount("test_debtor_account");
+        account.setAccountName("test_debtor_accountName");
+        return Collections.singletonList(account);
     }
 }
