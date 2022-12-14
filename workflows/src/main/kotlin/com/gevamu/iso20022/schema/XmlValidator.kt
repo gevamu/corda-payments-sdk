@@ -33,7 +33,7 @@ class XmlValidator(schema: Schema, private val defaultNamespace: String) : XMLFi
      *            supplied by the application.
      */
     @Throws(SAXException::class, IOException::class)
-    fun validate(xml: String) = parse(InputSource(xml.byteInputStream()))
+    fun validate(xml: ByteArray) = parse(InputSource(xml.inputStream()))
 
     override fun startElement(uri: String, localName: String, qName: String, atts: Attributes) {
         super.startElement(defaultNamespace, localName, qName, atts)

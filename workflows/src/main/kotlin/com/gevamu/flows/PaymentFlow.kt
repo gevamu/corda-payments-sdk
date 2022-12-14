@@ -22,6 +22,7 @@ import com.gevamu.iso20022.pain.CustomerCreditTransferInitiationV09
 import com.gevamu.services.FlowService
 import com.gevamu.services.XmlService
 import com.gevamu.states.Payment
+import com.gevamu.xml.paymentinstruction.PaymentXmlData
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.flows.FinalityFlow
 import net.corda.core.flows.FlowLogic
@@ -54,9 +55,8 @@ class PaymentFlow(
         val xmlService = serviceHub.cordaService(XmlService::class.java)
         val flowService = serviceHub.cordaService(FlowService::class.java)
 
-        val paymentRequest: CustomerCreditTransferInitiationV09 =
-            xmlService.unmarshalPaymentRequest(paymentInstruction.paymentInstruction)
-        val endToEndId: String = paymentRequest.pmtInf.first().cdtTrfTxInf.first().pmtId.endToEndId
+        val paymentRequest: PaymentXmlData = xmlService.unmarshalPaymentRequest(paymentInstruction.paymentInstruction, true)
+        val endToEndId: String = paymentRequest.paymentInformation.endToEndId
         logger.info("Save new payment id=$uniquePaymentId, endToEndId=$endToEndId")
         val attachmentId = xmlService.storePaymentInstruction(paymentInstruction, ourIdentity)
         // TODO Check participant id

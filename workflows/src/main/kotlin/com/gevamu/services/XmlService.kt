@@ -17,7 +17,8 @@
 package com.gevamu.services
 
 import com.gevamu.flows.PaymentInstruction
-import com.gevamu.iso20022.pain.CustomerCreditTransferInitiationV09
+import com.gevamu.iso20022.schema.XmlValidator
+import com.gevamu.xml.paymentinstruction.PaymentXmlData
 import net.corda.core.identity.Party
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.AttachmentId
@@ -25,10 +26,22 @@ import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.StringWriter
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
+import javax.xml.XMLConstants
 import javax.xml.bind.JAXBContext
 import javax.xml.stream.XMLInputFactory
+import javax.xml.transform.Transformer
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.stream.StreamResult
+import javax.xml.transform.stream.StreamSource
+import javax.xml.validation.Schema
+import javax.xml.validation.SchemaFactory
+import org.xml.sax.XMLReader
+import org.xml.sax.helpers.XMLReaderFactory
 
 // TODO Exception handling
 
@@ -37,11 +50,33 @@ open class XmlService protected constructor(
     protected val serviceHub: AppServiceHub,
     xmlClasses: List<Class<*>>
 ) : SingletonSerializeAsToken() {
+
     protected val jaxbContext: JAXBContext = JAXBContext.newInstance(
-        *(listOf<Class<*>>(CustomerCreditTransferInitiationV09::class.java) + xmlClasses).toTypedArray()
+        *(listOf<Class<*>>(PaymentXmlData::class.java) + xmlClasses).toTypedArray()
     )
     protected val xmlInputFactory: XMLInputFactory = XMLInputFactory.newFactory()
-    
+
+    private val creditTransferInitValidator: XmlValidator
+
+    private val schemaFactory by lazy {  SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI) }
+    private val paymentTransformer: Transformer
+
+    init {
+        val reader: XMLReader = XMLReaderFactory.createXMLReader()
+
+        creditTransferInitValidator = XmlValidator(
+            getCustomerCreditTransferInitiationSchema(),
+            CREDIT_TRANSFER_INIT_NAMESPACE
+        ).also {
+            it.parent = reader
+        }
+
+        val templateFactory =  TransformerFactory.newInstance()
+        val xslStream = getCCTXslSchemaFile()
+        paymentTransformer = templateFactory.newTemplates(StreamSource(xslStream)).newTransformer()
+        xslStream.close()
+    }
+
     constructor(serviceHub: AppServiceHub) : this(serviceHub, emptyList())
 
     fun storePaymentInstruction(paymentInstruction: PaymentInstruction, ourIdentity: Party): AttachmentId {
@@ -49,14 +84,20 @@ open class XmlService protected constructor(
         return storeAttachment(zipBytes, ourIdentity)
     }
 
-    fun unmarshalPaymentRequest(bytes: ByteArray): CustomerCreditTransferInitiationV09 {
+    fun unmarshalPaymentRequest(bytes: ByteArray, validate: Boolean = false): PaymentXmlData {
+        if (validate) creditTransferInitValidator.validate(bytes)
         val unmarshaller = jaxbContext.createUnmarshaller()
-        // XXX store factory in class; there is newDefaultFactory()
-        val inputStream = ByteArrayInputStream(bytes)
+        val inputStream = StreamSource(ByteArrayInputStream(bytes))
+
+        val outWriter = StringWriter()
+        val result = StreamResult(outWriter)
+
+        paymentTransformer.transform(inputStream, result)
+
         val jaxbElement = unmarshaller.unmarshal(
             // XXX pass encoding as 2nd argument
-            xmlInputFactory.createXMLStreamReader(inputStream),
-            CustomerCreditTransferInitiationV09::class.java
+            xmlInputFactory.createXMLStreamReader(outWriter.toString().byteInputStream()),
+            PaymentXmlData::class.java
         )
         // XXX Do we need to close XML stream reader?
         return jaxbElement.value
@@ -84,4 +125,26 @@ open class XmlService protected constructor(
 
     // TODO consider overriding equals and hashCode
     private data class ZipFileEntry(val name: String, val contentBytes: ByteArray)
+
+    private fun getCustomerCreditTransferInitiationSchema(): Schema {
+        val source = StreamSource(getResource("pain.001.001.09.xsd"))
+        try {
+            return schemaFactory.newSchema(source)
+        } finally {
+            source.inputStream.close()
+        }
+    }
+
+    private fun getCCTXslSchemaFile(): InputStream {
+        return getResource("pain.001.001.09.xsl")
+    }
+
+    companion object {
+        const val CREDIT_TRANSFER_INIT_NAMESPACE = "urn:iso:std:iso:20022:tech:xsd:pain.001.001.09"
+
+        @Throws(IOException::class)
+        private fun getResource(fileName: String): InputStream {
+            return XmlService::class.java.getResourceAsStream(fileName) ?: throw IOException("Resource $fileName wasn't found")
+        }
+    }
 }
