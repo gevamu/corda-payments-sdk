@@ -34,8 +34,8 @@ object PaymentSchemaV1 : MappedSchema(
         @Column(name = "payer_party", nullable = false)
         lateinit var payer: Party
 
-        @Column(name = "payment_id", length = 35, nullable = false)
-        lateinit var paymentId: String
+        @Column(name = "end_to_end_id", length = 35, nullable = false)
+        lateinit var endToEndId: String
 
         @Column(name = "status", nullable = false)
         @Enumerated(EnumType.STRING)
@@ -47,13 +47,13 @@ object PaymentSchemaV1 : MappedSchema(
         constructor(
             uniquePaymentId: UUID,
             payer: Party,
-            paymentId: String,
+            endToEndId: String,
             status: Payment.PaymentStatus,
             timestamp: Instant
         ) : this() {
             this.uniquePaymentId = uniquePaymentId
             this.payer = payer
-            this.paymentId = paymentId
+            this.endToEndId = endToEndId
             this.status = status
             this.timestamp = timestamp
         }

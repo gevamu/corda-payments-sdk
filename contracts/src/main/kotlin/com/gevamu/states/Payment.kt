@@ -17,7 +17,7 @@ import net.corda.core.serialization.CordaSerializable
 data class Payment(
     val payer: Party,
     val gateway: Party,
-    val paymentId: String,
+    val endToEndId: String,
     val paymentInstructionId: AttachmentId,
     val status: PaymentStatus,
     /**
@@ -41,7 +41,7 @@ data class Payment(
                 PaymentSchemaV1.PersistentPayment(
                     uniquePaymentId = uniquePaymentId,
                     payer = payer,
-                    paymentId = paymentId,
+                    endToEndId = endToEndId,
                     status = status,
                     timestamp = timestamp
                 )

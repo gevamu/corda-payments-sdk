@@ -27,7 +27,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: payment_id
+                  name: end_to_end_id
                   type: varchar(35)
                   constraints:
                     nullable: false
@@ -46,10 +46,10 @@ databaseChangeLog:
             tableName: payment_states
             columnNames: transaction_id, output_index
         - createIndex:
-            indexName: payment_states_payment_id
+            indexName: payment_states_end_to_end_id
             tableName: payment_states
             columns:
               - column:
                   name: payer_party
               - column:
-                  name: payment_id
+                  name: end_to_end_id
