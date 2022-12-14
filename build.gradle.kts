@@ -5,20 +5,20 @@ plugins {
     id("com.gevamu.kotlin-common-conventions") apply false
 }
 
-group = "com.gevamu"
+group = "com.gevamu.corda"
 
 tasks.clean {
-    dependsOn("contracts:$name", "workflows:$name")
+    dependsOn("payments-contracts:$name", "payments-workflows:$name")
 }
 
 tasks.check {
-    dependsOn("contracts:$name", "workflows:$name")
+    dependsOn("payments-contracts:$name", "payments-workflows:$name")
 }
 
 tasks.assemble {
-    dependsOn("contracts:$name", "workflows:$name")
+    dependsOn("payments-contracts:$name", "payments-workflows:$name")
 }
 
 tasks.build {
-    dependsOn("contracts:$name", "workflows:$name")
+    dependsOn("payments-contracts:$name", "payments-workflows:$name")
 }
