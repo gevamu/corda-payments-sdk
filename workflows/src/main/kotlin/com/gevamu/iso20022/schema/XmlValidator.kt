@@ -71,6 +71,5 @@ class XmlValidator(schema: Schema, private val defaultNamespace: String) : XMLFi
     companion object {
         private val DOCUMENT_TAG by lazy { Document::class.java.getDeclaredAnnotation(XmlType::class.java).name }
     }
-
 }
 

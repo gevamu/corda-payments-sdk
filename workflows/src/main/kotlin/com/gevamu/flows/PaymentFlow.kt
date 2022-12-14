@@ -18,7 +18,6 @@ package com.gevamu.flows
 
 import co.paralleluniverse.fibers.Suspendable
 import com.gevamu.contracts.PaymentContract
-import com.gevamu.iso20022.pain.CustomerCreditTransferInitiationV09
 import com.gevamu.services.FlowService
 import com.gevamu.services.XmlService
 import com.gevamu.states.Payment

@@ -19,11 +19,6 @@ package com.gevamu.services
 import com.gevamu.flows.PaymentInstruction
 import com.gevamu.iso20022.schema.XmlValidator
 import com.gevamu.xml.paymentinstruction.PaymentXmlData
-import net.corda.core.identity.Party
-import net.corda.core.node.AppServiceHub
-import net.corda.core.node.services.AttachmentId
-import net.corda.core.node.services.CordaService
-import net.corda.core.serialization.SingletonSerializeAsToken
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -40,6 +35,11 @@ import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.Schema
 import javax.xml.validation.SchemaFactory
+import net.corda.core.identity.Party
+import net.corda.core.node.AppServiceHub
+import net.corda.core.node.services.AttachmentId
+import net.corda.core.node.services.CordaService
+import net.corda.core.serialization.SingletonSerializeAsToken
 import org.xml.sax.XMLReader
 import org.xml.sax.helpers.XMLReaderFactory
 
@@ -58,7 +58,7 @@ open class XmlService protected constructor(
 
     private val creditTransferInitValidator: XmlValidator
 
-    private val schemaFactory by lazy {  SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI) }
+    private val schemaFactory by lazy { SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI) }
     private val paymentTransformer: Transformer
 
     init {
@@ -71,7 +71,7 @@ open class XmlService protected constructor(
             it.parent = reader
         }
 
-        val templateFactory =  TransformerFactory.newInstance()
+        val templateFactory = TransformerFactory.newInstance()
         val xslStream = getCCTXslSchemaFile()
         paymentTransformer = templateFactory.newTemplates(StreamSource(xslStream)).newTransformer()
         xslStream.close()
@@ -144,7 +144,8 @@ open class XmlService protected constructor(
 
         @Throws(IOException::class)
         private fun getResource(fileName: String): InputStream {
-            return XmlService::class.java.getResourceAsStream(fileName) ?: throw IOException("Resource $fileName wasn't found")
+            return XmlService::class.java.getResourceAsStream(fileName)
+                ?: throw IOException("Resource $fileName wasn't found")
         }
     }
 }
