@@ -27,8 +27,8 @@ class PaymentService{
     private static final String GATEWAY_PARTY_NAME = "Gateway";
     private static final String PAYMENT_INSTRUCTION_ATTACHMENT = "paymentInstruction.xml";
 
-    private final transient CordaRPCConnection connection;
-    private final transient CordaRPCOps proxy;
+    private transient CordaRPCConnection connection;
+    private transient CordaRPCOps proxy;
     
     public setup(
             String host,    // Corda node host 
