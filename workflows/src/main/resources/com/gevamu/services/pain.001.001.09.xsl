@@ -3,7 +3,7 @@
 
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes"/>
 
-    <xsl:template match="/Document">
+    <xsl:template match="/">
         <xsl:for-each select="CstmrCdtTrfInitn">
             <PaymentXmlData>
                 <Time> <xsl:value-of select="GrpHdr/CreDtTm"/> </Time>

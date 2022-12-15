@@ -87,7 +87,7 @@ open class XmlService protected constructor(
     fun unmarshalPaymentRequest(bytes: ByteArray, validate: Boolean = false): PaymentXmlData {
         if (validate) creditTransferInitValidator.validate(bytes)
         val unmarshaller = jaxbContext.createUnmarshaller()
-        val inputStream = StreamSource(ByteArrayInputStream(bytes))
+        val inputStream = StreamSource(bytes.inputStream())
 
         val outWriter = StringWriter()
         val result = StreamResult(outWriter)
