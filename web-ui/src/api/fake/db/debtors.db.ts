@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Exactpro Systems Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import {ParticipantAccount} from 'src/api/v1/models/ParticipantAccount.type';
 
 const debtors: ParticipantAccount[] = [{
@@ -5,11 +21,5 @@ const debtors: ParticipantAccount[] = [{
   accountName: 'ASCENT WAYXXXXXXXXXX',
   currency: 'USD',
 }]
-// for (let i = 0; i < 5; i++){
-//   debtors.push({
-//     accountId: Math.round(Math.random()*10000).toString(),
-//     accountName: `Participant ${i+1}`
-//   })
-// }
 
 export const debtorsDb = debtors

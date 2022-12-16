@@ -43,8 +43,8 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     testCompileOnly("org.projectlombok:lombok")
 
-    implementation(project(":contracts"))
-    implementation(project(":workflows"))
+    implementation(project(":payments-contracts"))
+    implementation(project(":payments-workflows"))
 
     implementation("co.paralleluniverse:quasar-core:0.8.0")
     implementation("net.corda:corda-rpc:4.9.3")
