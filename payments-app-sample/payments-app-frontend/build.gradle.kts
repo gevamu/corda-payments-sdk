@@ -33,7 +33,7 @@ tasks {
     inputs.dir("public")
     inputs.dir("node_modules")
     inputs.files("quasar.config.js", "index.html", "tsconfig.json", "postcss.config.js")
-    outputs.dir("${project.buildDir}/dist")
+    outputs.dir("${project.projectDir}/dist")
   }
 
   val npmLint = register<NpmTask>("npmLint") {
@@ -45,6 +45,14 @@ tasks {
     inputs.files("quasar.config.js", "index.html", "tsconfig.json", "postcss.config.js")
   }
 
+  val deleteNodeModules = register<Delete>("deleteNodeModules") {
+    delete("node_modules")
+  }
+
+  val deleteBuildDirectory = register<Delete>("deleteBuildDirectory") {
+    delete("dist", ".quasar")
+  }
+
   assemble {
     dependsOn(npmBuild)
   }
@@ -54,6 +62,6 @@ tasks {
   }
 
   clean {
-    // TODO
+    dependsOn(deleteNodeModules, deleteBuildDirectory)
   }
 }
