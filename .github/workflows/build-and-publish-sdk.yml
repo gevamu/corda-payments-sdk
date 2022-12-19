@@ -20,7 +20,7 @@ jobs:
       - name: 'Build'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew :contracts:build :workflows:build publish -Pversion=${GITHUB_REF_NAME:1} --no-daemon
+        run: ./gradlew :payments-contracts:build :payments-workflows:build publish -Pversion=${GITHUB_REF_NAME:1} --no-daemon
 
       - name: 'Create checksum'
         run: |
