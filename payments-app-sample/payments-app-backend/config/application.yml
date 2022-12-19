@@ -1,7 +1,7 @@
 server:
   port: 8080
 
-static_resources_path: ../web-ui/dist/spa
+static_resources_path: ../payments-app-frontend/dist/spa
 
 corda:
   rpc:

@@ -13,9 +13,9 @@ trim_trailing_whitespace = true
 end_of_line = crlf
 
 [*.xml]
+charset = utf-8
 indent_size = 2
 indent_style = space
-charset = utf-8
 
 [*.md]
 charset = utf-8
@@ -25,8 +25,8 @@ trim_trailing_whitespace = false
 # Source code files
 [*.{gradle,java,kt,kts,sql,sh,py}]
 charset = utf-8
-indent_style = space
 indent_size = 4
+indent_style = space
 
 [*.{kt,kts}]
 ij_kotlin_import_nested_classes = false
@@ -40,5 +40,10 @@ max_line_length = 120 # it seems it doesn't work :-(
 # UI code files
 [*.{js,jsx,ts,tsx,json,scss}]
 charset = utf-8
-indent_style = space
 indent_size = 2
+indent_style = space
+
+[*.yml]
+charset = utf-8
+indent_size = 2
+indent_style = space
