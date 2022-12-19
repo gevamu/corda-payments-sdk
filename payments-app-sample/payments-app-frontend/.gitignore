@@ -34,8 +34,4 @@ yarn-error.log*
 *.sln
 
 # Gradle
-gradle
-gradlew
-gradlew.bat
-
 .cache
