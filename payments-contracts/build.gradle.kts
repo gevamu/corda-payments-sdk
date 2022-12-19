@@ -35,8 +35,8 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://github.com/gevamu/corda-payments-sdk.git")
-                    developerConnection.set("scm:git:git://github.com/gevamu/corda-payments-sdk.git")
+                    connection.set("scm:git:https://github.com/gevamu/corda-payments-sdk.git")
+                    developerConnection.set("scm:git:https://github.com/gevamu/corda-payments-sdk.git")
                     url.set("https://github.com/gevamu/corda-payments-sdk")
                 }
             }
