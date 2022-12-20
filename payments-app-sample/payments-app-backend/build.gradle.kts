@@ -18,7 +18,7 @@ java {
 }
 
 application {
-    mainClass.set("com.gevamu.web.server.Main")
+    mainClass.set("com.gevamu.corda.web.server.Main")
 }
 
 distributions {
@@ -59,7 +59,7 @@ dependencies {
 
 tasks {
     getByName("run") {
-        dependsOn(":web-ui:assemble")
+        dependsOn(":payments-app-sample:payments-app-frontend:assemble")
     }
 
     test {
