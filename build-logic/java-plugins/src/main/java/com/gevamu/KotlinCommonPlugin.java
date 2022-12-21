@@ -23,7 +23,8 @@ public class KotlinCommonPlugin implements Plugin<Project> {
     private static final String[] PLUGIN_DEPENDENCIES = new String[] {
         "com.gevamu.java-common-conventions",
         "org.jetbrains.kotlin.jvm",
-        "org.jmailen.kotlinter"
+        "org.jmailen.kotlinter",
+        "org.jetbrains.dokka"
     };
 
     private static final String[] KOTLIN_STANDARD_LIBRARIES = new String[] {
