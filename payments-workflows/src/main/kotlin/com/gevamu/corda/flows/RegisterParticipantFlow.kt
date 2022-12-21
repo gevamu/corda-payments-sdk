@@ -27,6 +27,12 @@ import net.corda.core.utilities.ProgressTracker
 import net.corda.core.utilities.unwrap
 import java.io.Serializable
 
+/**
+ * Data class for Participant Corda node registration record
+ *
+ * @param participantId Unique id for Participant node in scope of Corda business network
+ * @param networkId Corda business network id
+ */
 @CordaSerializable
 data class ParticipantRegistration(val participantId: String, val networkId: String) : Serializable {
     override fun equals(other: Any?): Boolean =
@@ -41,11 +47,26 @@ data class ParticipantRegistration(val participantId: String, val networkId: Str
     }
 }
 
+/**
+ * Register your participant node in Gevamu Gateway node
+ *
+ * @param gateway Identification of the Gevamu Gateway Corda node to register
+ * @see Party
+ *
+ * @return Participant registration record
+ * @see ParticipantRegistration
+ */
 @InitiatingFlow
 @StartableByRPC
 class RegisterParticipantFlow(private val gateway: Party) : FlowLogic<ParticipantRegistration>() {
     override val progressTracker = ProgressTracker()
 
+    /**
+     * Start main flow logic
+     *
+     * @return Participant registration note
+     * @see ParticipantRegistration
+     */
     @Suspendable
     override fun call(): ParticipantRegistration {
         val gatewaySession: FlowSession = initiateFlow(gateway)
