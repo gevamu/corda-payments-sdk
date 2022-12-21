@@ -28,6 +28,17 @@ jobs:
           cd workflows/build/libs/
           ls | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
 
+      - name: 'Build Dokka API reference'
+        run: ./gradlew dokkaHtmlMultiModule
+
+      # Will push HTML files to gh-pages branch
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/master'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/dokka/htmlMultiModule
+
       - name: 'Release'
         uses: softprops/action-gh-release@v1
         with:
