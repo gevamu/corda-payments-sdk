@@ -28,7 +28,7 @@ import net.corda.core.utilities.unwrap
 import java.io.Serializable
 
 /**
- * Data class for Participant Corda node registration record
+ * Data class for registration record of Participant Corda node
  *
  * @param participantId Unique id for Participant node in scope of Corda business network
  * @param networkId Corda business network id
@@ -50,10 +50,10 @@ data class ParticipantRegistration(val participantId: String, val networkId: Str
 /**
  * Register your participant node in Gevamu Gateway node
  *
- * @param gateway Identification of the Gevamu Gateway Corda node to register
+ * @param gateway Identification of the Gevamu Gateway Corda node [Party] to register
  * @see Party
  *
- * @return Participant registration record
+ * @return [ParticipantRegistration] - Participant registration record
  * @see ParticipantRegistration
  */
 @InitiatingFlow

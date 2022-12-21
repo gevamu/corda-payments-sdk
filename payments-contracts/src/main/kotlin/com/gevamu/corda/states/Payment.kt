@@ -32,54 +32,25 @@ import java.util.UUID
 /**
  * Data class describing Payment state in Corda business network
  *
- * @param payer
- * @param gateway
- * @param endToEndId
- * @param paymentInstructionId
- * @param status
- * @param additionalInfo
- * @param uniquePaymentId
- * @param timestamp
+ * @param payer Participant Corda node, which initiated payment
+ * @param gateway Gateway Corda node, which processes payment
+ * @param endToEndId Unique value for the payment in debtor-creditor scope
+ * @param paymentInstructionId Link to payment instruction, stored as attachment. See [AttachmentId]
+ * @param status Status of the payment in workflow
+ * @param additionalInfo Payment info provided by the bank.
+ *                      Null by default since initial payment doesn't have any bank response.
+ * @param uniquePaymentId Unique value for the payment in Corda business network
+ * @param timestamp Timestamp to record when payment state was proposed/changed. Generated with [Instant.now] by default.
  */
 @BelongsToContract(PaymentContract::class)
 data class Payment(
-    /**
-     * Participant Corda node, which initiated payment
-     */
     val payer: Party,
-    /**
-     * Gateway Corda node, which processes payment
-     */
     val gateway: Party,
-    /**
-     * Unique value for the payment in debtor-creditor scope
-     */
     val endToEndId: String,
-    /**
-     * Link to payment instruction, stored as attachment
-     *
-     * @see AttachmentId
-     */
     val paymentInstructionId: AttachmentId,
-    /**
-     * Status of the payment in workflow
-     */
     val status: PaymentStatus,
-    /**
-     * Payment info provided by the bank.
-     *
-     * Null by default since initial payment doesn't have any bank response
-     */
     val additionalInfo: String? = null,
-    /**
-     * Unique value for the payment in Corda business network
-     */
     val uniquePaymentId: UUID = UUID.randomUUID(),
-    /**
-     * Timestamp to record when payment state was proposed/changed.
-     *
-     * Generated with [Instant.now] by default
-     */
     val timestamp: Instant = Instant.now(),
 ) : QueryableState {
     override val participants: List<AbstractParty>
@@ -106,13 +77,13 @@ data class Payment(
      * Possible payment statuses
      *
      * Workflow:
-     * 1. Created
-     * 2. Sent to gateway
-     * 3. Pending
-     * 4. Accepted / Rejected
+     * 1. [CREATED]
+     * 2. [SENT_TO_GATEWAY]
+     * 3. [PENDING]
+     * 4. [ACCEPTED] / [REJECTED]
      *
      * If Accepted:
-     * 5. Completed
+     * 5. [COMPLETED]
      */
     @CordaSerializable
     enum class PaymentStatus {

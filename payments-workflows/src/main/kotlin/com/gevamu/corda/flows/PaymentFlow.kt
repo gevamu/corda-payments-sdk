@@ -86,6 +86,8 @@ class PaymentFlow(
      * Start main flow logic
      *
      * @return List of created payment states
+     *
+     * @see Payment
      */
     @Suspendable
     override fun call(): List<StateAndRef<Payment>> {
