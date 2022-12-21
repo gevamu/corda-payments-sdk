@@ -32,13 +32,13 @@ import java.util.UUID
 /**
  * Data class describing Payment state in Corda business network
  *
- * @param payer Participant Corda node, which initiated payment
- * @param gateway Gateway Corda node, which processes payment
+ * @param payer Corda party, which initiated payment
+ * @param gateway Corda party, which processes payment
  * @param endToEndId Unique value for the payment in debtor-creditor scope
  * @param paymentInstructionId Link to payment instruction, stored as attachment. See [AttachmentId]
  * @param status Status of the payment in workflow
- * @param additionalInfo Payment info provided by the bank.
- *                      Null by default since initial payment doesn't have any bank response.
+ * @param additionalInfo Payment info provided by the bank or other processing party.
+ *                       Null if there is no additional information associated with the state.
  * @param uniquePaymentId Unique value for the payment in Corda business network
  * @param timestamp Timestamp to record when payment state was proposed/changed. Generated with [Instant.now] by default.
  */

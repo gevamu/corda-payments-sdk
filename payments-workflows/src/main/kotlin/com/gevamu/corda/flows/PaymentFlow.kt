@@ -82,13 +82,6 @@ class PaymentFlow(
     private val uniquePaymentId: UUID = UUID.randomUUID(),
 ) : FlowLogic<List<StateAndRef<Payment>>>() {
 
-    /**
-     * Start main flow logic
-     *
-     * @return List of created payment states
-     *
-     * @see Payment
-     */
     @Suspendable
     override fun call(): List<StateAndRef<Payment>> {
         val xmlService = serviceHub.cordaService(XmlService::class.java)
