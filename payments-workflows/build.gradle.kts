@@ -6,6 +6,8 @@ plugins {
     id("com.gevamu.kotlin-cordapp-conventions")
 
     id("maven-publish")
+    id("java")
+    id("signing")
 }
 
 group = rootProject.group
@@ -26,11 +28,24 @@ cordapp {
     }
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.withType<Javadoc> {
+    // ignore javadoc error about unknown tag
+    (options as StandardJavadocDocletOptions)
+        .addStringOption("tag", "javax.xml.bind.annotation.XmlSchema:a:API Note:")
+}
+
 publishing {
     publications {
-        create<MavenPublication>("paymentsSDK-workflows") {
-            artifactId = "corda-payments-sdk-workflows"
+        create<MavenPublication>("payments-workflows") {
+            // artifactId = "payments-sdk-workflows"
             from(components["cordapp"])
+            artifact(tasks["javadocJar"])
+            artifact(tasks["sourcesJar"])
             pom {
                 name.set("Corda payments SDK - Workflows")
                 description.set("Corda based project implementing payment processing off ledger")
@@ -42,22 +57,33 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:https://github.com/gevamu/corda-payments-sdk.git")
-                    developerConnection.set("scm:git:https://github.com/gevamu/corda-payments-sdk.git")
-                    url.set("https://github.com/gevamu/corda-payments-sdk")
+                    connection.set("scm:git:git://github.com/gevamu/corda-payments-sdk.git")
+                    developerConnection.set("scm:git:ssh://github.com:gevamu/corda-payments-sdk.git")
+                    url.set("https://github.com/gevamu/corda-payments-sdk/tree/master")
+                }
+                developers {
+                    developer {
+                        name.set("Gevamu")
+                        organization.set("Gevamu")
+                        organizationUrl.set("https://github.com/gevamu")
+                    }
                 }
             }
         }
     }
     repositories {
-//        maven {
-//            name = "OSSRH"
-//            setUrl("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-//            credentials {
-//                username = System.getenv("MAVEN_USERNAME")
-//                password = System.getenv("MAVEN_PASSWORD")
-//            }
-//        }
+        maven {
+            name = "test"
+            setUrl("file://" + System.getenv("HOME") + "/.m2/repository/")
+        }
+        maven {
+            name = "OSSRH"
+            setUrl("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
         maven {
             name = "GitHubPackages"
             setUrl("https://maven.pkg.github.com/gevamu/corda-payments-sdk")
@@ -67,4 +93,9 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    useGpgCmd()
+    sign(publishing.publications["payments-workflows"])
 }

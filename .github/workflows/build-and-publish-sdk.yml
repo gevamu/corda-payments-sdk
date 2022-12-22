@@ -18,18 +18,23 @@ jobs:
           distribution: 'corretto'
           java-version: '11'
           cache: 'gradle'
-      - name: 'Build'
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      - name: 'Publish to maven'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew :payments-contracts:build :payments-workflows:build publish -Pversion=${GITHUB_REF_NAME:1} --no-daemon
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+        run: ./gradlew :payments-contracts:build :payments-workflows:build publishAllPublicationsToOSSRHRepository publishAllPublicationsToGitHubPackagesRepository -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" -Psigning.gnupg.keyName=D3838CD92688873C -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" --no-daemon
 
       - name: 'Create checksum'
         run: |
           cd contracts/build/libs/
-          ls | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
+          ls *.jar | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
           cd ../../../
           cd workflows/build/libs/
-          ls | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
+          ls *.jar | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
 
       - name: 'Release'
         uses: softprops/action-gh-release@v1
