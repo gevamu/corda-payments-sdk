@@ -1,3 +1,5 @@
+import java.time.LocalDate
+
 plugins {
     // Include Kotlin Common Conventions
     id("com.gevamu.kotlin-common-conventions")
@@ -5,7 +7,6 @@ plugins {
     id("com.gevamu.kotlin-cordapp-conventions")
 
     id("maven-publish")
-    id("java")
     id("signing")
 }
 
@@ -18,11 +19,6 @@ cordapp {
         licence("Apache License, Version 2.0")
         versionId(1)
     }
-}
-
-java {
-    withSourcesJar()
-    withJavadocJar()
 }
 
 publishing {
@@ -83,4 +79,11 @@ publishing {
 signing {
     useGpgCmd()
     sign(publishing.publications["payments-contracts"])
+}
+
+tasks.dokkaHtmlPartial.configure {
+    pluginsMapConfiguration.put(
+        "org.jetbrains.dokka.base.DokkaBase",
+        """ { "footerMessage": "Copyright ${LocalDate.now().year} Exactpro Systems Limited" } """,
+    )
 }

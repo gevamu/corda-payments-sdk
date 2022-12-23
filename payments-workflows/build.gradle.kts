@@ -1,3 +1,5 @@
+import java.time.LocalDate
+
 plugins {
     // Include Kotlin Common Conventions
     id("com.gevamu.kotlin-common-conventions")
@@ -5,7 +7,6 @@ plugins {
     id("com.gevamu.kotlin-cordapp-conventions")
 
     id("maven-publish")
-    id("java")
     id("signing")
 }
 
@@ -27,11 +28,6 @@ cordapp {
     }
 }
 
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
-
 tasks.withType<Javadoc> {
     // ignore javadoc error about unknown tag
     (options as StandardJavadocDocletOptions)
@@ -41,7 +37,6 @@ tasks.withType<Javadoc> {
 publishing {
     publications {
         create<MavenPublication>("payments-workflows") {
-            // artifactId = "payments-sdk-workflows"
             from(components["cordapp"])
             artifact(tasks["javadocJar"])
             artifact(tasks["sourcesJar"])
@@ -97,4 +92,11 @@ publishing {
 signing {
     useGpgCmd()
     sign(publishing.publications["payments-workflows"])
+}
+
+tasks.dokkaHtmlPartial.configure {
+    pluginsMapConfiguration.put(
+        "org.jetbrains.dokka.base.DokkaBase",
+        """ { "footerMessage": "Copyright ${LocalDate.now().year} Exactpro Systems Limited" } """,
+    )
 }

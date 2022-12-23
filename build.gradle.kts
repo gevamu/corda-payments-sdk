@@ -1,3 +1,5 @@
+import java.time.LocalDate
+
 plugins {
     // Add lifecycle tasks
     base
@@ -27,4 +29,11 @@ tasks {
             }
         }
     }
+}
+
+tasks.dokkaHtmlMultiModule.configure {
+    pluginsMapConfiguration.put(
+        "org.jetbrains.dokka.base.DokkaBase",
+        """ { "footerMessage": "Copyright ${LocalDate.now().year} Exactpro Systems Limited" } """,
+    )
 }

@@ -20,13 +20,26 @@ jobs:
           cache: 'gradle'
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: 'Build Contracts'
+        run: ./gradlew :payments-contracts:build -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
+
+      - name: 'Build Workflows'
+        run: ./gradlew :payments-workflows:build -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
+
       - name: 'Publish to maven'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-        run: ./gradlew :payments-contracts:build :payments-workflows:build publishAllPublicationsToOSSRHRepository publishAllPublicationsToGitHubPackagesRepository -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" -Psigning.gnupg.keyName=D3838CD92688873C -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" --no-daemon
+        run: ./gradlew publishAllPublicationsToOSSRHRepository -Pversion="${GITHUB_REF_NAME:1}" -Psigning.gnupg.keyName=D3838CD92688873C -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" --no-daemon
+
+      - name: 'Publish to Github Packages'
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew publishAllPublicationsToGitHubPackagesRepository -Pversion="${GITHUB_REF_NAME:1}" -Psigning.gnupg.keyName=D3838CD92688873C -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" --no-daemon
 
       - name: 'Create checksum'
         run: |
@@ -36,19 +49,19 @@ jobs:
           cd workflows/build/libs/
           ls *.jar | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
 
-      - name: 'Build Dokka API reference'
-        run: ./gradlew dokkaHtmlMultiModule
-
-      # Push HTML files to gh-pages branch
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/dokka/htmlMultiModule
-
       - name: 'Release'
         uses: softprops/action-gh-release@v1
         with:
           files: |
             contracts/build/libs/*
             workflows/build/libs/*
+
+      - name: 'Build Dokka API reference'
+        run: ./gradlew dokkaHtmlMultiModule -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
+
+      # Push HTML files to gh-pages branch
+      - name: 'Deploy to GitHub Pages'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/dokka/htmlMultiModule
