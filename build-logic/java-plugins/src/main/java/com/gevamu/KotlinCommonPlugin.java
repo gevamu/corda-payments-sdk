@@ -65,6 +65,9 @@ public class KotlinCommonPlugin implements Plugin<Project> {
         // implementation("org.apache.logging.log4j:log4j-api-kotlin:1.2.0")
 
         configureSubstitutions(project.getConfigurations());
+
+        // Disable javadoc tasks: dokka will process javadoc from java sources
+        project.getTasks().named("javadoc", (it) -> it.setEnabled(false));
     }
 
     private static void applyDependencies(PluginManager pluginManager) {
