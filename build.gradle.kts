@@ -3,6 +3,13 @@ plugins {
     base
     // Kotlin plugin should be loaded only once
     id("com.gevamu.kotlin-common-conventions") apply false
+    // Generate api reference index with dokka
+    id("org.jetbrains.dokka") version "1.7.20"
+}
+
+repositories {
+    // Required for dokka
+    mavenCentral()
 }
 
 group = "com.gevamu.corda"
