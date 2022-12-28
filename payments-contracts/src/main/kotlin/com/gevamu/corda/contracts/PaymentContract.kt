@@ -20,6 +20,9 @@ import net.corda.core.contracts.CommandData
 import net.corda.core.contracts.Contract
 import net.corda.core.transactions.LedgerTransaction
 
+/**
+ * Payment contract
+ */
 class PaymentContract : Contract {
     companion object {
         val ID = "com.gevamu.contracts.PaymentContract"

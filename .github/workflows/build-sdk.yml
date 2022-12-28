@@ -17,8 +17,8 @@ jobs:
       - uses: actions/cache@v3
         id: npm-cache
         with:
-          path: web-ui/node_modules/
-          key: ${{ runner.os }}-node-${{ hashFiles('web-ui/**/package-lock.json') }}
+          path: payments-app-sample/payments-app-frontend/node_modules/
+          key: ${{ runner.os }}-node-${{ hashFiles('payments-app-sample/payments-app-frontend/**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
@@ -28,4 +28,4 @@ jobs:
           java-version: '11'
           cache: 'gradle'
       - name: 'Build'
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build -x dokkaJavadoc --no-daemon
