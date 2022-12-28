@@ -36,11 +36,12 @@ jobs:
 
       - name: 'Create checksum'
         run: |
-          cd payments-contracts/build/libs/
-          ls *.jar | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
+          cd payments-contracts/build/libs/ || return 1
+          find . -name "*.jar" -exec sh -c 'sha256sum "$1" > $1.sha256' _ {} \;
           cd ../../../
-          cd payments-workflows/build/libs/
-          ls *.jar | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
+          # SC2011, SC2227
+          cd payments-workflows/build/libs/ || return 1
+          find . -name "*.jar" -exec sh -c 'sha256sum "$1" > "$1.sha256"' _ {} \;
           cd ../../../
 
       - name: 'Release'
