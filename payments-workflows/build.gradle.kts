@@ -68,10 +68,6 @@ publishing {
     }
     repositories {
         maven {
-            name = "test"
-            setUrl("file://" + System.getenv("HOME") + "/.m2/repository/")
-        }
-        maven {
             name = "OSSRH"
             setUrl("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
             credentials {
