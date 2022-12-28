@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'corretto'
-          java-version: '11'
+          java-version: '8'
           cache: 'gradle'
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
@@ -34,27 +34,21 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         run: ./gradlew publishAllPublicationsToOSSRHRepository -Pversion="${GITHUB_REF_NAME:1}" -Psigning.gnupg.keyName=D3838CD92688873C -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" --no-daemon
 
-      - name: 'Publish to Github Packages'
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew publishAllPublicationsToGitHubPackagesRepository -Pversion="${GITHUB_REF_NAME:1}" -Psigning.gnupg.keyName=D3838CD92688873C -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" --no-daemon
-
       - name: 'Create checksum'
         run: |
-          cd contracts/build/libs/
+          cd payments-contracts/build/libs/
           ls *.jar | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
           cd ../../../
-          cd workflows/build/libs/
+          cd payments-workflows/build/libs/
           ls *.jar | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
+          cd ../../../
 
       - name: 'Release'
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            contracts/build/libs/*
-            workflows/build/libs/*
+            payments-contracts/build/libs/*
+            payments-workflows/build/libs/*
 
       - name: 'Build Dokka API reference'
         run: ./gradlew dokkaHtmlMultiModule -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
