@@ -10,20 +10,20 @@ TODO: publish package and describe
 
 ```java
 // Model for RegisterParticipantFlow result
-import com.gevamu.flows.ParticipantRegistration;
+import com.gevamu.corda.flows.ParticipantRegistration;
 // Flow for participant registration
-import com.gevamu.flows.RegisterParticipantFlow;
+import com.gevamu.corda.flows.RegisterParticipantFlow;
 
 // Flow payment execution
-import com.gevamu.flows.PaymentFlow;
+import com.gevamu.corda.flows.PaymentFlow;
 // Model for PaymentFlow input
-import com.gevamu.flows.PaymentInstruction;
+import com.gevamu.corda.flows.PaymentInstruction;
 // Model of payment
-import com.gevamu.states.Payment;
+import com.gevamu.corda.states.Payment;
 ```
 
 ```java
-class PaymentService{
+class PaymentService {
     private static final String GATEWAY_PARTY_NAME = "Gateway";
     private static final String PAYMENT_INSTRUCTION_ATTACHMENT = "paymentInstruction.xml";
 
@@ -35,7 +35,7 @@ class PaymentService{
             Integer port,   // Corda node port 
             String user,    // RPC user 
             String password // RPC user password 
-    ){
+    ) {
         NetworkHostAndPort networkAddress = new NetworkHostAndPort(host, port);
         CordaRPCClient client = new CordaRPCClient(networkAddress);
         connection = client.start(user, password);
@@ -67,9 +67,9 @@ class PaymentService{
 ### Register corda node
 
 ```java
-class Main{
-    public static void main(){
-        PaymentService service = new PaymentSerice();
+class Main {
+    public static void main(String[] args) {
+        PaymentService service = new PaymentService();
         service.setup("localhost", 10012, "user", "password");
         
         service.executeRegistrationFlow();
@@ -80,9 +80,9 @@ class Main{
 ### Execute payment
 
 ```java
-class Main{
-    public static void main(){
-        PaymentService service = new PaymentSerice();
+class Main {
+    public static void main(String[] args) {
+        PaymentService service = new PaymentService();
         service.setup("localhost", 10012, "user", "password");
         
         PaymentInstruction paymentInstruction = new PaymentInstruction(
@@ -97,13 +97,12 @@ class Main{
 ### Get list of payments
 
 ```java
-class Main{
-    public static void main(){
-        PaymentService service = new PaymentSerice();
+class Main {
+    public static void main(String[] args) {
+        PaymentService service = new PaymentService();
         service.setup("localhost", 10012, "user", "password");
 
         List<StateAndRef<Payment>> payments = service.getPayments();
     }
 }
 ```
-
