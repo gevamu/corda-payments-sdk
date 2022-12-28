@@ -1,4 +1,5 @@
 import java.time.LocalDate
+import java.time.ZoneId
 
 plugins {
     // Include Kotlin Common Conventions
@@ -82,8 +83,9 @@ signing {
 }
 
 tasks.dokkaHtmlPartial.configure {
+    val currentYear = LocalDate.now(ZoneId.of("UTC")).year
     pluginsMapConfiguration.put(
         "org.jetbrains.dokka.base.DokkaBase",
-        """ { "footerMessage": "Copyright ${LocalDate.now().year} Exactpro Systems Limited" } """,
+        """ { "footerMessage": "Copyright ${if (2022 == currentYear) currentYear else "2022-$currentYear"} Exactpro Systems Limited" } """,
     )
 }
