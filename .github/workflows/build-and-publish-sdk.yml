@@ -1,6 +1,6 @@
 # On tag push, build and publish new release
 
-name: GitHub Actions - Tagged release
+name: GitHub Actions - Tagged Release
 on:
   push:
     tags:
@@ -27,14 +27,14 @@ jobs:
       - name: 'Build Workflows'
         run: ./gradlew :payments-workflows:build -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
 
-      - name: 'Publish to maven'
+      - name: 'Publish to Maven Central'
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         run: ./gradlew publishAllPublicationsToOSSRHRepository -Pversion="${GITHUB_REF_NAME:1}" -Psigning.gnupg.keyName=D3838CD92688873C -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" --no-daemon
 
-      - name: 'Create checksum'
+      - name: 'Calculate Checksums'
         run: |
           cd payments-contracts/build/libs/ || return 1
           find . -name "*.jar" -exec sh -c 'sha256sum "$1" > $1.sha256' _ {} \;
@@ -44,18 +44,18 @@ jobs:
           find . -name "*.jar" -exec sh -c 'sha256sum "$1" > "$1.sha256"' _ {} \;
           cd ../../../
 
-      - name: 'Release'
+      - name: 'Release to GitHub'
         uses: softprops/action-gh-release@v1
         with:
           files: |
             payments-contracts/build/libs/*
             payments-workflows/build/libs/*
 
-      - name: 'Build Dokka API reference'
+      - name: 'Build API Documentation'
         run: ./gradlew dokkaHtmlMultiModule -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
 
       # Push HTML files to gh-pages branch
-      - name: 'Deploy to GitHub Pages'
+      - name: 'Publish API Documentation to GitHub Pages'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
