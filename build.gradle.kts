@@ -36,6 +36,6 @@ tasks.dokkaHtmlMultiModule.configure {
     val currentYear = LocalDate.now(ZoneId.of("UTC")).year
     pluginsMapConfiguration.put(
         "org.jetbrains.dokka.base.DokkaBase",
-        """ { "footerMessage": "Copyright ${if (2022 == currentYear) currentYear else "2022-$currentYear"} Exactpro Systems Limited" } """,
+        """ { "footerMessage": "Copyright 2022-$currentYear Exactpro Systems Limited" } """,
     )
 }
