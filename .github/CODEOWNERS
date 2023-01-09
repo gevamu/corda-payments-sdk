@@ -1,0 +1,7 @@
+##########################################
+#             code ownership
+##########################################
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# default ownership: default owners for everything in the repo (Unless a later match takes precedence)
+*       @gevamu/maintainers

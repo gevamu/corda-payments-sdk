@@ -41,6 +41,9 @@ tasks {
         isReproducibleFileOrder = true
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
+    named<Jar>("javadocJar") {
+        from(named("dokkaJavadoc"))
+    }
 }
 
 configure<CordappExtension> {

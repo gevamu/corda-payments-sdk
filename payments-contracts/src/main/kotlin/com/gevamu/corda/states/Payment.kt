@@ -29,6 +29,19 @@ import net.corda.core.serialization.CordaSerializable
 import java.time.Instant
 import java.util.UUID
 
+/**
+ * Data class describing Payment state in Corda business network
+ *
+ * @param payer Corda party, which initiated payment
+ * @param gateway Corda party, which processes payment
+ * @param endToEndId Unique value for the payment in debtor-creditor scope
+ * @param paymentInstructionId Link to payment instruction, stored as attachment. See [AttachmentId]
+ * @param status Status of the payment in workflow
+ * @param additionalInfo Payment info provided by the bank or other processing party.
+ *                       Null if there is no additional information associated with the state.
+ * @param uniquePaymentId Unique value for the payment in Corda business network
+ * @param timestamp Timestamp to record when payment state was proposed/changed. Generated with [Instant.now] by default.
+ */
 @BelongsToContract(PaymentContract::class)
 data class Payment(
     val payer: Party,
@@ -36,15 +49,7 @@ data class Payment(
     val endToEndId: String,
     val paymentInstructionId: AttachmentId,
     val status: PaymentStatus,
-    /**
-     * Payment info provided by the bank.
-     * Null by default since initial payment doesn't have any bank response
-     */
     val additionalInfo: String? = null,
-    /**
-     * Timestamp to record when payment state was proposed/changed.
-     * [Instant.now()] by default
-     */
     val uniquePaymentId: UUID = UUID.randomUUID(),
     val timestamp: Instant = Instant.now(),
 ) : QueryableState {
@@ -68,6 +73,18 @@ data class Payment(
 
     override fun supportedSchemas(): Iterable<MappedSchema> = listOf(PaymentSchemaV1)
 
+    /**
+     * Possible payment statuses
+     *
+     * Workflow:
+     * 1. [CREATED]
+     * 2. [SENT_TO_GATEWAY]
+     * 3. [PENDING]
+     * 4. [ACCEPTED] / [REJECTED]
+     *
+     * If Accepted:
+     * 5. [COMPLETED]
+     */
     @CordaSerializable
     enum class PaymentStatus {
         CREATED,

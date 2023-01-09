@@ -24,6 +24,9 @@ import net.corda.core.internal.Verifier
 import net.corda.core.transactions.LedgerTransaction
 import java.util.UUID
 
+/**
+ * Payment contract
+ */
 class PaymentContract : Contract {
     companion object {
         const val ID = "com.gevamu.corda.contracts.PaymentContract"

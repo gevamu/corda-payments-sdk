@@ -1,8 +1,18 @@
+import java.time.LocalDate
+import java.time.ZoneId
+
 plugins {
     // Add lifecycle tasks
     base
     // Kotlin plugin should be loaded only once
     id("com.gevamu.kotlin-common-conventions") apply false
+    // Generate api reference index with dokka
+    id("org.jetbrains.dokka") version "1.7.20"
+}
+
+repositories {
+    // Required for dokka
+    mavenCentral()
 }
 
 group = "com.gevamu.corda"
@@ -20,4 +30,12 @@ tasks {
             }
         }
     }
+}
+
+tasks.dokkaHtmlMultiModule.configure {
+    val currentYear = LocalDate.now(ZoneId.of("UTC")).year
+    pluginsMapConfiguration.put(
+        "org.jetbrains.dokka.base.DokkaBase",
+        """ { "footerMessage": "Copyright 2022-$currentYear Exactpro Systems Limited" } """,
+    )
 }
