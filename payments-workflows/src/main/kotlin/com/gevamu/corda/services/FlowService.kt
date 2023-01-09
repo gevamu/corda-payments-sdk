@@ -26,9 +26,9 @@ import java.util.concurrent.Executors
 
 @CordaService
 class FlowService(private val serviceHub: AppServiceHub) : SingletonSerializeAsToken() {
-    fun startXxxFlow(uniquePaymentId: UUID) {
+    fun startXxxFlow(uniquePaymentIds: Collection<UUID>) {
         // TODO persist execution queue; consider usage of list of Payment states in CREATED status
-        executor.execute { serviceHub.startFlow(SendPaymentFlow(uniquePaymentId)) }
+        executor.execute { serviceHub.startFlow(SendPaymentFlow(uniquePaymentIds)) }
     }
 
     private companion object {

@@ -36,41 +36,44 @@ import java.util.UUID
 
 @InitiatingFlow
 @StartableByService
-class SendPaymentFlow(private val uniquePaymentId: UUID) : FlowLogic<Unit>() {
+class SendPaymentFlow(private val uniquePaymentIds: Collection<UUID>) : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
-        logger.debug("Send payment id=$uniquePaymentId")
-        val paymentStateAndRef = builder {
+        logger.debug("Send payment id=$uniquePaymentIds")
+        val paymentStateAndRefs = builder {
             // Find all active Payments for the given ID using its JPA entity
             val criteria = QueryCriteria.VaultCustomQueryCriteria(
-                expression = PaymentSchemaV1.PersistentPayment::uniquePaymentId.equal(uniquePaymentId),
+                expression = PaymentSchemaV1.PersistentPayment::uniquePaymentId.`in`(uniquePaymentIds),
                 // Do not use archived consumed states
                 // Because we will use the newest Payment state as input
                 status = Vault.StateStatus.UNCONSUMED,
                 // Payer node is a participant
                 relevancyStatus = Vault.RelevancyStatus.RELEVANT,
             )
-            // TODO Check that only one is returned
-            //      and status is CREATED or add status to the query criteria
-            serviceHub.vaultService.queryBy<Payment>(criteria).states.first()
+            // TODO Check that status is CREATED or add status to the query criteria
+            serviceHub.vaultService.queryBy<Payment>(criteria).states
         }
-        logger.debug("Found payment stateAndRef=$paymentStateAndRef")
+        logger.debug("Found payment stateAndRef=$paymentStateAndRefs")
 
-        // Mutate it to change status and timestamp
-        val payment = paymentStateAndRef.state.data.copy(
-            status = Payment.PaymentStatus.SENT_TO_GATEWAY,
-            timestamp = Instant.now(),
-        )
+        val payments: List<Payment> = paymentStateAndRefs.map {
+            it.state.data.copy(
+                status = Payment.PaymentStatus.SENT_TO_GATEWAY,
+                timestamp = Instant.now(),
+            )
+        }
 
         // Prepare transaction to send over the state
-        // TODO It's better to replace notary with named one since we are consuming states
+        // TODO It's better to replace notary with a named one since we are consuming states
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
-        val gateway = paymentStateAndRef.state.data.gateway
+        val gateway = paymentStateAndRefs.first().state.data.gateway
         val builder = TransactionBuilder(notary)
-            .addInputState(paymentStateAndRef)
-            .addOutputState(payment)
             .addCommand(PaymentContract.Commands.SendToGateway(), ourIdentity.owningKey, gateway.owningKey)
-            .addAttachment(paymentStateAndRef.state.data.paymentInstructionId)
+            .addAttachment(paymentStateAndRefs.first().state.data.paymentInstructionId)
+        // Consume old states
+        paymentStateAndRefs.forEach { builder.addInputState(it) }
+        // Persist mutated states with new status and timestamp
+        payments.forEach { builder.addOutputState(it) }
+
         builder.verify(serviceHub)
 
         // Sign the transaction on our payer cordapp
