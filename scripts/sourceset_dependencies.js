@@ -1,0 +1,1 @@
+sourceset_dependencies = '{":payments-workflows:dokkaHtmlPartial/main":[],":payments-contracts:dokkaHtmlPartial/main":[]}'

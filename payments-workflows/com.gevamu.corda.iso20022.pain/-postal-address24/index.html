@@ -1,0 +1,559 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>PostalAddress24</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>corda-payments-sdk</span>            </a>    </div>
+    <div>0.1.0
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="payments-workflows::com.gevamu.corda.iso20022.pain/PostalAddress24///PointingToDeclaration//1805305684">
+  <div class="breadcrumbs"><a href="../../index.html">payments-workflows</a><span class="delimiter">/</span><a href="../index.html">com.gevamu.corda.iso20022.pain</a><span class="delimiter">/</span><span class="current">PostalAddress24</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Postal</span><wbr><span><span>Address24</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">PostalAddress24</a></div><p class="paragraph">Java class for PostalAddress24 complex type. </p><p class="paragraph">The following schema fragment specifies the expected content contained within this class. </p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">&lt;complexType name="PostalAddress24"&gt;
+  &lt;complexContent&gt;
+    &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+      &lt;sequence&gt;
+        &lt;element name="AdrTp" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}AddressType3Choice" minOccurs="0"/&gt;
+        &lt;element name="Dept" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max70Text" minOccurs="0"/&gt;
+        &lt;element name="SubDept" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max70Text" minOccurs="0"/&gt;
+        &lt;element name="StrtNm" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max70Text" minOccurs="0"/&gt;
+        &lt;element name="BldgNb" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max16Text" minOccurs="0"/&gt;
+        &lt;element name="BldgNm" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max35Text" minOccurs="0"/&gt;
+        &lt;element name="Flr" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max70Text" minOccurs="0"/&gt;
+        &lt;element name="PstBx" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max16Text" minOccurs="0"/&gt;
+        &lt;element name="Room" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max70Text" minOccurs="0"/&gt;
+        &lt;element name="PstCd" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max16Text" minOccurs="0"/&gt;
+        &lt;element name="TwnNm" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max35Text" minOccurs="0"/&gt;
+        &lt;element name="TwnLctnNm" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max35Text" minOccurs="0"/&gt;
+        &lt;element name="DstrctNm" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max35Text" minOccurs="0"/&gt;
+        &lt;element name="CtrySubDvsn" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max35Text" minOccurs="0"/&gt;
+        &lt;element name="Ctry" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}CountryCode" minOccurs="0"/&gt;
+        &lt;element name="AdrLine" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max70Text" maxOccurs="7" minOccurs="0"/&gt;
+      &lt;/sequence&gt;
+    &lt;/restriction&gt;
+  &lt;/complexContent&gt;
+&lt;/complexType&gt;
+</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-43793479%2FFunctions%2F1805305684" anchor-label="getAdrLine" id="-43793479%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-adr-line.html"><span>get</span><wbr><span>Adr</span><wbr><span><span>Line</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-43793479%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-adr-line.html"><span class="token function">getAdrLine</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a><span class="token operator">&gt;</span></div><div class="brief ">Gets the value of the adrLine property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="515828273%2FFunctions%2F1805305684" anchor-label="getAdrTp" id="515828273%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-adr-tp.html"><span>get</span><wbr><span>Adr</span><wbr><span><span>Tp</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="515828273%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-adr-tp.html"><span class="token function">getAdrTp</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-address-type3-choice/index.html">AddressType3Choice</a></div><div class="brief ">Gets the value of the adrTp property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="297399869%2FFunctions%2F1805305684" anchor-label="getBldgNb" id="297399869%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-bldg-nb.html"><span>get</span><wbr><span>Bldg</span><wbr><span><span>Nb</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="297399869%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-bldg-nb.html"><span class="token function">getBldgNb</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the bldgNb property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="638617746%2FFunctions%2F1805305684" anchor-label="getBldgNm" id="638617746%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-bldg-nm.html"><span>get</span><wbr><span>Bldg</span><wbr><span><span>Nm</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="638617746%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-bldg-nm.html"><span class="token function">getBldgNm</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the bldgNm property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1198215366%2FFunctions%2F1805305684" anchor-label="getCtry" id="1198215366%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-ctry.html"><span>get</span><wbr><span><span>Ctry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1198215366%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-ctry.html"><span class="token function">getCtry</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the ctry property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-274583929%2FFunctions%2F1805305684" anchor-label="getCtrySubDvsn" id="-274583929%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-ctry-sub-dvsn.html"><span>get</span><wbr><span>Ctry</span><wbr><span>Sub</span><wbr><span><span>Dvsn</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-274583929%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-ctry-sub-dvsn.html"><span class="token function">getCtrySubDvsn</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the ctrySubDvsn property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-660929127%2FFunctions%2F1805305684" anchor-label="getDept" id="-660929127%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-dept.html"><span>get</span><wbr><span><span>Dept</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-660929127%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-dept.html"><span class="token function">getDept</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the dept property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1071920001%2FFunctions%2F1805305684" anchor-label="getDstrctNm" id="1071920001%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-dstrct-nm.html"><span>get</span><wbr><span>Dstrct</span><wbr><span><span>Nm</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1071920001%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-dstrct-nm.html"><span class="token function">getDstrctNm</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the dstrctNm property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="253484080%2FFunctions%2F1805305684" anchor-label="getFlr" id="253484080%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-flr.html"><span>get</span><wbr><span><span>Flr</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="253484080%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-flr.html"><span class="token function">getFlr</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the flr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2101663285%2FFunctions%2F1805305684" anchor-label="getPstBx" id="2101663285%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-pst-bx.html"><span>get</span><wbr><span>Pst</span><wbr><span><span>Bx</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2101663285%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-pst-bx.html"><span class="token function">getPstBx</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the pstBx property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1852086134%2FFunctions%2F1805305684" anchor-label="getPstCd" id="-1852086134%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-pst-cd.html"><span>get</span><wbr><span>Pst</span><wbr><span><span>Cd</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1852086134%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-pst-cd.html"><span class="token function">getPstCd</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the pstCd property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1021409219%2FFunctions%2F1805305684" anchor-label="getRoom" id="1021409219%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-room.html"><span>get</span><wbr><span><span>Room</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1021409219%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-room.html"><span class="token function">getRoom</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the room property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="199692476%2FFunctions%2F1805305684" anchor-label="getStrtNm" id="199692476%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-strt-nm.html"><span>get</span><wbr><span>Strt</span><wbr><span><span>Nm</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="199692476%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-strt-nm.html"><span class="token function">getStrtNm</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the strtNm property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1779274391%2FFunctions%2F1805305684" anchor-label="getSubDept" id="1779274391%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-sub-dept.html"><span>get</span><wbr><span>Sub</span><wbr><span><span>Dept</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1779274391%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-sub-dept.html"><span class="token function">getSubDept</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the subDept property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1243525567%2FFunctions%2F1805305684" anchor-label="getTwnLctnNm" id="-1243525567%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-twn-lctn-nm.html"><span>get</span><wbr><span>Twn</span><wbr><span>Lctn</span><wbr><span><span>Nm</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1243525567%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-twn-lctn-nm.html"><span class="token function">getTwnLctnNm</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the twnLctnNm property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="466034994%2FFunctions%2F1805305684" anchor-label="getTwnNm" id="466034994%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-twn-nm.html"><span>get</span><wbr><span>Twn</span><wbr><span><span>Nm</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="466034994%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-twn-nm.html"><span class="token function">getTwnNm</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the twnNm property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="613958893%2FFunctions%2F1805305684" anchor-label="setAdrTp" id="613958893%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-adr-tp.html"><span>set</span><wbr><span>Adr</span><wbr><span><span>Tp</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="613958893%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-adr-tp.html"><span class="token function">setAdrTp</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-address-type3-choice/index.html">AddressType3Choice</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the adrTp property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1424379820%2FFunctions%2F1805305684" anchor-label="setBldgNb" id="1424379820%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-bldg-nb.html"><span>set</span><wbr><span>Bldg</span><wbr><span><span>Nb</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1424379820%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-bldg-nb.html"><span class="token function">setBldgNb</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the bldgNb property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1505781759%2FFunctions%2F1805305684" anchor-label="setBldgNm" id="-1505781759%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-bldg-nm.html"><span>set</span><wbr><span>Bldg</span><wbr><span><span>Nm</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1505781759%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-bldg-nm.html"><span class="token function">setBldgNm</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the bldgNm property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1293370677%2FFunctions%2F1805305684" anchor-label="setCtry" id="1293370677%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-ctry.html"><span>set</span><wbr><span><span>Ctry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1293370677%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-ctry.html"><span class="token function">setCtry</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the ctry property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2021190030%2FFunctions%2F1805305684" anchor-label="setCtrySubDvsn" id="2021190030%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-ctry-sub-dvsn.html"><span>set</span><wbr><span>Ctry</span><wbr><span>Sub</span><wbr><span><span>Dvsn</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2021190030%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-ctry-sub-dvsn.html"><span class="token function">setCtrySubDvsn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the ctrySubDvsn property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1939803128%2FFunctions%2F1805305684" anchor-label="setDept" id="-1939803128%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-dept.html"><span>set</span><wbr><span><span>Dept</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1939803128%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-dept.html"><span class="token function">setDept</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the dept property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1471612944%2FFunctions%2F1805305684" anchor-label="setDstrctNm" id="-1471612944%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-dstrct-nm.html"><span>set</span><wbr><span>Dstrct</span><wbr><span><span>Nm</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1471612944%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-dstrct-nm.html"><span class="token function">setDstrctNm</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the dstrctNm property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="585232695%2FFunctions%2F1805305684" anchor-label="setFlr" id="585232695%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-flr.html"><span>set</span><wbr><span><span>Flr</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="585232695%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-flr.html"><span class="token function">setFlr</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the flr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="803319356%2FFunctions%2F1805305684" anchor-label="setPstBx" id="803319356%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-pst-bx.html"><span>set</span><wbr><span>Pst</span><wbr><span><span>Bx</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="803319356%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-pst-bx.html"><span class="token function">setPstBx</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the pstBx property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2126842223%2FFunctions%2F1805305684" anchor-label="setPstCd" id="-2126842223%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-pst-cd.html"><span>set</span><wbr><span>Pst</span><wbr><span><span>Cd</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2126842223%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-pst-cd.html"><span class="token function">setPstCd</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the pstCd property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2057186766%2FFunctions%2F1805305684" anchor-label="setRoom" id="-2057186766%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-room.html"><span>set</span><wbr><span><span>Room</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2057186766%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-room.html"><span class="token function">setRoom</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the room property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1713075157%2FFunctions%2F1805305684" anchor-label="setStrtNm" id="-1713075157%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-strt-nm.html"><span>set</span><wbr><span>Strt</span><wbr><span><span>Nm</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1713075157%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-strt-nm.html"><span class="token function">setStrtNm</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the strtNm property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1556845470%2FFunctions%2F1805305684" anchor-label="setSubDept" id="1556845470%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-sub-dept.html"><span>set</span><wbr><span>Sub</span><wbr><span><span>Dept</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1556845470%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-sub-dept.html"><span class="token function">setSubDept</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the subDept property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1127110584%2FFunctions%2F1805305684" anchor-label="setTwnLctnNm" id="-1127110584%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-twn-lctn-nm.html"><span>set</span><wbr><span>Twn</span><wbr><span>Lctn</span><wbr><span><span>Nm</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1127110584%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-twn-lctn-nm.html"><span class="token function">setTwnLctnNm</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the twnLctnNm property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1550868281%2FFunctions%2F1805305684" anchor-label="setTwnNm" id="1550868281%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-twn-nm.html"><span>set</span><wbr><span>Twn</span><wbr><span><span>Nm</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1550868281%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-twn-nm.html"><span class="token function">setTwnNm</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the twnNm property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Copyright 2022-2023 Exactpro Systems Limited</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

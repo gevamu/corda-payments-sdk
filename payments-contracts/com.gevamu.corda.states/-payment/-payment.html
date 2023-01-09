@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Payment</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>corda-payments-sdk</span>            </a>    </div>
+    <div>0.1.0
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="payments-contracts::com.gevamu.corda.states/Payment/Payment/#net.corda.core.identity.Party#net.corda.core.identity.Party#kotlin.String#net.corda.core.crypto.SecureHash#com.gevamu.corda.states.Payment.PaymentStatus#kotlin.String?#java.util.UUID#java.time.Instant/PointingToDeclaration//254698983">
+  <div class="breadcrumbs"><a href="../../index.html">payments-contracts</a><span class="delimiter">/</span><a href="../index.html">com.gevamu.corda.states</a><span class="delimiter">/</span><a href="index.html">Payment</a><span class="delimiter">/</span><span class="current">Payment</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Payment</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-contracts:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-payment.html"><span class="token function">Payment</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">payer<span class="token operator">: </span><span data-unresolved-link="net.corda.core.identity/Party///PointingToDeclaration/">Party</span><span class="token punctuation">, </span></span><span class="parameter ">gateway<span class="token operator">: </span><span data-unresolved-link="net.corda.core.identity/Party///PointingToDeclaration/">Party</span><span class="token punctuation">, </span></span><span class="parameter ">endToEndId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">paymentInstructionId<span class="token operator">: </span><span data-unresolved-link="net.corda.core.node.services/AttachmentId///PointingToDeclaration/">AttachmentId</span><span class="token punctuation">, </span></span><span class="parameter ">status<span class="token operator">: </span><a href="-payment-status/index.html">Payment.PaymentStatus</a><span class="token punctuation">, </span></span><span class="parameter ">additionalInfo<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">uniquePaymentId<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/UUID.html">UUID</a><span class="token operator"> = </span>UUID.randomUUID()<span class="token punctuation">, </span></span><span class="parameter ">timestamp<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Instant.html">Instant</a><span class="token operator"> = </span>Instant.now()</span></span><span class="token punctuation">)</span></div><h4 class="">Parameters</h4><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":payments-contracts:dokkaHtmlPartial/main" data-filterable-set=":payments-contracts:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>payer</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Corda party, which initiated payment</p></div></div></div></div></div><div class="table-row" data-filterable-current=":payments-contracts:dokkaHtmlPartial/main" data-filterable-set=":payments-contracts:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>gateway</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Corda party, which processes payment</p></div></div></div></div></div><div class="table-row" data-filterable-current=":payments-contracts:dokkaHtmlPartial/main" data-filterable-set=":payments-contracts:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>end</span><wbr><span>To</span><wbr><span>End</span><wbr><span><span>Id</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Unique value for the payment in debtor-creditor scope</p></div></div></div></div></div><div class="table-row" data-filterable-current=":payments-contracts:dokkaHtmlPartial/main" data-filterable-set=":payments-contracts:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>payment</span><wbr><span>Instruction</span><wbr><span><span>Id</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Link to payment instruction, stored as attachment. See <span data-unresolved-link="net.corda.core.node.services/AttachmentId///PointingToDeclaration/">AttachmentId</span></p></div></div></div></div></div><div class="table-row" data-filterable-current=":payments-contracts:dokkaHtmlPartial/main" data-filterable-set=":payments-contracts:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>status</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Status of the payment in workflow</p></div></div></div></div></div><div class="table-row" data-filterable-current=":payments-contracts:dokkaHtmlPartial/main" data-filterable-set=":payments-contracts:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>additional</span><wbr><span><span>Info</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Payment info provided by the bank or other processing party.     Null if there is no additional information associated with the state.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":payments-contracts:dokkaHtmlPartial/main" data-filterable-set=":payments-contracts:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span>unique</span><wbr><span>Payment</span><wbr><span><span>Id</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Unique value for the payment in Corda business network</p></div></div></div></div></div><div class="table-row" data-filterable-current=":payments-contracts:dokkaHtmlPartial/main" data-filterable-set=":payments-contracts:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>timestamp</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">Timestamp to record when payment state was proposed/changed. Generated with <a href="https://docs.oracle.com/javase/8/docs/api/java/time/Instant.html#now--">Instant.now</a> by default.</p></div></div></div></div></div></div></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Copyright 2022-2023 Exactpro Systems Limited</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

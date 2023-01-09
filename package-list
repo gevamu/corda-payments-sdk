@@ -1,0 +1,11 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+module:payments-contracts
+com.gevamu.corda.contracts
+com.gevamu.corda.schema
+com.gevamu.corda.states
+module:payments-workflows
+com.gevamu.corda.flows
+com.gevamu.corda.iso20022.pain
+com.gevamu.corda.services

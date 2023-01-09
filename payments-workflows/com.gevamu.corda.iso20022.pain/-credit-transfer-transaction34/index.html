@@ -1,0 +1,824 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>CreditTransferTransaction34</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>corda-payments-sdk</span>            </a>    </div>
+    <div>0.1.0
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="payments-workflows::com.gevamu.corda.iso20022.pain/CreditTransferTransaction34///PointingToDeclaration//1805305684">
+  <div class="breadcrumbs"><a href="../../index.html">payments-workflows</a><span class="delimiter">/</span><a href="../index.html">com.gevamu.corda.iso20022.pain</a><span class="delimiter">/</span><span class="current">CreditTransferTransaction34</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Credit</span><wbr><span>Transfer</span><wbr><span><span>Transaction34</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">CreditTransferTransaction34</a></div><p class="paragraph">Java class for CreditTransferTransaction34 complex type. </p><p class="paragraph">The following schema fragment specifies the expected content contained within this class. </p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">&lt;complexType name="CreditTransferTransaction34"&gt;
+  &lt;complexContent&gt;
+    &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+      &lt;sequence&gt;
+        &lt;element name="PmtId" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}PaymentIdentification6"/&gt;
+        &lt;element name="PmtTpInf" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}PaymentTypeInformation26" minOccurs="0"/&gt;
+        &lt;element name="Amt" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}AmountType4Choice"/&gt;
+        &lt;element name="XchgRateInf" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}ExchangeRate1" minOccurs="0"/&gt;
+        &lt;element name="ChrgBr" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}ChargeBearerType1Code" minOccurs="0"/&gt;
+        &lt;element name="ChqInstr" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Cheque11" minOccurs="0"/&gt;
+        &lt;element name="UltmtDbtr" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}PartyIdentification135" minOccurs="0"/&gt;
+        &lt;element name="IntrmyAgt1" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}BranchAndFinancialInstitutionIdentification6" minOccurs="0"/&gt;
+        &lt;element name="IntrmyAgt1Acct" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}CashAccount38" minOccurs="0"/&gt;
+        &lt;element name="IntrmyAgt2" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}BranchAndFinancialInstitutionIdentification6" minOccurs="0"/&gt;
+        &lt;element name="IntrmyAgt2Acct" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}CashAccount38" minOccurs="0"/&gt;
+        &lt;element name="IntrmyAgt3" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}BranchAndFinancialInstitutionIdentification6" minOccurs="0"/&gt;
+        &lt;element name="IntrmyAgt3Acct" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}CashAccount38" minOccurs="0"/&gt;
+        &lt;element name="CdtrAgt" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}BranchAndFinancialInstitutionIdentification6" minOccurs="0"/&gt;
+        &lt;element name="CdtrAgtAcct" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}CashAccount38" minOccurs="0"/&gt;
+        &lt;element name="Cdtr" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}PartyIdentification135" minOccurs="0"/&gt;
+        &lt;element name="CdtrAcct" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}CashAccount38" minOccurs="0"/&gt;
+        &lt;element name="UltmtCdtr" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}PartyIdentification135" minOccurs="0"/&gt;
+        &lt;element name="InstrForCdtrAgt" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}InstructionForCreditorAgent1" maxOccurs="unbounded" minOccurs="0"/&gt;
+        &lt;element name="InstrForDbtrAgt" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Max140Text" minOccurs="0"/&gt;
+        &lt;element name="Purp" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}Purpose2Choice" minOccurs="0"/&gt;
+        &lt;element name="RgltryRptg" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}RegulatoryReporting3" maxOccurs="10" minOccurs="0"/&gt;
+        &lt;element name="Tax" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}TaxInformation8" minOccurs="0"/&gt;
+        &lt;element name="RltdRmtInf" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}RemittanceLocation7" maxOccurs="10" minOccurs="0"/&gt;
+        &lt;element name="RmtInf" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}RemittanceInformation16" minOccurs="0"/&gt;
+        &lt;element name="SplmtryData" type="{urn:iso:std:iso:20022:tech:xsd:pain.001.001.09}SupplementaryData1" maxOccurs="unbounded" minOccurs="0"/&gt;
+      &lt;/sequence&gt;
+    &lt;/restriction&gt;
+  &lt;/complexContent&gt;
+&lt;/complexType&gt;
+</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="98617412%2FFunctions%2F1805305684" anchor-label="getAmt" id="98617412%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-amt.html"><span>get</span><wbr><span><span>Amt</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="98617412%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-amt.html"><span class="token function">getAmt</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-amount-type4-choice/index.html">AmountType4Choice</a></div><div class="brief ">Gets the value of the amt property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-318727537%2FFunctions%2F1805305684" anchor-label="getCdtr" id="-318727537%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-cdtr.html"><span>get</span><wbr><span><span>Cdtr</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-318727537%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-cdtr.html"><span class="token function">getCdtr</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-party-identification135/index.html">PartyIdentification135</a></div><div class="brief ">Gets the value of the cdtr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1310123196%2FFunctions%2F1805305684" anchor-label="getCdtrAcct" id="1310123196%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-cdtr-acct.html"><span>get</span><wbr><span>Cdtr</span><wbr><span><span>Acct</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1310123196%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-cdtr-acct.html"><span class="token function">getCdtrAcct</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-cash-account38/index.html">CashAccount38</a></div><div class="brief ">Gets the value of the cdtrAcct property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1593005443%2FFunctions%2F1805305684" anchor-label="getCdtrAgt" id="-1593005443%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-cdtr-agt.html"><span>get</span><wbr><span>Cdtr</span><wbr><span><span>Agt</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1593005443%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-cdtr-agt.html"><span class="token function">getCdtrAgt</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-branch-and-financial-institution-identification6/index.html">BranchAndFinancialInstitutionIdentification6</a></div><div class="brief ">Gets the value of the cdtrAgt property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-56799830%2FFunctions%2F1805305684" anchor-label="getCdtrAgtAcct" id="-56799830%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-cdtr-agt-acct.html"><span>get</span><wbr><span>Cdtr</span><wbr><span>Agt</span><wbr><span><span>Acct</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-56799830%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-cdtr-agt-acct.html"><span class="token function">getCdtrAgtAcct</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-cash-account38/index.html">CashAccount38</a></div><div class="brief ">Gets the value of the cdtrAgtAcct property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="792798766%2FFunctions%2F1805305684" anchor-label="getChqInstr" id="792798766%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-chq-instr.html"><span>get</span><wbr><span>Chq</span><wbr><span><span>Instr</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="792798766%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-chq-instr.html"><span class="token function">getChqInstr</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-cheque11/index.html">Cheque11</a></div><div class="brief ">Gets the value of the chqInstr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1218242556%2FFunctions%2F1805305684" anchor-label="getChrgBr" id="-1218242556%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-chrg-br.html"><span>get</span><wbr><span>Chrg</span><wbr><span><span>Br</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1218242556%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-chrg-br.html"><span class="token function">getChrgBr</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-charge-bearer-type1-code/index.html">ChargeBearerType1Code</a></div><div class="brief ">Gets the value of the chrgBr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2044392922%2FFunctions%2F1805305684" anchor-label="getInstrForCdtrAgt" id="2044392922%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-instr-for-cdtr-agt.html"><span>get</span><wbr><span>Instr</span><wbr><span>For</span><wbr><span>Cdtr</span><wbr><span><span>Agt</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2044392922%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-instr-for-cdtr-agt.html"><span class="token function">getInstrForCdtrAgt</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-instruction-for-creditor-agent1/index.html">InstructionForCreditorAgent1</a><span class="token operator">&gt;</span></div><div class="brief ">Gets the value of the instrForCdtrAgt property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-667310793%2FFunctions%2F1805305684" anchor-label="getInstrForDbtrAgt" id="-667310793%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-instr-for-dbtr-agt.html"><span>get</span><wbr><span>Instr</span><wbr><span>For</span><wbr><span>Dbtr</span><wbr><span><span>Agt</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-667310793%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-instr-for-dbtr-agt.html"><span class="token function">getInstrForDbtrAgt</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div><div class="brief ">Gets the value of the instrForDbtrAgt property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1250999036%2FFunctions%2F1805305684" anchor-label="getIntrmyAgt1" id="1250999036%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-intrmy-agt1.html"><span>get</span><wbr><span>Intrmy</span><wbr><span><span>Agt1</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1250999036%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-intrmy-agt1.html"><span class="token function">getIntrmyAgt1</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-branch-and-financial-institution-identification6/index.html">BranchAndFinancialInstitutionIdentification6</a></div><div class="brief ">Gets the value of the intrmyAgt1 property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="748095145%2FFunctions%2F1805305684" anchor-label="getIntrmyAgt1Acct" id="748095145%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-intrmy-agt1-acct.html"><span>get</span><wbr><span>Intrmy</span><wbr><span><span>Agt1Acct</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="748095145%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-intrmy-agt1-acct.html"><span class="token function">getIntrmyAgt1Acct</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-cash-account38/index.html">CashAccount38</a></div><div class="brief ">Gets the value of the intrmyAgt1Acct property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1282018843%2FFunctions%2F1805305684" anchor-label="getIntrmyAgt2" id="1282018843%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-intrmy-agt2.html"><span>get</span><wbr><span>Intrmy</span><wbr><span><span>Agt2</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1282018843%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-intrmy-agt2.html"><span class="token function">getIntrmyAgt2</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-branch-and-financial-institution-identification6/index.html">BranchAndFinancialInstitutionIdentification6</a></div><div class="brief ">Gets the value of the intrmyAgt2 property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="759411272%2FFunctions%2F1805305684" anchor-label="getIntrmyAgt2Acct" id="759411272%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-intrmy-agt2-acct.html"><span>get</span><wbr><span>Intrmy</span><wbr><span><span>Agt2Acct</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="759411272%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-intrmy-agt2-acct.html"><span class="token function">getIntrmyAgt2Acct</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-cash-account38/index.html">CashAccount38</a></div><div class="brief ">Gets the value of the intrmyAgt2Acct property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1313038650%2FFunctions%2F1805305684" anchor-label="getIntrmyAgt3" id="1313038650%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-intrmy-agt3.html"><span>get</span><wbr><span>Intrmy</span><wbr><span><span>Agt3</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1313038650%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-intrmy-agt3.html"><span class="token function">getIntrmyAgt3</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-branch-and-financial-institution-identification6/index.html">BranchAndFinancialInstitutionIdentification6</a></div><div class="brief ">Gets the value of the intrmyAgt3 property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="770727399%2FFunctions%2F1805305684" anchor-label="getIntrmyAgt3Acct" id="770727399%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-intrmy-agt3-acct.html"><span>get</span><wbr><span>Intrmy</span><wbr><span><span>Agt3Acct</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="770727399%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-intrmy-agt3-acct.html"><span class="token function">getIntrmyAgt3Acct</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-cash-account38/index.html">CashAccount38</a></div><div class="brief ">Gets the value of the intrmyAgt3Acct property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1128927226%2FFunctions%2F1805305684" anchor-label="getPmtId" id="1128927226%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-pmt-id.html"><span>get</span><wbr><span>Pmt</span><wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1128927226%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-pmt-id.html"><span class="token function">getPmtId</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-payment-identification6/index.html">PaymentIdentification6</a></div><div class="brief ">Gets the value of the pmtId property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-460655712%2FFunctions%2F1805305684" anchor-label="getPmtTpInf" id="-460655712%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-pmt-tp-inf.html"><span>get</span><wbr><span>Pmt</span><wbr><span>Tp</span><wbr><span><span>Inf</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-460655712%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-pmt-tp-inf.html"><span class="token function">getPmtTpInf</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-payment-type-information26/index.html">PaymentTypeInformation26</a></div><div class="brief ">Gets the value of the pmtTpInf property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1919161685%2FFunctions%2F1805305684" anchor-label="getPurp" id="-1919161685%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-purp.html"><span>get</span><wbr><span><span>Purp</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1919161685%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-purp.html"><span class="token function">getPurp</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-purpose2-choice/index.html">Purpose2Choice</a></div><div class="brief ">Gets the value of the purp property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1610521689%2FFunctions%2F1805305684" anchor-label="getRgltryRptg" id="1610521689%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-rgltry-rptg.html"><span>get</span><wbr><span>Rgltry</span><wbr><span><span>Rptg</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1610521689%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-rgltry-rptg.html"><span class="token function">getRgltryRptg</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-regulatory-reporting3/index.html">RegulatoryReporting3</a><span class="token operator">&gt;</span></div><div class="brief ">Gets the value of the rgltryRptg property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-886390404%2FFunctions%2F1805305684" anchor-label="getRltdRmtInf" id="-886390404%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-rltd-rmt-inf.html"><span>get</span><wbr><span>Rltd</span><wbr><span>Rmt</span><wbr><span><span>Inf</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-886390404%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-rltd-rmt-inf.html"><span class="token function">getRltdRmtInf</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-remittance-location7/index.html">RemittanceLocation7</a><span class="token operator">&gt;</span></div><div class="brief ">Gets the value of the rltdRmtInf property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-767158906%2FFunctions%2F1805305684" anchor-label="getRmtInf" id="-767158906%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-rmt-inf.html"><span>get</span><wbr><span>Rmt</span><wbr><span><span>Inf</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-767158906%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-rmt-inf.html"><span class="token function">getRmtInf</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-remittance-information16/index.html">RemittanceInformation16</a></div><div class="brief ">Gets the value of the rmtInf property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="84951621%2FFunctions%2F1805305684" anchor-label="getSplmtryData" id="84951621%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-splmtry-data.html"><span>get</span><wbr><span>Splmtry</span><wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="84951621%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-splmtry-data.html"><span class="token function">getSplmtryData</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-supplementary-data1/index.html">SupplementaryData1</a><span class="token operator">&gt;</span></div><div class="brief ">Gets the value of the splmtryData property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1023203265%2FFunctions%2F1805305684" anchor-label="getTax" id="1023203265%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-tax.html"><span>get</span><wbr><span><span>Tax</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1023203265%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-tax.html"><span class="token function">getTax</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-tax-information8/index.html">TaxInformation8</a></div><div class="brief ">Gets the value of the tax property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1947209911%2FFunctions%2F1805305684" anchor-label="getUltmtCdtr" id="-1947209911%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-ultmt-cdtr.html"><span>get</span><wbr><span>Ultmt</span><wbr><span><span>Cdtr</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1947209911%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-ultmt-cdtr.html"><span class="token function">getUltmtCdtr</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-party-identification135/index.html">PartyIdentification135</a></div><div class="brief ">Gets the value of the ultmtCdtr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-744635124%2FFunctions%2F1805305684" anchor-label="getUltmtDbtr" id="-744635124%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-ultmt-dbtr.html"><span>get</span><wbr><span>Ultmt</span><wbr><span><span>Dbtr</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-744635124%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-ultmt-dbtr.html"><span class="token function">getUltmtDbtr</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-party-identification135/index.html">PartyIdentification135</a></div><div class="brief ">Gets the value of the ultmtDbtr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="495715221%2FFunctions%2F1805305684" anchor-label="getXchgRateInf" id="495715221%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-xchg-rate-inf.html"><span>get</span><wbr><span>Xchg</span><wbr><span>Rate</span><wbr><span><span>Inf</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="495715221%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-xchg-rate-inf.html"><span class="token function">getXchgRateInf</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-exchange-rate1/index.html">ExchangeRate1</a></div><div class="brief ">Gets the value of the xchgRateInf property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2144964159%2FFunctions%2F1805305684" anchor-label="setAmt" id="2144964159%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-amt.html"><span>set</span><wbr><span><span>Amt</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2144964159%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-amt.html"><span class="token function">setAmt</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-amount-type4-choice/index.html">AmountType4Choice</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the amt property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1527625586%2FFunctions%2F1805305684" anchor-label="setCdtr" id="-1527625586%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-cdtr.html"><span>set</span><wbr><span><span>Cdtr</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1527625586%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-cdtr.html"><span class="token function">setCdtr</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-party-identification135/index.html">PartyIdentification135</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the cdtr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1084546243%2FFunctions%2F1805305684" anchor-label="setCdtrAcct" id="1084546243%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-cdtr-acct.html"><span>set</span><wbr><span>Cdtr</span><wbr><span><span>Acct</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1084546243%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-cdtr-acct.html"><span class="token function">setCdtrAcct</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-cash-account38/index.html">CashAccount38</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the cdtrAcct property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1976557955%2FFunctions%2F1805305684" anchor-label="setCdtrAgt" id="1976557955%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-cdtr-agt.html"><span>set</span><wbr><span>Cdtr</span><wbr><span><span>Agt</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1976557955%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-cdtr-agt.html"><span class="token function">setCdtrAgt</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-branch-and-financial-institution-identification6/index.html">BranchAndFinancialInstitutionIdentification6</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the cdtrAgt property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1091143497%2FFunctions%2F1805305684" anchor-label="setCdtrAgtAcct" id="1091143497%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-cdtr-agt-acct.html"><span>set</span><wbr><span>Cdtr</span><wbr><span>Agt</span><wbr><span><span>Acct</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1091143497%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-cdtr-agt-acct.html"><span class="token function">setCdtrAgtAcct</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-cash-account38/index.html">CashAccount38</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the cdtrAgtAcct property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1336173651%2FFunctions%2F1805305684" anchor-label="setChqInstr" id="-1336173651%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-chq-instr.html"><span>set</span><wbr><span>Chq</span><wbr><span><span>Instr</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1336173651%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-chq-instr.html"><span class="token function">setChqInstr</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-cheque11/index.html">Cheque11</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the chqInstr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="850621019%2FFunctions%2F1805305684" anchor-label="setChrgBr" id="850621019%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-chrg-br.html"><span>set</span><wbr><span>Chrg</span><wbr><span><span>Br</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="850621019%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-chrg-br.html"><span class="token function">setChrgBr</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-charge-bearer-type1-code/index.html">ChargeBearerType1Code</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the chrgBr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-323052994%2FFunctions%2F1805305684" anchor-label="setInstrForDbtrAgt" id="-323052994%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-instr-for-dbtr-agt.html"><span>set</span><wbr><span>Instr</span><wbr><span>For</span><wbr><span>Dbtr</span><wbr><span><span>Agt</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-323052994%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-instr-for-dbtr-agt.html"><span class="token function">setInstrForDbtrAgt</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the instrForDbtrAgt property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="839460924%2FFunctions%2F1805305684" anchor-label="setIntrmyAgt1" id="839460924%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-intrmy-agt1.html"><span>set</span><wbr><span>Intrmy</span><wbr><span><span>Agt1</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="839460924%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-intrmy-agt1.html"><span class="token function">setIntrmyAgt1</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-branch-and-financial-institution-identification6/index.html">BranchAndFinancialInstitutionIdentification6</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the intrmyAgt1 property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="456255536%2FFunctions%2F1805305684" anchor-label="setIntrmyAgt1Acct" id="456255536%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-intrmy-agt1-acct.html"><span>set</span><wbr><span>Intrmy</span><wbr><span><span>Agt1Acct</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="456255536%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-intrmy-agt1-acct.html"><span class="token function">setIntrmyAgt1Acct</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-cash-account38/index.html">CashAccount38</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the intrmyAgt1Acct property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1961593923%2FFunctions%2F1805305684" anchor-label="setIntrmyAgt2" id="-1961593923%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-intrmy-agt2.html"><span>set</span><wbr><span>Intrmy</span><wbr><span><span>Agt2</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1961593923%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-intrmy-agt2.html"><span class="token function">setIntrmyAgt2</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-branch-and-financial-institution-identification6/index.html">BranchAndFinancialInstitutionIdentification6</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the intrmyAgt2 property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="899866959%2FFunctions%2F1805305684" anchor-label="setIntrmyAgt2Acct" id="899866959%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-intrmy-agt2-acct.html"><span>set</span><wbr><span>Intrmy</span><wbr><span><span>Agt2Acct</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="899866959%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-intrmy-agt2-acct.html"><span class="token function">setIntrmyAgt2Acct</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-cash-account38/index.html">CashAccount38</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the intrmyAgt2Acct property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-467681474%2FFunctions%2F1805305684" anchor-label="setIntrmyAgt3" id="-467681474%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-intrmy-agt3.html"><span>set</span><wbr><span>Intrmy</span><wbr><span><span>Agt3</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-467681474%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-intrmy-agt3.html"><span class="token function">setIntrmyAgt3</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-branch-and-financial-institution-identification6/index.html">BranchAndFinancialInstitutionIdentification6</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the intrmyAgt3 property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1343478382%2FFunctions%2F1805305684" anchor-label="setIntrmyAgt3Acct" id="1343478382%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-intrmy-agt3-acct.html"><span>set</span><wbr><span>Intrmy</span><wbr><span><span>Agt3Acct</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1343478382%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-intrmy-agt3-acct.html"><span class="token function">setIntrmyAgt3Acct</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-cash-account38/index.html">CashAccount38</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the intrmyAgt3Acct property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="181917768%2FFunctions%2F1805305684" anchor-label="setPmtId" id="181917768%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-pmt-id.html"><span>set</span><wbr><span>Pmt</span><wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="181917768%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-pmt-id.html"><span class="token function">setPmtId</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-payment-identification6/index.html">PaymentIdentification6</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the pmtId property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1058179372%2FFunctions%2F1805305684" anchor-label="setPmtTpInf" id="1058179372%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-pmt-tp-inf.html"><span>set</span><wbr><span>Pmt</span><wbr><span>Tp</span><wbr><span><span>Inf</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1058179372%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-pmt-tp-inf.html"><span class="token function">setPmtTpInf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-payment-type-information26/index.html">PaymentTypeInformation26</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the pmtTpInf property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1465676164%2FFunctions%2F1805305684" anchor-label="setPurp" id="-1465676164%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-purp.html"><span>set</span><wbr><span><span>Purp</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1465676164%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-purp.html"><span class="token function">setPurp</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-purpose2-choice/index.html">Purpose2Choice</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the purp property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-221676199%2FFunctions%2F1805305684" anchor-label="setRmtInf" id="-221676199%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-rmt-inf.html"><span>set</span><wbr><span>Rmt</span><wbr><span><span>Inf</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-221676199%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-rmt-inf.html"><span class="token function">setRmtInf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-remittance-information16/index.html">RemittanceInformation16</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the rmtInf property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-118165528%2FFunctions%2F1805305684" anchor-label="setTax" id="-118165528%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-tax.html"><span>set</span><wbr><span><span>Tax</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-118165528%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-tax.html"><span class="token function">setTax</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-tax-information8/index.html">TaxInformation8</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the tax property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-81881220%2FFunctions%2F1805305684" anchor-label="setUltmtCdtr" id="-81881220%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-ultmt-cdtr.html"><span>set</span><wbr><span>Ultmt</span><wbr><span><span>Cdtr</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-81881220%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-ultmt-cdtr.html"><span class="token function">setUltmtCdtr</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-party-identification135/index.html">PartyIdentification135</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the ultmtCdtr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1759335833%2FFunctions%2F1805305684" anchor-label="setUltmtDbtr" id="1759335833%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-ultmt-dbtr.html"><span>set</span><wbr><span>Ultmt</span><wbr><span><span>Dbtr</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1759335833%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-ultmt-dbtr.html"><span class="token function">setUltmtDbtr</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-party-identification135/index.html">PartyIdentification135</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the ultmtDbtr property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1923526587%2FFunctions%2F1805305684" anchor-label="setXchgRateInf" id="-1923526587%2FFunctions%2F1805305684" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":payments-workflows:dokkaHtmlPartial/main" data-filterable-set=":payments-workflows:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-xchg-rate-inf.html"><span>set</span><wbr><span>Xchg</span><wbr><span>Rate</span><wbr><span><span>Inf</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1923526587%2FFunctions%2F1805305684"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":payments-workflows:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-xchg-rate-inf.html"><span class="token function">setXchgRateInf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../-exchange-rate1/index.html">ExchangeRate1</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Sets the value of the xchgRateInf property.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Copyright 2022-2023 Exactpro Systems Limited</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
