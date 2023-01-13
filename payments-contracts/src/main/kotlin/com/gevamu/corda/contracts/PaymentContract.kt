@@ -26,6 +26,35 @@ import java.util.UUID
 
 /**
  * Payment contract
+ *
+ * Verifies that [LedgerTransaction]s connected with [Payment]s are completed correctly.
+ *
+ * Each output from [LedgerTransaction.outputs] should:
+ * 1. hove no more than 1 input ([Payment]);
+ * 2. have correct single command ([Commands]).
+ *
+ * [Commands] verification:
+ *
+ * - [Commands.Create] should:
+ *   1. have required fields ([Payment.endToEndId]);
+ *   2. be signed by Participant Node;
+ *   3. valid [Payment.PaymentStatus] from the side of workflow.
+ *
+ * - [Commands.SendToGateway] should:
+ *   1. have required fields ([Payment.endToEndId]);
+ *   2. be signed by Participant Node;
+ *   3. be signed by Gateway Node;
+ *   4. have same values in key fields of input and output [Payment]s;
+ *   5. valid [Payment.PaymentStatus] from the side of workflow.
+ *
+ * - [Commands.UpdateStatus] should:
+ *   1. have required fields ([Payment.endToEndId]);
+ *   2. be signed by Participant Node;
+ *   3. be signed by Gateway Node;
+ *   4. have same values in key fields of input and output [Payment]s;
+ *   5. valid [Payment.PaymentStatus] from the side of workflow.
+ *
+ * @see Payment
  */
 class PaymentContract : Contract {
     companion object {
