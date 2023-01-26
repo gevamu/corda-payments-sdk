@@ -44,13 +44,13 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
-                output(PaymentContract.ID, Payment.PaymentStatus.CREATED.name, inputPayment)
+                output(PaymentContract.ID, "CREATED", inputPayment)
                 verifies()
             }
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
-                input(Payment.PaymentStatus.CREATED.name)
-                output(PaymentContract.ID, Payment.PaymentStatus.SENT_TO_GATEWAY.name, outputPayment)
+                input("CREATED")
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
                 verifies()
             }
         }
@@ -69,12 +69,12 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
-                output(PaymentContract.ID, Payment.PaymentStatus.CREATED.name, inputPayment)
+                output(PaymentContract.ID, "CREATED", inputPayment)
                 verifies()
             }
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
-                input(Payment.PaymentStatus.CREATED.name)
+                input("CREATED")
                 output(PaymentContract.ID, outputPayment.status.name, outputPayment)
                 failsWith("Contract verification failed: The field EndToEndId is blank for unique payment id $uniquePaymentId, output index 0")
             }
@@ -94,12 +94,12 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
-                output(PaymentContract.ID, Payment.PaymentStatus.CREATED.name, inputPayment)
+                output(PaymentContract.ID, "CREATED", inputPayment)
                 verifies()
             }
             transaction {
                 command(gateway.publicKey, PaymentContract.Commands.SendToGateway(uniquePaymentId))
-                input(Payment.PaymentStatus.CREATED.name)
+                input("CREATED")
                 output(PaymentContract.ID, outputPayment.status.name, outputPayment)
                 failsWith("Contract verification failed: The transaction is not signed by the Payer (${payer.party})")
             }
@@ -119,12 +119,12 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
-                output(PaymentContract.ID, Payment.PaymentStatus.CREATED.name, inputPayment)
+                output(PaymentContract.ID, "CREATED", inputPayment)
                 verifies()
             }
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.SendToGateway(uniquePaymentId))
-                input(Payment.PaymentStatus.CREATED.name)
+                input("CREATED")
                 output(PaymentContract.ID, outputPayment.status.name, outputPayment)
                 failsWith("Contract verification failed: The transaction is not signed by the Gateway (${gateway.party})")
             }
@@ -144,12 +144,12 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
-                output(PaymentContract.ID, Payment.PaymentStatus.CREATED.name, inputPayment)
+                output(PaymentContract.ID, "CREATED", inputPayment)
                 verifies()
             }
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
-                input(Payment.PaymentStatus.CREATED.name)
+                input("CREATED")
                 output(PaymentContract.ID, outputPayment.status.name, outputPayment)
                 failsWith("Contract verification failed: Illegal payment status for command SendToGateway, status transition CREATED -> ACCEPTED")
             }
@@ -169,12 +169,12 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
-                output(PaymentContract.ID, Payment.PaymentStatus.CREATED.name, inputPayment)
+                output(PaymentContract.ID, "CREATED", inputPayment)
                 verifies()
             }
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
-                input(Payment.PaymentStatus.CREATED.name)
+                input("CREATED")
                 output(PaymentContract.ID, outputPayment.status.name, outputPayment)
                 failsWith("Contract verification failed: EndToEndId changed for unique payment id $uniquePaymentId, output index 0")
             }
@@ -195,12 +195,12 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
-                output(PaymentContract.ID, Payment.PaymentStatus.CREATED.name, inputPayment)
+                output(PaymentContract.ID, "CREATED", inputPayment)
                 verifies()
             }
             transaction {
                 command(listOf(thirdParty.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
-                input(Payment.PaymentStatus.CREATED.name)
+                input("CREATED")
                 output(PaymentContract.ID, outputPayment.status.name, outputPayment)
                 failsWith("Contract verification failed: Payer changed for unique payment id $uniquePaymentId, output index 0")
             }
@@ -221,12 +221,12 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
-                output(PaymentContract.ID, Payment.PaymentStatus.CREATED.name, inputPayment)
+                output(PaymentContract.ID, "CREATED", inputPayment)
                 verifies()
             }
             transaction {
                 command(listOf(payer.publicKey, thirdParty.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
-                input(Payment.PaymentStatus.CREATED.name)
+                input("CREATED")
                 output(PaymentContract.ID, outputPayment.status.name, outputPayment)
                 failsWith("Contract verification failed: Gateway changed for unique payment id $uniquePaymentId, output index 0")
             }
