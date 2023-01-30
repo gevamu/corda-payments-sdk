@@ -1,10 +1,11 @@
 # On tag push, build and publish new release
 
-name: GitHub Actions - Tagged release
+name: GitHub Actions - Tagged Release
 on:
-  create:
+  push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-[a-z]+.[0-9]+'
 
 jobs:
   build-and-publish-sdk:
@@ -15,22 +16,47 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'corretto'
-          java-version: '11'
+          java-version: '8'
           cache: 'gradle'
-      - name: 'Build'
-        run: ./gradlew :contracts:build :workflows:build -Pversion=${GITHUB_REF_NAME:1} --no-daemon
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
-      - name: 'Create checksum'
+      - name: 'Build Contracts'
+        run: ./gradlew :payments-contracts:build -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
+
+      - name: 'Build Workflows'
+        run: ./gradlew :payments-workflows:build -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
+
+      - name: 'Publish to Maven Central'
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+        run: ./gradlew publishAllPublicationsToOSSRHRepository -Pversion="${GITHUB_REF_NAME:1}" -Psigning.gnupg.keyName=D3838CD92688873C -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" --no-daemon
+
+      - name: 'Calculate Checksums'
         run: |
-          cd contracts/build/libs/
-          ls | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
+          cd payments-contracts/build/libs/ || return 1
+          find . -name "*.jar" -exec sh -c 'sha256sum "$1" > $1.sha256' _ {} \;
           cd ../../../
-          cd workflows/build/libs/
-          ls | xargs -I {} sh -c 'sha256sum "{}" > {}.sha256'
+          # SC2011, SC2227
+          cd payments-workflows/build/libs/ || return 1
+          find . -name "*.jar" -exec sh -c 'sha256sum "$1" > "$1.sha256"' _ {} \;
+          cd ../../../
 
-      - name: 'Release'
+      - name: 'Release to GitHub'
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            contracts/build/libs/*
-            workflows/build/libs/*
+            payments-contracts/build/libs/*
+            payments-workflows/build/libs/*
+
+      - name: 'Build API Documentation'
+        run: ./gradlew dokkaHtmlMultiModule -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
+
+      # Push HTML files to gh-pages branch
+      - name: 'Publish API Documentation to GitHub Pages'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/dokka/htmlMultiModule
