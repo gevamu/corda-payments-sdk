@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.util.UUID
 
-class PaymentContractUnknownStateTypeTest : AbstractPaymentContractTest() {
+class PaymentContractUnknownTypesTest : AbstractPaymentContractTest() {
     @BelongsToContract(PaymentContract::class)
     data class Dummy(
         val payer: Party,
@@ -47,7 +47,26 @@ class PaymentContractUnknownStateTypeTest : AbstractPaymentContractTest() {
     class DummyCommand(override val uniquePaymentId: UUID) : PaymentContract.Commands
 
     @Test
-    fun `test ignore different type of state`() {
+    fun `test fails when command type is unknown`() {
+        val dummy = Dummy(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            endToEndId = endToEndId,
+            paymentInstructionId = attachmentId,
+            status = Payment.PaymentStatus.CREATED
+        )
+        ledgerServices.ledger {
+            transaction {
+                command(payer.publicKey, DummyCommand(uniquePaymentId))
+                output(PaymentContract.ID, dummy)
+                failsWith("Contract verification failed: Unsupported command type ${DummyCommand::class.java}, command index 0")
+            }
+        }
+    }
+
+    @Test
+    fun `test fails when state type is unknown`() {
         val dummy = Dummy(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -60,12 +79,7 @@ class PaymentContractUnknownStateTypeTest : AbstractPaymentContractTest() {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
                 output(PaymentContract.ID, dummy)
-                verifies()
-            }
-            transaction {
-                command(payer.publicKey, DummyCommand(uniquePaymentId))
-                output(PaymentContract.ID, dummy)
-                verifies()
+                failsWith("Contract verification failed: The transaction is expected to have an output")
             }
         }
     }

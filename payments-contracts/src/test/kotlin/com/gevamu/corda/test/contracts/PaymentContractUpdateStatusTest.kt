@@ -18,6 +18,7 @@ package com.gevamu.corda.test.contracts
 
 import com.gevamu.corda.contracts.PaymentContract
 import com.gevamu.corda.states.Payment
+import net.corda.core.crypto.SecureHash
 import net.corda.testing.node.ledger
 import org.junit.jupiter.api.Test
 
@@ -103,7 +104,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `test unsigned by Payer`() {
+    fun `test absent Payer's signature`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -134,7 +135,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `test unsigned by Gateway`() {
+    fun `test absent Gateway's signature`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -196,7 +197,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `test EndToEnd changed`() {
+    fun `test EndToEndId changed`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -286,6 +287,127 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 input("SENT_TO_GATEWAY")
                 output(PaymentContract.ID, "ACCEPTED", outputPayment)
                 failsWith("Contract verification failed: Gateway changed for unique payment id $uniquePaymentId, output index 0")
+            }
+        }
+    }
+
+    @Test
+    fun `test PaymentInstructionId changed`() {
+        val outputPayment = Payment(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            endToEndId = endToEndId,
+            paymentInstructionId = SecureHash.SHA256(ByteArray(32) { 1 }),
+            status = Payment.PaymentStatus.ACCEPTED
+        )
+        ledgerServices.ledger {
+            transaction {
+                command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
+                output(PaymentContract.ID, "CREATED", inputPaymentCreate)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                input("CREATED")
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", inputPayment)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
+                input("SENT_TO_GATEWAY")
+                output(PaymentContract.ID, "ACCEPTED", outputPayment)
+                failsWith("Contract verification failed: PaymentInstructionId changed for unique payment id $uniquePaymentId, output index 0")
+            }
+        }
+    }
+
+    @Test
+    fun `test status cannot be reverted to CREATED`() {
+        val outputPayment = Payment(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            endToEndId = endToEndId,
+            paymentInstructionId = attachmentId,
+            status = Payment.PaymentStatus.ACCEPTED
+        )
+        val outputPaymentCreated = Payment(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            endToEndId = endToEndId,
+            paymentInstructionId = attachmentId,
+            status = Payment.PaymentStatus.CREATED
+        )
+        ledgerServices.ledger {
+            transaction {
+                command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
+                output(PaymentContract.ID, "CREATED", inputPaymentCreate)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                input("CREATED")
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", inputPayment)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
+                input("SENT_TO_GATEWAY")
+                output(PaymentContract.ID, "ACCEPTED", outputPayment)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
+                input("ACCEPTED")
+                output(PaymentContract.ID, "CREATED_AGAIN", outputPaymentCreated)
+                failsWith("Contract verification failed: Illegal payment status for command UpdateStatus, status transition ACCEPTED -> CREATED")
+            }
+        }
+    }
+
+    @Test
+    fun `test REJECTED status cannot be reverted`() {
+        val outputPayment = Payment(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            endToEndId = endToEndId,
+            paymentInstructionId = attachmentId,
+            status = Payment.PaymentStatus.REJECTED
+        )
+        val outputPaymentAccepted = Payment(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            endToEndId = endToEndId,
+            paymentInstructionId = attachmentId,
+            status = Payment.PaymentStatus.ACCEPTED
+        )
+        ledgerServices.ledger {
+            transaction {
+                command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
+                output(PaymentContract.ID, "CREATED", inputPaymentCreate)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                input("CREATED")
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", inputPayment)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
+                input("SENT_TO_GATEWAY")
+                output(PaymentContract.ID, "REJECTED", outputPayment)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
+                input("REJECTED")
+                output(PaymentContract.ID, "ACCEPTED", outputPaymentAccepted)
+                failsWith("Contract verification failed: Illegal payment status for command UpdateStatus, status transition REJECTED -> ACCEPTED")
             }
         }
     }

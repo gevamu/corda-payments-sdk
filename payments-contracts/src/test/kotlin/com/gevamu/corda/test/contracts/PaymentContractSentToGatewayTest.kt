@@ -18,6 +18,7 @@ package com.gevamu.corda.test.contracts
 
 import com.gevamu.corda.contracts.PaymentContract
 import com.gevamu.corda.states.Payment
+import net.corda.core.crypto.SecureHash
 import net.corda.testing.node.ledger
 import org.junit.jupiter.api.Test
 
@@ -75,14 +76,14 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
-                output(PaymentContract.ID, outputPayment.status.name, outputPayment)
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
                 failsWith("Contract verification failed: The field EndToEndId is blank for unique payment id $uniquePaymentId, output index 0")
             }
         }
     }
 
     @Test
-    fun `test unsigned by Payer`() {
+    fun `test absent Payer's signature`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -100,14 +101,14 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             transaction {
                 command(gateway.publicKey, PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
-                output(PaymentContract.ID, outputPayment.status.name, outputPayment)
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
                 failsWith("Contract verification failed: The transaction is not signed by the Payer (${payer.party})")
             }
         }
     }
 
     @Test
-    fun `test unsigned by Gateway`() {
+    fun `test absent Gateway's signature`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -125,7 +126,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
-                output(PaymentContract.ID, outputPayment.status.name, outputPayment)
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
                 failsWith("Contract verification failed: The transaction is not signed by the Gateway (${gateway.party})")
             }
         }
@@ -150,14 +151,14 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
-                output(PaymentContract.ID, outputPayment.status.name, outputPayment)
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
                 failsWith("Contract verification failed: Illegal payment status for command SendToGateway, status transition CREATED -> ACCEPTED")
             }
         }
     }
 
     @Test
-    fun `test EndToEnd changed`() {
+    fun `test EndToEndId changed`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -175,7 +176,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
-                output(PaymentContract.ID, outputPayment.status.name, outputPayment)
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
                 failsWith("Contract verification failed: EndToEndId changed for unique payment id $uniquePaymentId, output index 0")
             }
         }
@@ -201,7 +202,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(thirdParty.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
-                output(PaymentContract.ID, outputPayment.status.name, outputPayment)
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
                 failsWith("Contract verification failed: Payer changed for unique payment id $uniquePaymentId, output index 0")
             }
         }
@@ -227,8 +228,33 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(payer.publicKey, thirdParty.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
-                output(PaymentContract.ID, outputPayment.status.name, outputPayment)
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
                 failsWith("Contract verification failed: Gateway changed for unique payment id $uniquePaymentId, output index 0")
+            }
+        }
+    }
+
+    @Test
+    fun `test PaymentInstructionId changed`() {
+        val outputPayment = Payment(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            endToEndId = endToEndId,
+            paymentInstructionId = SecureHash.SHA256(ByteArray(32) { 1 }),
+            status = Payment.PaymentStatus.SENT_TO_GATEWAY
+        )
+        ledgerServices.ledger {
+            transaction {
+                command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
+                output(PaymentContract.ID, "CREATED", inputPayment)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                input("CREATED")
+                output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
+                failsWith("Contract verification failed: PaymentInstructionId changed for unique payment id $uniquePaymentId, output index 0")
             }
         }
     }

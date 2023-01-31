@@ -63,74 +63,40 @@ class PaymentContract : Contract {
 
         private fun String.appendOutputIndex(outputIndex: Int): String =
             "$this, output index $outputIndex"
+
+        private fun String.appendCommandIndex(commandIndex: Int): String =
+            "$this, command index $commandIndex"
     }
 
     override fun verify(tx: LedgerTransaction) {
-        tx.inputs.forEachIndexed { index, _ ->
-            if (tx.inputs[index].state.data is Payment) {
-                val payment = tx.inputs[index].state.data as Payment
-                val hasOutput = tx.outputs.map { it.data }
-                    .filterIsInstance<Payment>()
-                    .any { it.uniquePaymentId == payment.uniquePaymentId }
-                require(hasOutput) {
-                    "The input with index $index does not have a corresponding output with unique payment id ${payment.uniquePaymentId}"
+        tx.commands.filter { it.value is Commands }
+            .forEachIndexed { commandIndex, command ->
+                val uniquePaymentId = (command.value as Commands).uniquePaymentId
+                val verifierSpec = VerifierSpec(
+                    command = CommandWithIndex(command, commandIndex),
+                    input = lookupInput(tx, uniquePaymentId, commandIndex),
+                    output = lookupOutput(tx, uniquePaymentId, commandIndex)
+                )
+                val verifier = when (command.value) {
+                    is Commands.Create -> CreateVerifier(verifierSpec)
+                    is Commands.SendToGateway -> SendToGatewayVerifier(verifierSpec)
+                    is Commands.UpdateStatus -> UpdateStatusVerifier(verifierSpec)
+                    else -> throw IllegalArgumentException(
+                        "Unsupported command type ${command.value::class.java}".appendCommandIndex(commandIndex)
+                    )
                 }
+                verifier.verify()
             }
-        }
-
-        tx.outputs.forEachIndexed { index, _ ->
-            if (tx.outputs[index].data is Payment) {
-                verifyOutput(tx, index)
-            }
-        }
     }
 
-    private fun verifyOutput(tx: LedgerTransaction, outputIndex: Int) {
-        val outputPayment = tx.outputs[outputIndex].data as Payment
-        val command = lookupCommand(tx, outputIndex, outputPayment.uniquePaymentId)
-        val verifierSpec = VerifierSpec(
-            output = outputPayment,
-            outputIndex = outputIndex,
-            command = command,
-            input = lookupInput(tx, outputIndex, outputPayment)
-        )
-        val verifier = when (command.value) {
-            is Commands.Create -> CreateVerifier(verifierSpec)
-            is Commands.SendToGateway -> SendToGatewayVerifier(verifierSpec)
-            is Commands.UpdateStatus -> UpdateStatusVerifier(verifierSpec)
-            else -> throw IllegalArgumentException(
-                "Unsupported command type ${command.value::class.java}".appendOutputIndex(outputIndex)
-            )
-        }
-        verifier.verify()
-    }
-
-    private fun lookupCommand(
-        tx: LedgerTransaction,
-        outputIndex: Int,
-        uniquePaymentId: UUID
-    ): CommandWithParties<CommandData> {
-        val commands = tx.commands
-            .filter {
-                val command = it.value
-                (command is Commands) && (command.uniquePaymentId == uniquePaymentId)
-            }
-        require(commands.isNotEmpty()) {
-            "No commands found for unique payment id $uniquePaymentId".appendOutputIndex(outputIndex)
-        }
-        require(commands.size == 1) {
-            "Multiple commands found for unique payment id $uniquePaymentId".appendOutputIndex(outputIndex)
-        }
-        return commands.first()
-    }
-
-    private fun lookupInput(tx: LedgerTransaction, outputIndex: Int, payment: Payment): Payment? {
+    private fun lookupInput(tx: LedgerTransaction, uniquePaymentId: UUID, commandIndex: Int): PaymentWithIndex? {
         val inputs = tx.inputs
             .map { it.state.data }
             .filterIsInstance<Payment>()
-            .filter { it.uniquePaymentId == payment.uniquePaymentId }
+            .filter { it.uniquePaymentId == uniquePaymentId }
+            .mapIndexed { index, payment -> PaymentWithIndex(payment, index) }
         require(inputs.size <= 1) {
-            "Multiple inputs found for unique payment id ${payment.uniquePaymentId}".appendOutputIndex(outputIndex)
+            "Multiple inputs found for unique payment id $uniquePaymentId".appendCommandIndex(commandIndex)
         }
         if (inputs.isEmpty()) {
             return null
@@ -138,16 +104,39 @@ class PaymentContract : Contract {
         return inputs.first()
     }
 
-    class CreateVerifier(spec: VerifierSpec) : TopLevelPaymentContractVerifier(spec) {
+    private fun lookupOutput(tx: LedgerTransaction, uniquePaymentId: UUID, commandIndex: Int): PaymentWithIndex? {
+        val outputs = tx.outputs
+            .map { it.data }
+            .filterIsInstance<Payment>()
+            .filter { it.uniquePaymentId == uniquePaymentId }
+            .mapIndexed { index, payment -> PaymentWithIndex(payment, index) }
+        require(outputs.size <= 1) {
+            "Multiple outputs found for unique payment id $uniquePaymentId".appendCommandIndex(commandIndex)
+        }
+        if (outputs.isEmpty()) {
+            return null
+        }
+        return outputs.first()
+    }
+
+    private class CreateVerifier(spec: VerifierSpec) : TopLevelPaymentContractVerifier(spec) {
+        override fun doVerifySpec() {
+            require(spec.input == null) {
+                "The transaction is expected to have no inputs"
+            }
+            require(spec.output != null) {
+                "The transaction is expected to have an output"
+            }
+        }
         override fun doVerify() {
             RequiredFieldsVerifier(spec).verify()
             PayerSignerVerifier(spec).verify()
         }
         override fun isPaymentStatusTransitionValid(): Boolean =
-            spec.input == null && spec.output.status == Payment.PaymentStatus.CREATED
+            spec.input == null && spec.output?.payment?.status == Payment.PaymentStatus.CREATED
     }
 
-    class SendToGatewayVerifier(spec: VerifierSpec) : TopLevelPaymentContractVerifier(spec) {
+    private class SendToGatewayVerifier(spec: VerifierSpec) : TopLevelPaymentContractVerifier(spec) {
         override fun doVerify() {
             RequiredFieldsVerifier(spec).verify()
             PayerSignerVerifier(spec).verify()
@@ -155,11 +144,13 @@ class PaymentContract : Contract {
             PaymentConsensusVerifier(spec).verify()
         }
         override fun isPaymentStatusTransitionValid(): Boolean =
-            spec.input?.status == Payment.PaymentStatus.CREATED &&
-                spec.output.status == Payment.PaymentStatus.SENT_TO_GATEWAY
+            spec.input?.payment?.status == Payment.PaymentStatus.CREATED && (
+                spec.output?.payment?.status == Payment.PaymentStatus.SENT_TO_GATEWAY ||
+                    spec.output?.payment?.status == Payment.PaymentStatus.COMPLETED
+                )
     }
 
-    class UpdateStatusVerifier(spec: VerifierSpec) : TopLevelPaymentContractVerifier(spec) {
+    private class UpdateStatusVerifier(spec: VerifierSpec) : TopLevelPaymentContractVerifier(spec) {
         override fun doVerify() {
             RequiredFieldsVerifier(spec).verify()
             PayerSignerVerifier(spec).verify()
@@ -168,97 +159,137 @@ class PaymentContract : Contract {
         }
 
         override fun isPaymentStatusTransitionValid(): Boolean =
-            when (spec.input?.status) {
+            when (spec.input?.payment?.status) {
                 Payment.PaymentStatus.SENT_TO_GATEWAY ->
-                    spec.output.status == Payment.PaymentStatus.ACCEPTED ||
-                        spec.output.status == Payment.PaymentStatus.REJECTED ||
-                        spec.output.status == Payment.PaymentStatus.PENDING
+                    spec.output == null ||
+                        spec.output.payment.status == Payment.PaymentStatus.ACCEPTED ||
+                        spec.output.payment.status == Payment.PaymentStatus.REJECTED ||
+                        spec.output.payment.status == Payment.PaymentStatus.PENDING
                 Payment.PaymentStatus.ACCEPTED ->
-                    spec.output.status == Payment.PaymentStatus.ACCEPTED ||
-                        spec.output.status == Payment.PaymentStatus.PENDING
+                    spec.output == null ||
+                        spec.output.payment.status == Payment.PaymentStatus.ACCEPTED ||
+                        spec.output.payment.status == Payment.PaymentStatus.PENDING ||
+                        spec.output.payment.status == Payment.PaymentStatus.COMPLETED
                 Payment.PaymentStatus.REJECTED ->
-                    spec.output.status == Payment.PaymentStatus.REJECTED
+                    spec.output == null ||
+                        spec.output.payment.status == Payment.PaymentStatus.REJECTED
                 Payment.PaymentStatus.COMPLETED ->
-                    spec.output.status == Payment.PaymentStatus.COMPLETED
+                    spec.output == null ||
+                        spec.output.payment.status == Payment.PaymentStatus.COMPLETED
                 Payment.PaymentStatus.PENDING ->
-                    spec.output.status == Payment.PaymentStatus.PENDING ||
-                        spec.output.status == Payment.PaymentStatus.ACCEPTED ||
-                        spec.output.status == Payment.PaymentStatus.REJECTED ||
-                        spec.output.status == Payment.PaymentStatus.COMPLETED
+                    spec.output == null ||
+                        spec.output.payment.status == Payment.PaymentStatus.PENDING ||
+                        spec.output.payment.status == Payment.PaymentStatus.ACCEPTED ||
+                        spec.output.payment.status == Payment.PaymentStatus.REJECTED ||
+                        spec.output.payment.status == Payment.PaymentStatus.COMPLETED
                 else -> false
             }
     }
 
-    class GatewaySignerVerifier(override val spec: VerifierSpec) : PaymentContractVerifier {
+    private class GatewaySignerVerifier(override val spec: VerifierSpec) : PaymentContractVerifier {
         override fun verify() {
-            require(spec.command.signers.contains(spec.output.gateway.owningKey)) {
-                "The transaction is not signed by the Gateway (${spec.output.gateway})"
-                    .appendOutputIndex(spec.outputIndex)
+            require(spec.output != null) {
+                "The transaction is expected to have an output".appendCommandIndex(spec.command.index)
+            }
+            require(spec.command.commandWithParties.signers.contains(spec.output.payment.gateway.owningKey)) {
+                "The transaction is not signed by the Gateway (${spec.output.payment.gateway})"
+                    .appendOutputIndex(spec.output.index)
             }
         }
     }
 
-    class PayerSignerVerifier(override val spec: VerifierSpec) : PaymentContractVerifier {
+    private class PayerSignerVerifier(override val spec: VerifierSpec) : PaymentContractVerifier {
         override fun verify() {
-            require(spec.command.signers.contains(spec.output.payer.owningKey)) {
-                "The transaction is not signed by the Payer (${spec.output.payer})"
+            require(spec.output != null) {
+                "The transaction is expected to have an output".appendCommandIndex(spec.command.index)
+            }
+            require(spec.command.commandWithParties.signers.contains(spec.output.payment.payer.owningKey)) {
+                "The transaction is not signed by the Payer (${spec.output.payment.payer})"
             }
         }
     }
 
-    class RequiredFieldsVerifier(override val spec: VerifierSpec) : PaymentContractVerifier {
+    private class RequiredFieldsVerifier(override val spec: VerifierSpec) : PaymentContractVerifier {
         override fun verify() {
-            require(spec.output.endToEndId.isNotBlank()) {
-                "The field EndToEndId is blank for unique payment id ${spec.output.uniquePaymentId}"
-                    .appendOutputIndex(spec.outputIndex)
+            require(spec.output != null) {
+                "The transaction is expected to have an output".appendCommandIndex(spec.command.index)
+            }
+            require(spec.output.payment.endToEndId.isNotBlank()) {
+                "The field EndToEndId is blank for unique payment id ${spec.output.payment.uniquePaymentId}"
+                    .appendOutputIndex(spec.output.index)
             }
         }
     }
 
-    class PaymentConsensusVerifier(override val spec: VerifierSpec) : PaymentContractVerifier {
+    private class PaymentConsensusVerifier(override val spec: VerifierSpec) : PaymentContractVerifier {
         override fun verify() {
+            require(spec.output != null) {
+                "The transaction is expected to have an output".appendCommandIndex(spec.command.index)
+            }
             require(spec.input != null) {
-                "The transaction has no corresponding input for unique payment id ${spec.output.uniquePaymentId}"
-                    .appendOutputIndex(spec.outputIndex)
+                "The transaction has no corresponding input for unique payment id ${spec.output.payment.uniquePaymentId}"
+                    .appendOutputIndex(spec.output.index)
             }
-            require(spec.input.endToEndId == spec.output.endToEndId) {
-                "EndToEndId changed for unique payment id ${spec.input.uniquePaymentId}"
-                    .appendOutputIndex(spec.outputIndex)
+            require(spec.input.payment.endToEndId == spec.output.payment.endToEndId) {
+                "EndToEndId changed for unique payment id ${spec.input.payment.uniquePaymentId}"
+                    .appendOutputIndex(spec.output.index)
             }
-            require(spec.input.payer == spec.output.payer) {
-                "Payer changed for unique payment id ${spec.input.uniquePaymentId}"
-                    .appendOutputIndex(spec.outputIndex)
+            require(spec.input.payment.payer == spec.output.payment.payer) {
+                "Payer changed for unique payment id ${spec.input.payment.uniquePaymentId}"
+                    .appendOutputIndex(spec.output.index)
             }
-            require(spec.input.gateway == spec.output.gateway) {
-                "Gateway changed for unique payment id ${spec.input.uniquePaymentId}"
-                    .appendOutputIndex(spec.outputIndex)
+            require(spec.input.payment.gateway == spec.output.payment.gateway) {
+                "Gateway changed for unique payment id ${spec.input.payment.uniquePaymentId}"
+                    .appendOutputIndex(spec.output.index)
+            }
+            require(spec.input.payment.paymentInstructionId == spec.output.payment.paymentInstructionId) {
+                "PaymentInstructionId changed for unique payment id ${spec.input.payment.uniquePaymentId}"
+                    .appendOutputIndex(spec.output.index)
             }
         }
     }
 
-    interface PaymentContractVerifier : Verifier {
+    private interface PaymentContractVerifier : Verifier {
         val spec: VerifierSpec
     }
 
-    class VerifierSpec(
-        val command: CommandWithParties<CommandData>,
-        val outputIndex: Int,
-        val output: Payment,
-        val input: Payment? = null
+    private class VerifierSpec(
+        val command: CommandWithIndex,
+        val input: PaymentWithIndex? = null,
+        val output: PaymentWithIndex? = null
     )
 
-    abstract class TopLevelPaymentContractVerifier(override val spec: VerifierSpec) : PaymentContractVerifier {
+    private class CommandWithIndex(
+        val commandWithParties: CommandWithParties<CommandData>,
+        val index: Int
+    )
+
+    private class PaymentWithIndex(
+        val payment: Payment,
+        val index: Int
+    )
+
+    private abstract class TopLevelPaymentContractVerifier(override val spec: VerifierSpec) : PaymentContractVerifier {
         final override fun verify() {
+            doVerifySpec()
             doVerify()
             doVerifyPaymentStatusTransition()
+        }
+        protected open fun doVerifySpec() {
+            require(spec.input != null) {
+                "The transaction is expected to have no inputs"
+            }
+            require(spec.output != null) {
+                "The transaction is expected to have an output"
+            }
         }
         protected abstract fun doVerify()
         protected abstract fun isPaymentStatusTransitionValid(): Boolean
         private fun doVerifyPaymentStatusTransition() {
             require(isPaymentStatusTransitionValid()) {
-                val commandName = spec.command.value::class.java.simpleName
-                val inputStatus = spec.input?.status ?: "NONE"
-                val outputStatus = spec.output.status
+                val commandName = spec.command.commandWithParties.value::class.java.simpleName
+                val inputStatus = spec.input?.payment?.status ?: "NONE"
+                val outputStatus = spec.output?.payment?.status ?: "NONE"
                 "Illegal payment status for command $commandName, status transition $inputStatus -> $outputStatus"
             }
         }
