@@ -144,10 +144,8 @@ class PaymentContract : Contract {
             PaymentConsensusVerifier(spec).verify()
         }
         override fun isPaymentStatusTransitionValid(): Boolean =
-            spec.input?.payment?.status == Payment.PaymentStatus.CREATED && (
-                spec.output?.payment?.status == Payment.PaymentStatus.SENT_TO_GATEWAY ||
-                    spec.output?.payment?.status == Payment.PaymentStatus.COMPLETED
-                )
+            spec.input?.payment?.status == Payment.PaymentStatus.CREATED &&
+                spec.output?.payment?.status == Payment.PaymentStatus.SENT_TO_GATEWAY
     }
 
     private class UpdateStatusVerifier(spec: VerifierSpec) : TopLevelPaymentContractVerifier(spec) {
@@ -164,7 +162,8 @@ class PaymentContract : Contract {
                     spec.output == null ||
                         spec.output.payment.status == Payment.PaymentStatus.ACCEPTED ||
                         spec.output.payment.status == Payment.PaymentStatus.REJECTED ||
-                        spec.output.payment.status == Payment.PaymentStatus.PENDING
+                        spec.output.payment.status == Payment.PaymentStatus.PENDING ||
+                        spec.output.payment.status == Payment.PaymentStatus.COMPLETED
                 Payment.PaymentStatus.ACCEPTED ->
                     spec.output == null ||
                         spec.output.payment.status == Payment.PaymentStatus.ACCEPTED ||
