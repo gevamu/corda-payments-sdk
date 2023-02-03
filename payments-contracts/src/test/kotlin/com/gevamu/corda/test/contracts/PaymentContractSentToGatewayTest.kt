@@ -77,7 +77,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
                 output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
-                failsWith("Contract verification failed: The field EndToEndId is blank for unique payment id $uniquePaymentId, output index 0")
+                failsWith("Contract verification failed: Field endToEndId cannot be blank (Output state Payment, index 0)")
             }
         }
     }
@@ -102,7 +102,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(gateway.publicKey, PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
                 output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
-                failsWith("Contract verification failed: The transaction is not signed by the Payer (${payer.party})")
+                failsWith("Contract verification failed: Required signature absent for command SendToGateway($uniquePaymentId), index 0")
             }
         }
     }
@@ -127,7 +127,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(payer.publicKey, PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
                 output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
-                failsWith("Contract verification failed: The transaction is not signed by the Gateway (${gateway.party})")
+                failsWith("Contract verification failed: Required signature absent for command SendToGateway($uniquePaymentId), index 0")
             }
         }
     }
@@ -152,7 +152,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
                 output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
-                failsWith("Contract verification failed: Illegal payment status for command SendToGateway, status transition CREATED -> ACCEPTED")
+                failsWith("Contract verification failed: Status ACCEPTED is not valid for command SendToGateway($uniquePaymentId), index 0 (Output state Payment, index 0)")
             }
         }
     }
@@ -177,7 +177,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
                 output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
-                failsWith("Contract verification failed: EndToEndId changed for unique payment id $uniquePaymentId, output index 0")
+                failsWith("Contract verification failed: Output state should have same value in endToEndId as input state for command SendToGateway($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
             }
         }
     }
@@ -203,7 +203,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(thirdParty.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
                 output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
-                failsWith("Contract verification failed: Payer changed for unique payment id $uniquePaymentId, output index 0")
+                failsWith("Contract verification failed: Output state should have same value in payer as input state for command SendToGateway($uniquePaymentId)")
             }
         }
     }
@@ -229,7 +229,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, thirdParty.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
                 output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
-                failsWith("Contract verification failed: Gateway changed for unique payment id $uniquePaymentId, output index 0")
+                failsWith("Contract verification failed: Output state should have same value in gateway as input state for command SendToGateway($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
             }
         }
     }
@@ -254,7 +254,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
                 output(PaymentContract.ID, "SENT_TO_GATEWAY", outputPayment)
-                failsWith("Contract verification failed: PaymentInstructionId changed for unique payment id $uniquePaymentId, output index 0")
+                failsWith("Contract verification failed: Output state should have same value in paymentInstructionId as input state for command SendToGateway($uniquePaymentId)")
             }
         }
     }

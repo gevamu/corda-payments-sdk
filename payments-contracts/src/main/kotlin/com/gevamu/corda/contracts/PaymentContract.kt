@@ -18,14 +18,14 @@ package com.gevamu.corda.contracts
 
 import com.gevamu.corda.contracts.PaymentContract.Commands
 import com.gevamu.corda.states.Payment
-import java.security.PublicKey
-import java.util.EnumSet
 import net.corda.core.contracts.CommandData
 import net.corda.core.contracts.Contract
-import net.corda.core.transactions.LedgerTransaction
-import java.util.UUID
 import net.corda.core.contracts.ContractState
 import net.corda.core.identity.Party
+import net.corda.core.transactions.LedgerTransaction
+import java.security.PublicKey
+import java.util.EnumSet
+import java.util.UUID
 
 /**
  * Payment contract
@@ -73,12 +73,18 @@ class PaymentContract : Contract {
             .filter { it.value is Commands }
             .forEachIndexed { commandIndex, commandWithParties ->
                 val verifier = when (val command = commandWithParties.value as Commands) {
-                    is Commands.Create ->
-                        CreateVerifier(command, commandWithParties.signers, commandIndex, tx)
-                    is Commands.SendToGateway ->
-                        SendToGatewayVerifier(command, commandWithParties.signers, commandIndex, tx)
-                    is Commands.UpdateStatus ->
-                        UpdateStatusVerifier(command, commandWithParties.signers, commandIndex, tx)
+                    is Commands.Create -> {
+                        val spec = VerifierSpec(command, commandWithParties.signers, commandIndex, tx)
+                        CreateVerifier(spec)
+                    }
+                    is Commands.SendToGateway -> {
+                        val spec = VerifierSpec(command, commandWithParties.signers, commandIndex, tx)
+                        SendToGatewayVerifier(spec)
+                    }
+                    is Commands.UpdateStatus -> {
+                        val spec = VerifierSpec(command, commandWithParties.signers, commandIndex, tx)
+                        UpdateStatusVerifier(spec)
+                    }
                 }
                 verifier.verify()
             }
@@ -98,20 +104,26 @@ class PaymentContract : Contract {
 
     private fun requireCommand(paymentWithRef: StateWithRef<Payment>, tx: LedgerTransaction) {
         val uniquePaymentId = paymentWithRef.state.uniquePaymentId
-        require(tx.commands.stream().anyMatch {
-            val command = it.value
-            command is Commands && command.uniquePaymentId == uniquePaymentId
-        }) {
+        require(
+            tx.commands.stream().anyMatch {
+                val command = it.value
+                command is Commands && command.uniquePaymentId == uniquePaymentId
+            }
+        ) {
             "There is no command for $paymentWithRef"
         }
     }
 
+    private class VerifierSpec<T>(
+        val command: T,
+        val signers: List<PublicKey>,
+        val commandIndex: Int,
+        val tx: LedgerTransaction
+    )
+
     private class CreateVerifier(
-        command: Commands.Create,
-        signers: List<PublicKey>,
-        commandIndex: Int,
-        tx: LedgerTransaction
-    ) : CommandVerifier<Commands.Create>(command, signers, commandIndex, tx) {
+        spec: VerifierSpec<Commands.Create>
+    ) : CommandVerifier<Commands.Create>(spec) {
         override fun verify() {
             requireNoInput()
             val output = requireSingleOutput()
@@ -122,11 +134,8 @@ class PaymentContract : Contract {
     }
 
     private class SendToGatewayVerifier(
-        command: Commands.SendToGateway,
-        signers: List<PublicKey>,
-        commandIndex: Int,
-        tx: LedgerTransaction
-    ) : CommandVerifier<Commands.SendToGateway>(command, signers, commandIndex, tx) {
+        spec: VerifierSpec<Commands.SendToGateway>
+    ) : CommandVerifier<Commands.SendToGateway>(spec) {
         override fun verify() {
             val input = requireSingleInput()
             val output = requireSingleOutput()
@@ -139,26 +148,29 @@ class PaymentContract : Contract {
     }
 
     private class UpdateStatusVerifier(
-        command: Commands.UpdateStatus,
-        signers: List<PublicKey>,
-        commandIndex: Int,
-        tx: LedgerTransaction
-    ) : CommandVerifier<Commands.UpdateStatus>(command, signers, commandIndex, tx) {
+        spec: VerifierSpec<Commands.UpdateStatus>
+    ) : CommandVerifier<Commands.UpdateStatus>(spec) {
         override fun verify() {
             val input = requireSingleInput()
             val output = requireSingleOutput()
             requireValidPayment(output)
-            requirePaymentStatus(input, EnumSet.of(
-                Payment.PaymentStatus.SENT_TO_GATEWAY,
-                Payment.PaymentStatus.ACCEPTED,
-                Payment.PaymentStatus.PENDING
-            ))
-            requirePaymentStatus(output, EnumSet.of(
-                Payment.PaymentStatus.ACCEPTED,
-                Payment.PaymentStatus.PENDING,
-                Payment.PaymentStatus.REJECTED,
-                Payment.PaymentStatus.COMPLETED
-            ))
+            requirePaymentStatus(
+                input,
+                EnumSet.of(
+                    Payment.PaymentStatus.SENT_TO_GATEWAY,
+                    Payment.PaymentStatus.ACCEPTED,
+                    Payment.PaymentStatus.PENDING
+                )
+            )
+            requirePaymentStatus(
+                output,
+                EnumSet.of(
+                    Payment.PaymentStatus.ACCEPTED,
+                    Payment.PaymentStatus.PENDING,
+                    Payment.PaymentStatus.REJECTED,
+                    Payment.PaymentStatus.COMPLETED
+                )
+            )
             requireNoPaymentChange(input, output)
             requireSignature(output.state.gateway)
         }
@@ -171,6 +183,8 @@ class PaymentContract : Contract {
         private val tx: LedgerTransaction
     ) {
         val uniquePaymentId: UUID = command.uniquePaymentId
+
+        constructor(spec: VerifierSpec<T>) : this(spec.command, spec.signers, spec.commandIndex, spec.tx)
 
         abstract fun verify()
 
@@ -219,7 +233,7 @@ class PaymentContract : Contract {
 
         protected fun requireSignature(vararg party: Party) {
             require(signers.containsAll(party.map { it.owningKey })) {
-                "XXX"
+                "Required signature absent for $commandText"
             }
         }
 
@@ -244,7 +258,7 @@ class PaymentContract : Contract {
             "Output state should have same value in $fieldName as input state for $commandText ($input; $output)"
 
         private val commandText: String get() =
-            "command ${command}, index $commandIndex"
+            "command $command, index $commandIndex"
     }
 
     enum class InputOutput { INPUT, OUTPUT }

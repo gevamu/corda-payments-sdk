@@ -55,13 +55,13 @@ class PaymentContractCreateTest : AbstractPaymentContractTest() {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: The field EndToEndId is blank for unique payment id $uniquePaymentId, output index 0")
+                failsWith("Contract verification failed: Field endToEndId cannot be blank (Output state Payment, index 0)")
             }
         }
     }
 
     @Test
-    fun `test unsigned by Payer`() {
+    fun `test absent Payer's signature`() {
         val thirdParty = createIdentity("Third Party")
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
@@ -75,7 +75,7 @@ class PaymentContractCreateTest : AbstractPaymentContractTest() {
             transaction {
                 command(thirdParty.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: The transaction is not signed by the Payer (${payer.party})")
+                failsWith("Contract verification failed: Required signature absent for command Create($uniquePaymentId), index 0")
             }
         }
     }
@@ -94,7 +94,7 @@ class PaymentContractCreateTest : AbstractPaymentContractTest() {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Illegal payment status for command Create, status transition NONE -> SENT_TO_GATEWAY")
+                failsWith("Contract verification failed: Status SENT_TO_GATEWAY is not valid for command Create($uniquePaymentId)")
             }
         }
     }

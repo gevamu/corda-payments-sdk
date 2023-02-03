@@ -98,7 +98,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
                 output(PaymentContract.ID, "ACCEPTED", outputPayment)
-                failsWith("Contract verification failed: The field EndToEndId is blank for unique payment id $uniquePaymentId, output index 0")
+                failsWith("Contract verification failed: Field endToEndId cannot be blank (Output state Payment, index 0)")
             }
         }
     }
@@ -129,7 +129,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(gateway.publicKey, PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
                 output(PaymentContract.ID, "ACCEPTED", outputPayment)
-                failsWith("Contract verification failed: The transaction is not signed by the Payer (${payer.party})")
+                verifies()
             }
         }
     }
@@ -160,7 +160,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(payer.publicKey, PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
                 output(PaymentContract.ID, "ACCEPTED", outputPayment)
-                failsWith("Contract verification failed: The transaction is not signed by the Gateway (${gateway.party})")
+                failsWith("Contract verification failed: Required signature absent for command UpdateStatus($uniquePaymentId), index 0")
             }
         }
     }
@@ -191,7 +191,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Illegal payment status for command UpdateStatus, status transition SENT_TO_GATEWAY -> SENT_TO_GATEWAY")
+                failsWith("Contract verification failed: Status SENT_TO_GATEWAY is not valid for command UpdateStatus($uniquePaymentId), index 0 (Output state Payment, index 0)")
             }
         }
     }
@@ -222,7 +222,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
                 output(PaymentContract.ID, "ACCEPTED", outputPayment)
-                failsWith("Contract verification failed: EndToEndId changed for unique payment id $uniquePaymentId, output index 0")
+                failsWith("Contract verification failed: Output state should have same value in endToEndId as input state for command UpdateStatus($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
             }
         }
     }
@@ -254,7 +254,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(listOf(thirdParty.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
                 output(PaymentContract.ID, "ACCEPTED", outputPayment)
-                failsWith("Contract verification failed: Payer changed for unique payment id $uniquePaymentId, output index 0")
+                failsWith("Contract verification failed: Output state should have same value in payer as input state for command UpdateStatus($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
             }
         }
     }
@@ -286,7 +286,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, thirdParty.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
                 output(PaymentContract.ID, "ACCEPTED", outputPayment)
-                failsWith("Contract verification failed: Gateway changed for unique payment id $uniquePaymentId, output index 0")
+                failsWith("Contract verification failed: Output state should have same value in gateway as input state for command UpdateStatus($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
             }
         }
     }
@@ -317,7 +317,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
                 output(PaymentContract.ID, "ACCEPTED", outputPayment)
-                failsWith("Contract verification failed: PaymentInstructionId changed for unique payment id $uniquePaymentId, output index 0")
+                failsWith("Contract verification failed: Output state should have same value in paymentInstructionId as input state for command UpdateStatus($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
             }
         }
     }
@@ -362,7 +362,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("ACCEPTED")
                 output(PaymentContract.ID, "CREATED_AGAIN", outputPaymentCreated)
-                failsWith("Contract verification failed: Illegal payment status for command UpdateStatus, status transition ACCEPTED -> CREATED")
+                failsWith("Contract verification failed: Status CREATED is not valid for command UpdateStatus($uniquePaymentId), index 0 (Output state Payment, index 0)")
             }
         }
     }
@@ -407,7 +407,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("REJECTED")
                 output(PaymentContract.ID, "ACCEPTED", outputPaymentAccepted)
-                failsWith("Contract verification failed: Illegal payment status for command UpdateStatus, status transition REJECTED -> ACCEPTED")
+                failsWith("Contract verification failed: Status REJECTED is not valid for command UpdateStatus($uniquePaymentId)")
             }
         }
     }
