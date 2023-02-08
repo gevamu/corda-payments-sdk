@@ -18,34 +18,18 @@ package com.gevamu.corda.test.contracts
 
 import com.gevamu.corda.contracts.PaymentContract
 import com.gevamu.corda.states.Payment
-import net.corda.core.contracts.BelongsToContract
-import net.corda.core.contracts.Contract
-import net.corda.core.contracts.ContractState
-import net.corda.core.identity.AbstractParty
-import net.corda.core.identity.Party
-import net.corda.core.transactions.LedgerTransaction
+import net.corda.core.contracts.CommandData
+import net.corda.testing.contracts.DummyContract
+import net.corda.testing.contracts.DummyState
 import net.corda.testing.node.ledger
 import org.junit.jupiter.api.Test
 
 class PaymentContractUnknownTypesTest : AbstractPaymentContractTest() {
-    class DummyContract : Contract {
-        override fun verify(tx: LedgerTransaction) {
-        }
 
-        companion object {
-            val ID = "com.gevamu.corda.test.contracts.DummyContract"
-        }
-    }
-
-    @BelongsToContract(DummyContract::class)
-    data class DummyState(val party: Party) : ContractState {
-        override val participants: List<AbstractParty>
-            get() = listOf(party)
-    }
+    class DummyCommand : CommandData
 
     @Test
     fun `test unknown state type`() {
-        val dummy = DummyState(payer.party)
         val payment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -54,12 +38,14 @@ class PaymentContractUnknownTypesTest : AbstractPaymentContractTest() {
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.CREATED
         )
+        val dummy = DummyState()
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
                 output(PaymentContract.ID, payment)
-                // TODO Command for DummyContract?
-                output(DummyContract.ID, dummy)
+                command(payer.publicKey, DummyCommand())
+                attachment(DummyContract.PROGRAM_ID)
+                output(DummyContract.PROGRAM_ID, dummy)
                 verifies()
             }
         }
