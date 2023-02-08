@@ -106,7 +106,7 @@ class PaymentFlow(
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
         val builder = TransactionBuilder(notary)
             .addOutputState(payment)
-            .addCommand(PaymentContract.Commands.Create(), ourIdentity.owningKey)
+            .addCommand(PaymentContract.Commands.Create(uniquePaymentId), ourIdentity.owningKey)
             .addAttachment(attachmentId)
         builder.verify(serviceHub)
 
