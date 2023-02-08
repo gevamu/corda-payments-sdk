@@ -75,7 +75,7 @@ class PaymentContractCreateTest : AbstractPaymentContractTest() {
             transaction {
                 command(thirdParty.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Required signature absent for command Create($uniquePaymentId), index 0")
+                failsWith("Contract verification failed: Required signature is absent for command Create($uniquePaymentId), index 0")
             }
         }
     }

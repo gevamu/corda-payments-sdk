@@ -69,40 +69,26 @@ class PaymentContract : Contract {
     }
 
     override fun verify(tx: LedgerTransaction) {
+        // TODO It may be more performant to remove entries from input and outputs copy as
+        //      validation proceeds.
         tx.commands
             .filter { it.value is Commands }
-            .forEachIndexed { commandIndex, commandWithParties ->
-                val verifier = when (val command = commandWithParties.value as Commands) {
-                    is Commands.Create -> {
-                        val spec = VerifierSpec(command, commandWithParties.signers, commandIndex, tx)
-                        CreateVerifier(spec)
-                    }
-                    is Commands.SendToGateway -> {
-                        val spec = VerifierSpec(command, commandWithParties.signers, commandIndex, tx)
-                        SendToGatewayVerifier(spec)
-                    }
-                    is Commands.UpdateStatus -> {
-                        val spec = VerifierSpec(command, commandWithParties.signers, commandIndex, tx)
-                        UpdateStatusVerifier(spec)
-                    }
+            .forEachIndexed { commandIndex, (signers, _, value) ->
+                val verifier = when (val command = value as Commands) {
+                    is Commands.Create ->
+                        CreateVerifier(VerifierSpec(command, signers, commandIndex, tx))
+                    is Commands.SendToGateway ->
+                        SendToGatewayVerifier(VerifierSpec(command, signers, commandIndex, tx))
+                    is Commands.UpdateStatus ->
+                        UpdateStatusVerifier(VerifierSpec(command, signers, commandIndex, tx))
                 }
                 verifier.verify()
             }
-        tx.inputs
-            .map { it.state.data }
-            .filterIsInstance(Payment::class.java)
-            .forEachIndexed { index, payment ->
-                requireCommand(StateWithRef(payment, InputOutput.INPUT, index), tx)
-            }
-        tx.outputs
-            .map { it.data }
-            .filterIsInstance(Payment::class.java)
-            .forEachIndexed { index, payment ->
-                requireCommand(StateWithRef(payment, InputOutput.OUTPUT, index), tx)
-            }
+        tx.inputPayments().forEach { payment -> requireAssociatedCommand(payment, tx) }
+        tx.outputPayments().forEach { payment -> requireAssociatedCommand(payment, tx) }
     }
 
-    private fun requireCommand(paymentWithRef: StateWithRef<Payment>, tx: LedgerTransaction) {
+    private fun requireAssociatedCommand(paymentWithRef: StateWithRef<Payment>, tx: LedgerTransaction) {
         val uniquePaymentId = paymentWithRef.state.uniquePaymentId
         require(
             tx.commands.stream().anyMatch {
@@ -113,13 +99,6 @@ class PaymentContract : Contract {
             "There is no command for $paymentWithRef"
         }
     }
-
-    private class VerifierSpec<T>(
-        val command: T,
-        val signers: List<PublicKey>,
-        val commandIndex: Int,
-        val tx: LedgerTransaction
-    )
 
     private class CreateVerifier(
         spec: VerifierSpec<Commands.Create>
@@ -176,6 +155,13 @@ class PaymentContract : Contract {
         }
     }
 
+    private class VerifierSpec<T : Commands>(
+        val command: T,
+        val signers: List<PublicKey>,
+        val commandIndex: Int,
+        val tx: LedgerTransaction
+    )
+
     private abstract class CommandVerifier<T : Commands>(
         private val command: T,
         private val signers: List<PublicKey>,
@@ -189,14 +175,14 @@ class PaymentContract : Contract {
         abstract fun verify()
 
         protected fun requireNoInput() {
-            val inputs = lookupPayments(InputOutput.INPUT, tx.inputs.map { it.state.data }, uniquePaymentId)
+            val inputs = tx.inputPayments(uniquePaymentId)
             require(inputs.isEmpty()) {
                 "$commandText should have no input"
             }
         }
 
         protected fun requireSingleInput(): StateWithRef<Payment> {
-            val inputs = lookupPayments(InputOutput.INPUT, tx.inputs.map { it.state.data }, uniquePaymentId)
+            val inputs = tx.inputPayments(uniquePaymentId)
             require(inputs.size == 1) {
                 "$commandText should have exactly one input"
             }
@@ -204,7 +190,7 @@ class PaymentContract : Contract {
         }
 
         protected fun requireSingleOutput(): StateWithRef<Payment> {
-            val outputs = lookupPayments(InputOutput.OUTPUT, tx.outputs.map { it.data }, uniquePaymentId)
+            val outputs = tx.outputPayments(uniquePaymentId)
             require(outputs.size == 1) {
                 "$commandText should have exactly one output"
             }
@@ -233,7 +219,7 @@ class PaymentContract : Contract {
 
         protected fun requireSignature(vararg party: Party) {
             require(signers.containsAll(party.map { it.owningKey })) {
-                "Required signature absent for $commandText"
+                "Required signature is absent for $commandText"
             }
         }
 
@@ -276,12 +262,18 @@ class PaymentContract : Contract {
         private fun lookupPayments(
             inputOutput: InputOutput,
             states: List<ContractState>,
-            uniquePaymentId: UUID
+            uniquePaymentId: UUID? = null
         ): List<StateWithRef<Payment>> {
             return states
                 .filterIsInstance<Payment>()
-                .filter { it.uniquePaymentId == uniquePaymentId }
+                .run { if (uniquePaymentId == null) this else this.filter { it.uniquePaymentId == uniquePaymentId } }
                 .mapIndexed { index, payment -> StateWithRef(payment, inputOutput, index) }
         }
+
+        private fun LedgerTransaction.inputPayments(uniquePaymentId: UUID? = null) =
+            lookupPayments(InputOutput.INPUT, inputs.map { it.state.data }, uniquePaymentId)
+
+        private fun LedgerTransaction.outputPayments(uniquePaymentId: UUID? = null) =
+            lookupPayments(InputOutput.OUTPUT, outputs.map { it.data }, uniquePaymentId)
     }
 }

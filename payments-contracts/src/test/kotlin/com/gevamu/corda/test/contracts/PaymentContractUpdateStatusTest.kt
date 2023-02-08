@@ -66,7 +66,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
-                output(PaymentContract.ID, "ACCEPTED", outputPayment)
+                output(PaymentContract.ID, outputPayment)
                 verifies()
             }
         }
@@ -97,7 +97,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
-                output(PaymentContract.ID, "ACCEPTED", outputPayment)
+                output(PaymentContract.ID, outputPayment)
                 failsWith("Contract verification failed: Field endToEndId cannot be blank (Output state Payment, index 0)")
             }
         }
@@ -128,7 +128,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
             transaction {
                 command(gateway.publicKey, PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
-                output(PaymentContract.ID, "ACCEPTED", outputPayment)
+                output(PaymentContract.ID, outputPayment)
                 verifies()
             }
         }
@@ -159,8 +159,8 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
-                output(PaymentContract.ID, "ACCEPTED", outputPayment)
-                failsWith("Contract verification failed: Required signature absent for command UpdateStatus($uniquePaymentId), index 0")
+                output(PaymentContract.ID, outputPayment)
+                failsWith("Contract verification failed: Required signature is absent for command UpdateStatus($uniquePaymentId), index 0")
             }
         }
     }
@@ -221,7 +221,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
-                output(PaymentContract.ID, "ACCEPTED", outputPayment)
+                output(PaymentContract.ID, outputPayment)
                 failsWith("Contract verification failed: Output state should have same value in endToEndId as input state for command UpdateStatus($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
             }
         }
@@ -253,7 +253,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(thirdParty.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
-                output(PaymentContract.ID, "ACCEPTED", outputPayment)
+                output(PaymentContract.ID, outputPayment)
                 failsWith("Contract verification failed: Output state should have same value in payer as input state for command UpdateStatus($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
             }
         }
@@ -285,7 +285,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(payer.publicKey, thirdParty.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
-                output(PaymentContract.ID, "ACCEPTED", outputPayment)
+                output(PaymentContract.ID, outputPayment)
                 failsWith("Contract verification failed: Output state should have same value in gateway as input state for command UpdateStatus($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
             }
         }
@@ -316,7 +316,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("SENT_TO_GATEWAY")
-                output(PaymentContract.ID, "ACCEPTED", outputPayment)
+                output(PaymentContract.ID, outputPayment)
                 failsWith("Contract verification failed: Output state should have same value in paymentInstructionId as input state for command UpdateStatus($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
             }
         }
@@ -361,7 +361,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("ACCEPTED")
-                output(PaymentContract.ID, "CREATED_AGAIN", outputPaymentCreated)
+                output(PaymentContract.ID, outputPaymentCreated)
                 failsWith("Contract verification failed: Status CREATED is not valid for command UpdateStatus($uniquePaymentId), index 0 (Output state Payment, index 0)")
             }
         }
@@ -406,7 +406,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
             transaction {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.UpdateStatus(uniquePaymentId))
                 input("REJECTED")
-                output(PaymentContract.ID, "ACCEPTED", outputPaymentAccepted)
+                output(PaymentContract.ID, outputPaymentAccepted)
                 failsWith("Contract verification failed: Status REJECTED is not valid for command UpdateStatus($uniquePaymentId)")
             }
         }

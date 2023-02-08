@@ -23,37 +23,30 @@ import net.corda.core.contracts.Contract
 import net.corda.core.contracts.ContractState
 import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.Party
-import net.corda.core.node.services.AttachmentId
 import net.corda.core.transactions.LedgerTransaction
 import net.corda.testing.node.ledger
 import org.junit.jupiter.api.Test
-import java.time.Instant
-import java.util.UUID
 
 class PaymentContractUnknownTypesTest : AbstractPaymentContractTest() {
     class DummyContract : Contract {
         override fun verify(tx: LedgerTransaction) {
         }
+
+        companion object {
+            val ID = "com.gevamu.corda.test.contracts.DummyContract"
+        }
     }
 
     @BelongsToContract(DummyContract::class)
-    data class DummyState(
-        val payer: Party,
-        val gateway: Party,
-        val endToEndId: String,
-        val paymentInstructionId: AttachmentId,
-        val status: Payment.PaymentStatus,
-        val additionalInfo: String? = null,
-        val uniquePaymentId: UUID = UUID.randomUUID(),
-        val timestamp: Instant = Instant.now()
-    ) : ContractState {
+    data class DummyState(val party: Party) : ContractState {
         override val participants: List<AbstractParty>
-            get() = if (status == Payment.PaymentStatus.CREATED) listOf(payer) else listOf(payer, gateway)
+            get() = listOf(party)
     }
 
     @Test
     fun `test unknown state type`() {
-        val dummy = DummyState(
+        val dummy = DummyState(payer.party)
+        val payment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
             gateway = gateway.party,
@@ -64,8 +57,10 @@ class PaymentContractUnknownTypesTest : AbstractPaymentContractTest() {
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
-                output(PaymentContract.ID, dummy)
-                failsWith("Contract verification failed: command Create($uniquePaymentId), index 0 should have exactly one output")
+                output(PaymentContract.ID, payment)
+                // TODO Command for DummyContract?
+                output(DummyContract.ID, dummy)
+                verifies()
             }
         }
     }
