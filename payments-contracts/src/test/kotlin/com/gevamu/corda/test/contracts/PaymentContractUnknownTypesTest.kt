@@ -18,16 +18,12 @@ package com.gevamu.corda.test.contracts
 
 import com.gevamu.corda.contracts.PaymentContract
 import com.gevamu.corda.states.Payment
-import net.corda.core.contracts.CommandData
 import net.corda.testing.contracts.DummyContract
 import net.corda.testing.contracts.DummyState
 import net.corda.testing.node.ledger
 import org.junit.jupiter.api.Test
 
 class PaymentContractUnknownTypesTest : AbstractPaymentContractTest() {
-
-    class DummyCommand : CommandData
-
     @Test
     fun `test unknown state type`() {
         val payment = Payment(
@@ -43,7 +39,7 @@ class PaymentContractUnknownTypesTest : AbstractPaymentContractTest() {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
                 output(PaymentContract.ID, payment)
-                command(payer.publicKey, DummyCommand())
+                command(payer.publicKey, DummyContract.Commands.Create())
                 attachment(DummyContract.PROGRAM_ID)
                 output(DummyContract.PROGRAM_ID, dummy)
                 verifies()
