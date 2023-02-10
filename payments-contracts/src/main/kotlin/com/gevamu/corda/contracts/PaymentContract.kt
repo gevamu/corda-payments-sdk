@@ -151,7 +151,7 @@ class PaymentContract : Contract {
                 )
             )
             requireNoPaymentChange(input, output)
-            requireSignature(output.state.gateway)
+            requireSignature(output.state.payer, output.state.gateway)
         }
     }
 

@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test
 
 class PaymentContractUnknownTypesTest : AbstractPaymentContractTest() {
     @Test
-    fun `test unknown state type`() {
+    fun `should pass with unknown state type`() {
         val payment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,

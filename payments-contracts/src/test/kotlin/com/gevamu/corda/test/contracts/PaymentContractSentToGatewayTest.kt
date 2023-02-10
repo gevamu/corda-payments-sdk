@@ -33,7 +33,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     )
 
     @Test
-    fun `test valid payment`() {
+    fun `should pass valid payment`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -58,7 +58,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `test missing EndToEndId`() {
+    fun `should fail if EndToEndId is blank`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -77,13 +77,13 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Field endToEndId cannot be blank (Output state Payment, index 0)")
+                failsWith("Field endToEndId cannot be blank (Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
 
     @Test
-    fun `test absent Payer's signature`() {
+    fun `should fail if the transaction does not contain Payer's signature`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -92,6 +92,9 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
         )
+
+        val sendToGatewayCommand = PaymentContract.Commands.SendToGateway(uniquePaymentId)
+
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
@@ -99,16 +102,16 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 verifies()
             }
             transaction {
-                command(gateway.publicKey, PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                command(gateway.publicKey, sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Required signature is absent for command SendToGateway($uniquePaymentId), index 0")
+                failsWith("Required signature is absent for command ${sendToGatewayCommand}, index 0, contract: ${PaymentContract.ID}")
             }
         }
     }
 
     @Test
-    fun `test absent Gateway's signature`() {
+    fun `should fail if the transaction does not contain Gateway's signature`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -117,6 +120,9 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
         )
+
+        val sendToGatewayCommand = PaymentContract.Commands.SendToGateway(uniquePaymentId)
+
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
@@ -124,16 +130,16 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 verifies()
             }
             transaction {
-                command(payer.publicKey, PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                command(payer.publicKey, sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Required signature is absent for command SendToGateway($uniquePaymentId), index 0")
+                failsWith("Required signature is absent for command ${sendToGatewayCommand}, index 0, contract: ${PaymentContract.ID}")
             }
         }
     }
 
     @Test
-    fun `test invalid status`() {
+    fun `should fail if the transaction has the invalid status`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -142,6 +148,9 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.ACCEPTED
         )
+
+        val sendToGatewayCommand = PaymentContract.Commands.SendToGateway(uniquePaymentId)
+
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
@@ -149,16 +158,16 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 verifies()
             }
             transaction {
-                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                command(listOf(payer.publicKey, gateway.publicKey), sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Status ACCEPTED is not valid for command SendToGateway($uniquePaymentId), index 0 (Output state Payment, index 0)")
+                failsWith("Status ${outputPayment.status.name} is not valid for command ${sendToGatewayCommand}, index 0 (Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
 
     @Test
-    fun `test EndToEndId changed`() {
+    fun `should fail if EndToEndId was changed`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -167,6 +176,9 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
         )
+
+        val sendToGatewayCommand = PaymentContract.Commands.SendToGateway(uniquePaymentId)
+
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
@@ -174,16 +186,16 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 verifies()
             }
             transaction {
-                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                command(listOf(payer.publicKey, gateway.publicKey), sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Output state should have same value in endToEndId as input state for command SendToGateway($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
+                failsWith("Output state should have same value in endToEndId as input state for command ${sendToGatewayCommand}, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
 
     @Test
-    fun `test Payer changed`() {
+    fun `should fail if Payer was changed`() {
         val thirdParty = createIdentity("Third Party")
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
@@ -193,6 +205,9 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
         )
+
+        val sendToGatewayCommand = PaymentContract.Commands.SendToGateway(uniquePaymentId)
+
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
@@ -200,16 +215,16 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 verifies()
             }
             transaction {
-                command(listOf(thirdParty.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                command(listOf(thirdParty.publicKey, gateway.publicKey), sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Output state should have same value in payer as input state for command SendToGateway($uniquePaymentId)")
+                failsWith("Output state should have same value in payer as input state for command ${sendToGatewayCommand}, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
 
     @Test
-    fun `test Gateway changed`() {
+    fun `should fail if Gateway was changed`() {
         val thirdParty = createIdentity("Third Party")
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
@@ -219,6 +234,9 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
         )
+
+        val sendToGatewayCommand = PaymentContract.Commands.SendToGateway(uniquePaymentId)
+
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
@@ -226,16 +244,16 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 verifies()
             }
             transaction {
-                command(listOf(payer.publicKey, thirdParty.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                command(listOf(payer.publicKey, thirdParty.publicKey), sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Output state should have same value in gateway as input state for command SendToGateway($uniquePaymentId), index 0 (Input state Payment, index 0; Output state Payment, index 0)")
+                failsWith("Output state should have same value in gateway as input state for command ${sendToGatewayCommand}, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
 
     @Test
-    fun `test PaymentInstructionId changed`() {
+    fun `should fail if PaymentInstructionId was changed`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -244,6 +262,9 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             paymentInstructionId = SecureHash.SHA256(ByteArray(32) { 1 }),
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
         )
+
+        val sendToGatewayCommand = PaymentContract.Commands.SendToGateway(uniquePaymentId)
+
         ledgerServices.ledger {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
@@ -251,10 +272,10 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 verifies()
             }
             transaction {
-                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                command(listOf(payer.publicKey, gateway.publicKey), sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Output state should have same value in paymentInstructionId as input state for command SendToGateway($uniquePaymentId)")
+                failsWith("Output state should have same value in paymentInstructionId as input state for command ${sendToGatewayCommand}, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
