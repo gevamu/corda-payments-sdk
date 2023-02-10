@@ -132,7 +132,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(gateway.publicKey, updateStatusCommand)
                 input("SENT_TO_GATEWAY")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Required signature is absent for command ${updateStatusCommand}, index 0, contract: ${PaymentContract.ID}")
+                failsWith("Required signature is absent for command $updateStatusCommand, index 0, contract: ${PaymentContract.ID}")
             }
         }
     }
@@ -166,8 +166,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
                 command(payer.publicKey, updateStatusCommand)
                 input("SENT_TO_GATEWAY")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Required signature is absent for command ${updateStatusCommand}, index 0, contract: ${PaymentContract.ID}")
-
+                failsWith("Required signature is absent for command $updateStatusCommand, index 0, contract: ${PaymentContract.ID}")
             }
         }
     }

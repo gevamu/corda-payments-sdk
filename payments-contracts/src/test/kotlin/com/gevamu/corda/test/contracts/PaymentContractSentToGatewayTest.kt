@@ -105,7 +105,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(gateway.publicKey, sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Required signature is absent for command ${sendToGatewayCommand}, index 0, contract: ${PaymentContract.ID}")
+                failsWith("Required signature is absent for command $sendToGatewayCommand, index 0, contract: ${PaymentContract.ID}")
             }
         }
     }
@@ -133,7 +133,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(payer.publicKey, sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Required signature is absent for command ${sendToGatewayCommand}, index 0, contract: ${PaymentContract.ID}")
+                failsWith("Required signature is absent for command $sendToGatewayCommand, index 0, contract: ${PaymentContract.ID}")
             }
         }
     }
@@ -161,7 +161,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Status ${outputPayment.status.name} is not valid for command ${sendToGatewayCommand}, index 0 (Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
+                failsWith("Status ${outputPayment.status.name} is not valid for command $sendToGatewayCommand, index 0 (Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
@@ -189,7 +189,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Output state should have same value in endToEndId as input state for command ${sendToGatewayCommand}, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
+                failsWith("Output state should have same value in endToEndId as input state for command $sendToGatewayCommand, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
@@ -218,7 +218,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(thirdParty.publicKey, gateway.publicKey), sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Output state should have same value in payer as input state for command ${sendToGatewayCommand}, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
+                failsWith("Output state should have same value in payer as input state for command $sendToGatewayCommand, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
@@ -247,7 +247,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, thirdParty.publicKey), sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Output state should have same value in gateway as input state for command ${sendToGatewayCommand}, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
+                failsWith("Output state should have same value in gateway as input state for command $sendToGatewayCommand, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
@@ -275,7 +275,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
                 command(listOf(payer.publicKey, gateway.publicKey), sendToGatewayCommand)
                 input("CREATED")
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Output state should have same value in paymentInstructionId as input state for command ${sendToGatewayCommand}, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
+                failsWith("Output state should have same value in paymentInstructionId as input state for command $sendToGatewayCommand, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }

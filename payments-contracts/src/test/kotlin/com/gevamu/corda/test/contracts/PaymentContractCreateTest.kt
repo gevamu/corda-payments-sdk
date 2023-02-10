@@ -78,7 +78,7 @@ class PaymentContractCreateTest : AbstractPaymentContractTest() {
             transaction {
                 command(thirdParty.publicKey, command)
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Required signature is absent for command ${command}, index 0, contract: ${PaymentContract.ID}")
+                failsWith("Required signature is absent for command $command, index 0, contract: ${PaymentContract.ID}")
             }
         }
     }
@@ -100,7 +100,7 @@ class PaymentContractCreateTest : AbstractPaymentContractTest() {
             transaction {
                 command(payer.publicKey, command)
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Status ${outputPayment.status.name} is not valid for command ${command}, index 0 (Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
+                failsWith("Status ${outputPayment.status.name} is not valid for command $command, index 0 (Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
