@@ -167,7 +167,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if EndToEndId was changed`() {
+    fun `should fail if EndToEndId is changed`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -195,7 +195,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if Payer was changed`() {
+    fun `should fail if Payer is changed`() {
         val thirdParty = createIdentity("Third Party")
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
@@ -224,7 +224,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if Gateway was changed`() {
+    fun `should fail if Gateway is changed`() {
         val thirdParty = createIdentity("Third Party")
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
@@ -253,7 +253,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if PaymentInstructionId was changed`() {
+    fun `should fail if PaymentInstructionId is changed`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,

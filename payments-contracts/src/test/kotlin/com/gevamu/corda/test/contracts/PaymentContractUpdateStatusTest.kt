@@ -206,7 +206,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if EndToEndId was changed`() {
+    fun `should fail if EndToEndId is changed`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -240,7 +240,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if Payer was changed`() {
+    fun `should fail if Payer is changed`() {
         val thirdParty = createIdentity("Third Party")
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
@@ -275,7 +275,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if Gateway was changed`() {
+    fun `should fail if Gateway is changed`() {
         val thirdParty = createIdentity("Third Party")
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
@@ -310,7 +310,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if PaymentInstructionId was changed`() {
+    fun `should fail if PaymentInstructionId is changed`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -344,7 +344,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if the transaction status was changed to CREATED`() {
+    fun `should fail if the transaction status is changed to CREATED`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -392,7 +392,7 @@ class PaymentContractUpdateStatusTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if the transaction REJECTED status was changed`() {
+    fun `should fail if the transaction REJECTED status is changed`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
