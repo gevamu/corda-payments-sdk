@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test
 
 class PaymentContractCreateTest : AbstractPaymentContractTest() {
     @Test
-    fun `test valid payment`() {
+    fun `should pass the valid transaction`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -42,7 +42,7 @@ class PaymentContractCreateTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `test missing EndToEndId`() {
+    fun `should fail if EndToEndId is blank`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -55,13 +55,13 @@ class PaymentContractCreateTest : AbstractPaymentContractTest() {
             transaction {
                 command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Field endToEndId cannot be blank (Output state Payment, index 0)")
+                failsWith("Field endToEndId cannot be blank (Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
 
     @Test
-    fun `test absent Payer's signature`() {
+    fun `should fail if the transaction does not contain Payer's signature`() {
         val thirdParty = createIdentity("Third Party")
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
@@ -71,17 +71,20 @@ class PaymentContractCreateTest : AbstractPaymentContractTest() {
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.CREATED
         )
+
+        val command = PaymentContract.Commands.Create(uniquePaymentId)
+
         ledgerServices.ledger {
             transaction {
-                command(thirdParty.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
+                command(thirdParty.publicKey, command)
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Required signature is absent for command Create($uniquePaymentId), index 0")
+                failsWith("Required signature is absent for command $command, index 0, contract: ${PaymentContract.ID}")
             }
         }
     }
 
     @Test
-    fun `test invalid status`() {
+    fun `should fail if the transaction has the invalid status`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
@@ -90,11 +93,14 @@ class PaymentContractCreateTest : AbstractPaymentContractTest() {
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
         )
+
+        val command = PaymentContract.Commands.Create(uniquePaymentId)
+
         ledgerServices.ledger {
             transaction {
-                command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
+                command(payer.publicKey, command)
                 output(PaymentContract.ID, outputPayment)
-                failsWith("Contract verification failed: Status SENT_TO_GATEWAY is not valid for command Create($uniquePaymentId)")
+                failsWith("Status ${outputPayment.status.name} is not valid for command $command, index 0 (Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
             }
         }
     }
