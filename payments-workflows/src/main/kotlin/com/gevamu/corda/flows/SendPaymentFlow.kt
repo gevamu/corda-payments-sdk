@@ -69,7 +69,7 @@ class SendPaymentFlow(private val uniquePaymentId: UUID) : FlowLogic<Unit>() {
         val builder = TransactionBuilder(notary)
             .addInputState(paymentStateAndRef)
             .addOutputState(payment)
-            .addCommand(PaymentContract.Commands.SendToGateway(), ourIdentity.owningKey, gateway.owningKey)
+            .addCommand(PaymentContract.Commands.SendToGateway(uniquePaymentId), ourIdentity.owningKey, gateway.owningKey)
             .addAttachment(paymentStateAndRef.state.data.paymentInstructionId)
         builder.verify(serviceHub)
 
