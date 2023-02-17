@@ -1,13 +1,13 @@
 package com.gevamu.corda.iso20022.schema
 
-import java.io.IOException
-import javax.xml.validation.Schema
 import org.xml.sax.Attributes
 import org.xml.sax.InputSource
 import org.xml.sax.SAXException
 import org.xml.sax.SAXParseException
 import org.xml.sax.ext.Attributes2Impl
 import org.xml.sax.helpers.XMLFilterImpl
+import java.io.IOException
+import javax.xml.validation.Schema
 
 class XmlValidator(schema: Schema, private val defaultNamespace: String) : XMLFilterImpl() {
 
@@ -70,4 +70,3 @@ class XmlValidator(schema: Schema, private val defaultNamespace: String) : XMLFi
         private const val DOCUMENT_TAG = "Document"
     }
 }
-

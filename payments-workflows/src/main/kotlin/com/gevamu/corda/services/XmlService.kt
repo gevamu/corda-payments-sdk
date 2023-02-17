@@ -19,6 +19,13 @@ package com.gevamu.corda.services
 import com.gevamu.corda.flows.PaymentInstruction
 import com.gevamu.corda.iso20022.schema.XmlValidator
 import com.gevamu.xml.paymentinstruction.PaymentXmlData
+import net.corda.core.identity.Party
+import net.corda.core.node.AppServiceHub
+import net.corda.core.node.services.AttachmentId
+import net.corda.core.node.services.CordaService
+import net.corda.core.serialization.SingletonSerializeAsToken
+import org.xml.sax.XMLReader
+import org.xml.sax.helpers.XMLReaderFactory
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -35,13 +42,6 @@ import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.Schema
 import javax.xml.validation.SchemaFactory
-import net.corda.core.identity.Party
-import net.corda.core.node.AppServiceHub
-import net.corda.core.node.services.AttachmentId
-import net.corda.core.node.services.CordaService
-import net.corda.core.serialization.SingletonSerializeAsToken
-import org.xml.sax.XMLReader
-import org.xml.sax.helpers.XMLReaderFactory
 
 // TODO Exception handling
 
