@@ -8,6 +8,7 @@ import org.xml.sax.ext.Attributes2Impl
 import org.xml.sax.helpers.XMLFilterImpl
 import java.io.IOException
 import javax.xml.validation.Schema
+import org.xml.sax.helpers.XMLReaderFactory
 
 class XmlValidator(schema: Schema, private val defaultNamespace: String) : XMLFilterImpl() {
 
@@ -54,14 +55,17 @@ class XmlValidator(schema: Schema, private val defaultNamespace: String) : XMLFi
         super.endDocument()
     }
 
+    @Throws(SAXParseException::class)
     override fun error(excepction: SAXParseException) {
         throw excepction
     }
 
+    @Throws(SAXParseException::class)
     override fun warning(excepction: SAXParseException) {
         throw excepction
     }
 
+    @Throws(SAXParseException::class)
     override fun fatalError(excepction: SAXParseException) {
         throw excepction
     }

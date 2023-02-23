@@ -45,7 +45,7 @@ dependencies {
 
     implementation(project(":payments-contracts"))
     implementation(project(":payments-workflows"))
-    implementation(project(":corda-iso"))
+    implementation(project(":iso20022"))
 
     implementation("co.paralleluniverse:quasar-core:0.8.0")
     implementation("net.corda:corda-rpc:4.9.3")

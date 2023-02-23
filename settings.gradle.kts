@@ -14,7 +14,7 @@ rootProject.name = "corda-payments-sdk"
 include(
     "payments-contracts",
     "payments-workflows",
-    "corda-iso",
+    "iso20022",
     "payments-app-sample:payments-app-backend",
     "payments-app-sample:payments-app-frontend",
 )

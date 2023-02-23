@@ -36,6 +36,7 @@ import java.util.zip.ZipOutputStream
 import javax.xml.XMLConstants
 import javax.xml.bind.JAXBContext
 import javax.xml.stream.XMLInputFactory
+import javax.xml.transform.Templates
 import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
@@ -56,25 +57,11 @@ open class XmlService protected constructor(
     )
     protected val xmlInputFactory: XMLInputFactory = XMLInputFactory.newFactory()
 
-    private val creditTransferInitValidator: XmlValidator
+    private val customerCreditTransferSchema: Schema = getCustomerCreditTransferInitiationSchema()
 
-    private val schemaFactory by lazy { SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI) }
-    private val paymentTransformer: Transformer
-
-    init {
-        val reader: XMLReader = XMLReaderFactory.createXMLReader()
-
-        creditTransferInitValidator = XmlValidator(
-            getCustomerCreditTransferInitiationSchema(),
-            CREDIT_TRANSFER_INIT_NAMESPACE
-        ).also {
-            it.parent = reader
-        }
-
-        val templateFactory = TransformerFactory.newInstance()
-        val xslStream = getCCTXslSchemaFile()
-        paymentTransformer = templateFactory.newTemplates(StreamSource(xslStream)).newTransformer()
-        xslStream.close()
+    private val schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+    private val paymentTemplate: Templates = getCCTXslSchemaFile().use {
+        TransformerFactory.newInstance().newTemplates(StreamSource(it))
     }
 
     constructor(serviceHub: AppServiceHub) : this(serviceHub, emptyList())
@@ -85,14 +72,20 @@ open class XmlService protected constructor(
     }
 
     fun unmarshalPaymentRequest(bytes: ByteArray, validate: Boolean = false): PaymentXmlData {
-        if (validate) creditTransferInitValidator.validate(bytes)
+        if (validate) {
+            val validator = XmlValidator(customerCreditTransferSchema, CREDIT_TRANSFER_INIT_NAMESPACE)
+            //TODO: implement reader pool for parsing, reader.parse isn't concurrent
+            validator.parent = XMLReaderFactory.createXMLReader()
+            validator.validate(bytes)
+        }
         val unmarshaller = jaxbContext.createUnmarshaller()
         val inputStream = StreamSource(bytes.inputStream())
 
         val outWriter = StringWriter()
         val result = StreamResult(outWriter)
 
-        paymentTransformer.transform(inputStream, result)
+        // TODO: create transformer pool as well, creation of transformer including the parsing and compilation of the XSLT stylesheet
+        paymentTemplate.newTransformer().transform(inputStream, result)
 
         val jaxbElement = unmarshaller.unmarshal(
             // XXX pass encoding as 2nd argument
@@ -126,18 +119,11 @@ open class XmlService protected constructor(
     // TODO consider overriding equals and hashCode
     private data class ZipFileEntry(val name: String, val contentBytes: ByteArray)
 
-    private fun getCustomerCreditTransferInitiationSchema(): Schema {
-        val source = StreamSource(getResource("pain.001.001.09.xsd"))
-        try {
-            return schemaFactory.newSchema(source)
-        } finally {
-            source.inputStream.close()
-        }
+    private fun getCustomerCreditTransferInitiationSchema(): Schema = getCCTXslSchemaFile().use {
+        schemaFactory.newSchema(StreamSource(it))
     }
 
-    private fun getCCTXslSchemaFile(): InputStream {
-        return getResource("pain.001.001.09.xsl")
-    }
+    private fun getCCTXslSchemaFile(): InputStream = getResource("pain.001.001.09.xsl")
 
     companion object {
         const val CREDIT_TRANSFER_INIT_NAMESPACE = "urn:iso:std:iso:20022:tech:xsd:pain.001.001.09"
