@@ -18,13 +18,12 @@ package com.gevamu.corda.services
 
 import com.gevamu.corda.flows.PaymentInstruction
 import com.gevamu.corda.iso20022.schema.XmlValidator
-import com.gevamu.xml.paymentinstruction.PaymentXmlData
+import com.gevamu.corda.xml.paymentinstruction.PaymentXmlData
 import net.corda.core.identity.Party
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.AttachmentId
 import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken
-import org.xml.sax.XMLReader
 import org.xml.sax.helpers.XMLReaderFactory
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -37,7 +36,6 @@ import javax.xml.XMLConstants
 import javax.xml.bind.JAXBContext
 import javax.xml.stream.XMLInputFactory
 import javax.xml.transform.Templates
-import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
@@ -119,7 +117,7 @@ open class XmlService protected constructor(
     // TODO consider overriding equals and hashCode
     private data class ZipFileEntry(val name: String, val contentBytes: ByteArray)
 
-    private fun getCustomerCreditTransferInitiationSchema(): Schema = getCCTXslSchemaFile().use {
+    private fun getCustomerCreditTransferInitiationSchema(): Schema = getResource("pain.001.001.09.xsd").use {
         schemaFactory.newSchema(StreamSource(it))
     }
 

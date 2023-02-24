@@ -1,4 +1,4 @@
-package com.gevamu.xml.paymentinstruction
+package com.gevamu.corda.xml.paymentinstruction
 
 import javax.xml.bind.annotation.XmlElement
 import javax.xml.bind.annotation.XmlType
