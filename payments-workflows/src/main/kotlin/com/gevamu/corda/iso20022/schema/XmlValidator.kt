@@ -8,7 +8,6 @@ import org.xml.sax.ext.Attributes2Impl
 import org.xml.sax.helpers.XMLFilterImpl
 import java.io.IOException
 import javax.xml.validation.Schema
-import org.xml.sax.helpers.XMLReaderFactory
 
 class XmlValidator(schema: Schema, private val defaultNamespace: String) : XMLFilterImpl() {
 

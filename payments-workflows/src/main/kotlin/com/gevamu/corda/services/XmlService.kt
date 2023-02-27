@@ -72,7 +72,7 @@ open class XmlService protected constructor(
     fun unmarshalPaymentRequest(bytes: ByteArray, validate: Boolean = false): PaymentXmlData {
         if (validate) {
             val validator = XmlValidator(customerCreditTransferSchema, CREDIT_TRANSFER_INIT_NAMESPACE)
-            //TODO: implement reader pool for parsing, reader.parse isn't concurrent
+            // TODO: implement reader pool for parsing, reader.parse isn't concurrent
             validator.parent = XMLReaderFactory.createXMLReader()
             validator.validate(bytes)
         }
