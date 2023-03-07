@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlType
         "pmtId"
     ]
 )
-class CreditTransferTransaction(
+class CreditTransferTransactionInformation(
     @get:XmlElement(name = "PmtId") var pmtId: PaymentIdentification
 ) {
     constructor() : this(PaymentIdentification())

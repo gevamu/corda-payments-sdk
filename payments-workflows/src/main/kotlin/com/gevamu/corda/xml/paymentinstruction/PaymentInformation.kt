@@ -5,11 +5,13 @@ import javax.xml.bind.annotation.XmlType
 
 @XmlType(
     propOrder = [
-        "cdtTrfTxInf"
+        "cdtTrfTxInf",
+        "dbtr"
     ]
 )
 class PaymentInformation(
-    @get:XmlElement(name = "CdtTrfTxInf") var cdtTrfTxInf: List<CreditTransferTransaction>
+    @get:XmlElement(name = "CreditTransferTransactionInformation") var cdtTrfTxInf: List<CreditTransferTransactionInformation>,
+    @get:XmlElement(name = "Debtor") var dbtr: Debtor
 ) {
-    constructor() : this(emptyList())
+    constructor() : this(emptyList(), Debtor())
 }
