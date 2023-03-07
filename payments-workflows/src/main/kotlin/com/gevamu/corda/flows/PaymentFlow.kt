@@ -87,7 +87,7 @@ class PaymentFlow(
         val xmlService = serviceHub.cordaService(XmlService::class.java)
         val flowService = serviceHub.cordaService(FlowService::class.java)
 
-        val paymentRequest: PaymentXmlData = xmlService.unmarshalPaymentRequest(paymentInstruction.paymentInstruction, true)
+        val paymentRequest: PaymentXmlData = xmlService.unmarshalPaymentRequest(paymentInstruction.paymentInstruction)
         val endToEndId: String = paymentRequest.pmtInf.first().cdtTrfTxInf.first().pmtId.endToEndId
         logger.info("Save new payment id=$uniquePaymentId, endToEndId=$endToEndId")
         val attachmentId = xmlService.storePaymentInstruction(paymentInstruction, ourIdentity)
