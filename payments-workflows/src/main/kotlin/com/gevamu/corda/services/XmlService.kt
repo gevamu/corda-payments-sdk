@@ -17,14 +17,13 @@
 package com.gevamu.corda.services
 
 import com.gevamu.corda.flows.PaymentInstruction
-import com.gevamu.corda.iso20022.schema.XmlValidator
+import com.gevamu.corda.iso20022.Iso20022XmlValidator
 import com.gevamu.corda.xml.paymentinstruction.PaymentXmlData
 import net.corda.core.identity.Party
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.AttachmentId
 import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken
-import org.xml.sax.helpers.XMLReaderFactory
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -49,15 +48,19 @@ open class XmlService protected constructor(
     protected val serviceHub: AppServiceHub,
     xmlClasses: List<Class<*>>
 ) : SingletonSerializeAsToken() {
-
     protected val jaxbContext: JAXBContext = JAXBContext.newInstance(
         *(listOf<Class<*>>(PaymentXmlData::class.java) + xmlClasses).toTypedArray()
     )
+
     protected val xmlInputFactory: XMLInputFactory = XMLInputFactory.newFactory()
 
-    private val customerCreditTransferSchema: Schema = getCustomerCreditTransferInitiationSchema()
-
     private val schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+
+    private val pain001Validator: Iso20022XmlValidator = Iso20022XmlValidator(
+        getCustomerCreditTransferInitiationSchema(),
+        CREDIT_TRANSFER_INIT_NAMESPACE
+    )
+
     private val paymentTemplate: Templates = getCCTXslSchemaFile().use {
         TransformerFactory.newInstance().newTemplates(StreamSource(it))
     }
@@ -71,10 +74,7 @@ open class XmlService protected constructor(
 
     fun unmarshalPaymentRequest(bytes: ByteArray, validate: Boolean = false): PaymentXmlData {
         if (validate) {
-            val validator = XmlValidator(customerCreditTransferSchema, CREDIT_TRANSFER_INIT_NAMESPACE)
-            // TODO: implement reader pool for parsing, reader.parse isn't concurrent
-            validator.parent = XMLReaderFactory.createXMLReader()
-            validator.validate(bytes)
+            pain001Validator.validate(bytes.inputStream())
         }
         val unmarshaller = jaxbContext.createUnmarshaller()
         val inputStream = StreamSource(bytes.inputStream())
