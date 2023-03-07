@@ -1,17 +1,33 @@
+/*
+ * Copyright 2022 Exactpro Systems Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.gevamu.corda.iso20022
 
 import org.xml.sax.Attributes
 import org.xml.sax.InputSource
+import org.xml.sax.Locator
 import org.xml.sax.SAXException
 import org.xml.sax.SAXParseException
 import org.xml.sax.ext.Attributes2Impl
 import org.xml.sax.helpers.XMLFilterImpl
+import org.xml.sax.helpers.XMLReaderFactory
 import java.io.IOException
 import java.io.InputStream
 import java.lang.NullPointerException
 import javax.xml.validation.Schema
-import org.xml.sax.Locator
-import org.xml.sax.helpers.XMLReaderFactory
 
 class Iso20022XmlValidator(private val schema: Schema, private val namespace: String) {
     /**
@@ -80,7 +96,6 @@ class Iso20022XmlValidator(private val schema: Schema, private val namespace: St
                 } else {
                     super.endElement(namespace, DOCUMENT_TAG, documentQName)
                 }
-
             }
             super.endDocument()
         }
