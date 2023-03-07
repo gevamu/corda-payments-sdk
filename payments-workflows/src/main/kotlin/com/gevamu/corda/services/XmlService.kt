@@ -28,7 +28,6 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.io.StringWriter
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.xml.XMLConstants
@@ -36,7 +35,7 @@ import javax.xml.bind.JAXBContext
 import javax.xml.stream.XMLInputFactory
 import javax.xml.transform.Templates
 import javax.xml.transform.TransformerFactory
-import javax.xml.transform.stream.StreamResult
+import javax.xml.transform.sax.SAXResult
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.Schema
 import javax.xml.validation.SchemaFactory
@@ -76,22 +75,17 @@ open class XmlService protected constructor(
         if (validate) {
             pain001Validator.validate(bytes.inputStream())
         }
-        val unmarshaller = jaxbContext.createUnmarshaller()
-        val inputStream = StreamSource(bytes.inputStream())
 
-        val outWriter = StringWriter()
-        val result = StreamResult(outWriter)
+        val streamSource = StreamSource(bytes.inputStream())
+        val unmarshallerHandler = jaxbContext.createUnmarshaller().unmarshallerHandler
+        val saxResult = SAXResult()
+        saxResult.handler = unmarshallerHandler
 
         // TODO: create transformer pool as well, creation of transformer including the parsing and compilation of the XSLT stylesheet
-        paymentTemplate.newTransformer().transform(inputStream, result)
-
-        val jaxbElement = unmarshaller.unmarshal(
-            // XXX pass encoding as 2nd argument
-            xmlInputFactory.createXMLStreamReader(outWriter.toString().byteInputStream()),
-            PaymentXmlData::class.java
-        )
+        paymentTemplate.newTransformer().transform(streamSource, saxResult)
         // XXX Do we need to close XML stream reader?
-        return jaxbElement.value
+
+        return unmarshallerHandler.result as PaymentXmlData
     }
 
     private fun zip(zipEntries: List<ZipFileEntry>): ByteArray {
