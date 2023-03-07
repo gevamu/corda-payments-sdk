@@ -9,24 +9,25 @@
                 <Time> <xsl:value-of select="GrpHdr/CreDtTm"/> </Time>
                 <PaymentInformation>
                     <xsl:for-each select="PmtInf/CdtTrfTxInf">
-                        <PaymentIdentification>
-                            <EndToEndId> <xsl:value-of select="PmtId/EndToEndId"/> </EndToEndId>
-                        </PaymentIdentification>
+                        <CreditTransferTransactionInformation>
+                            <PaymentIdentification>
+                                <EndToEndId> <xsl:value-of select="PmtId/EndToEndId"/> </EndToEndId>
+                            </PaymentIdentification>
 
-                        <Amount>
-                            <InstdAmt> <xsl:value-of select="Amt/InstdAmt"/> </InstdAmt>
-                            <Currency> <xsl:value-of select="Amt/InstdAmt/@Ccy"/> </Currency>
-                        </Amount>
+                            <Amount>
+                                <InstdAmt> <xsl:value-of select="Amt/InstdAmt"/> </InstdAmt>
+                                <Currency> <xsl:value-of select="Amt/InstdAmt/@Ccy"/> </Currency>
+                            </Amount>
 
-                        <Creditor>
-                            <Name> <xsl:value-of select="Cdtr/Nm"/> </Name>
-                        </Creditor>
+                            <Creditor>
+                                <Name> <xsl:value-of select="Cdtr/Nm"/> </Name>
+                            </Creditor>
 
-                        <CreditorAccout>
-                            <Id> <xsl:value-of select="CdtrAcct/Id/Othr/Id"/> </Id>
-                            <Currency> <xsl:value-of select="CdtrAcct/Ccy"/> </Currency>
-                        </CreditorAccout>
-
+                            <CreditorAccout>
+                                <Id> <xsl:value-of select="CdtrAcct/Id/Othr/Id"/> </Id>
+                                <Currency> <xsl:value-of select="CdtrAcct/Ccy"/> </Currency>
+                            </CreditorAccout>
+                        </CreditTransferTransactionInformation>
                     </xsl:for-each>
                     <Debtor>
                         <Name> <xsl:value-of select="PmtInf/Dbtr/Nm"/> </Name>
