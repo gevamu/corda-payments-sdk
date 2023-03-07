@@ -15,5 +15,5 @@ class PaymentXmlData(
     @get:XmlElement(name = "Time") var time: String,
     @get:XmlElement(name = "PaymentInformation") var pmtInf: List<PaymentInformation>
 ) {
-    constructor() : this("", emptyList())
+    constructor() : this("", mutableListOf())
 }
