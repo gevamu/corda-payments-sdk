@@ -17,15 +17,19 @@
 package com.gevamu.corda.xml.paymentinstruction
 
 import javax.xml.bind.annotation.XmlElement
+import javax.xml.bind.annotation.XmlRootElement
 import javax.xml.bind.annotation.XmlType
 
+@XmlRootElement(name = "CstmrCdtTrfInitn")
 @XmlType(
     propOrder = [
-        "endToEndId"
+        "grpHdrCreDtTm",
+        "pmtInf"
     ]
 )
-class PaymentIdentification(
-    @get:XmlElement(name = "EndToEndId") var endToEndId: String
+class CustomerCreditTransferInitiation(
+    @get:XmlElement(name = "GrpHdrCreDtTm") var grpHdrCreDtTm: String,
+    @get:XmlElement(name = "PmtInf") var pmtInf: List<PaymentInstruction>
 ) {
-    constructor() : this("")
+    constructor() : this("", mutableListOf())
 }

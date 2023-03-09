@@ -18,7 +18,7 @@ package com.gevamu.corda.services
 
 import com.gevamu.corda.flows.PaymentInstruction
 import com.gevamu.corda.iso20022.Iso20022XmlValidator
-import com.gevamu.corda.xml.paymentinstruction.PaymentXmlData
+import com.gevamu.corda.xml.paymentinstruction.CustomerCreditTransferInitiation
 import net.corda.core.identity.Party
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.AttachmentId
@@ -40,23 +40,21 @@ import javax.xml.validation.Schema
 import javax.xml.validation.SchemaFactory
 
 // TODO Exception handling
-
 @CordaService
 open class XmlService protected constructor(protected val serviceHub: AppServiceHub) : SingletonSerializeAsToken() {
-    private val jaxbContext: JAXBContext = JAXBContext.newInstance(PaymentXmlData::class.java)
-
-    private val schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+    private val jaxbContext: JAXBContext = JAXBContext.newInstance(CustomerCreditTransferInitiation::class.java)
 
     private val pain001Validator: Iso20022XmlValidator = Iso20022XmlValidator(pain001Schema(), PAIN_001_NAMESPACE)
 
     private val pain001Templates: Templates = pain001Xslt()
 
     fun storePaymentInstruction(paymentInstruction: PaymentInstruction, ourIdentity: Party): AttachmentId {
-        val zipBytes = zip(listOf(ZipFileEntry("paymentInstruction.xml", paymentInstruction.paymentInstruction)))
+        // TODO Store format.
+        val zipBytes = zip(listOf(ZipFileEntry("paymentInstruction.xml", paymentInstruction.data)))
         return storeAttachment(zipBytes, ourIdentity)
     }
 
-    fun unmarshalPaymentRequest(bytes: ByteArray): PaymentXmlData {
+    fun unmarshalPaymentRequest(bytes: ByteArray): CustomerCreditTransferInitiation {
         pain001Validator.validate(bytes.inputStream())
 
         val streamSource = StreamSource(bytes.inputStream())
@@ -64,10 +62,10 @@ open class XmlService protected constructor(protected val serviceHub: AppService
         val saxResult = SAXResult()
         saxResult.handler = unmarshallerHandler
 
-        // TODO: create transformer pool as well, creation of transformer including the parsing and compilation of the XSLT stylesheet
+        // TODO: Create transformer pool
         pain001Templates.newTransformer().transform(streamSource, saxResult)
 
-        return unmarshallerHandler.result as PaymentXmlData
+        return unmarshallerHandler.result as CustomerCreditTransferInitiation
     }
 
     private fun zip(zipEntries: List<ZipFileEntry>): ByteArray {
@@ -90,24 +88,24 @@ open class XmlService protected constructor(protected val serviceHub: AppService
         )
     }
 
-    // TODO consider overriding equals and hashCode
-    private data class ZipFileEntry(val name: String, val contentBytes: ByteArray)
-
-    private fun pain001Schema(): Schema = getResource("pain.001.001.09.xsd").use {
-        schemaFactory.newSchema(StreamSource(it))
+    private fun pain001Schema(): Schema = getResourceAsStream("pain.001.001.09.xsd").use {
+        SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(StreamSource(it))
     }
 
-    private fun pain001Xslt(): Templates = getResource("pain.001.001.09.xsl").use {
+    private fun pain001Xslt(): Templates = getResourceAsStream("pain.001.001.09.xsl").use {
         TransformerFactory.newInstance().newTemplates(StreamSource(it))
     }
+
+    // TODO consider overriding equals and hashCode
+    private data class ZipFileEntry(val name: String, val contentBytes: ByteArray)
 
     companion object {
         const val PAIN_001_NAMESPACE = "urn:iso:std:iso:20022:tech:xsd:pain.001.001.09"
 
         @Throws(IOException::class)
-        private fun getResource(fileName: String): InputStream {
+        private fun getResourceAsStream(fileName: String): InputStream {
             return XmlService::class.java.getResourceAsStream(fileName)
-                ?: throw IOException("Resource $fileName wasn't found")
+                ?: throw IOException("Resource $fileName isn't found")
         }
     }
 }

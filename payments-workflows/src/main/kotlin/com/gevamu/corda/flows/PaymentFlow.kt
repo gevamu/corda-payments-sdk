@@ -21,7 +21,7 @@ import com.gevamu.corda.contracts.PaymentContract
 import com.gevamu.corda.services.FlowService
 import com.gevamu.corda.services.XmlService
 import com.gevamu.corda.states.Payment
-import com.gevamu.corda.xml.paymentinstruction.PaymentXmlData
+import com.gevamu.corda.xml.paymentinstruction.CustomerCreditTransferInitiation
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.flows.FinalityFlow
 import net.corda.core.flows.FlowLogic
@@ -47,18 +47,18 @@ enum class PaymentInstructionFormat {
 }
 
 /**
- * Dataclass describing payment instruction
+ * Data class describing payment instruction
  *
  * @param format Combination of XSD document describing the structure of payment instruction and encoding type
  * @see PaymentInstructionFormat
  *
- * @param paymentInstruction XML document created due to specified XSD
+ * @param data Payment instruction serialized to byte array according to format
  * and cast to [ByteArray] in specified encoding
  */
 @CordaSerializable
 class PaymentInstruction(
     val format: PaymentInstructionFormat,
-    val paymentInstruction: ByteArray
+    val data: ByteArray
 )
 
 /**
@@ -87,8 +87,9 @@ class PaymentFlow(
         val xmlService = serviceHub.cordaService(XmlService::class.java)
         val flowService = serviceHub.cordaService(FlowService::class.java)
 
-        val paymentRequest: PaymentXmlData = xmlService.unmarshalPaymentRequest(paymentInstruction.paymentInstruction)
-        val endToEndId: String = paymentRequest.pmtInf.first().cdtTrfTxInf.first().pmtId.endToEndId
+        val creditTransferRequest: CustomerCreditTransferInitiation =
+            xmlService.unmarshalPaymentRequest(paymentInstruction.data)
+        val endToEndId: String = creditTransferRequest.pmtInf.first().cdtTrfTxInf.first().pmtIdEndToEndId
         logger.info("Save new payment id=$uniquePaymentId, endToEndId=$endToEndId")
         val attachmentId = xmlService.storePaymentInstruction(paymentInstruction, ourIdentity)
         // TODO Check participant id

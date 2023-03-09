@@ -21,11 +21,13 @@ import javax.xml.bind.annotation.XmlType
 
 @XmlType(
     propOrder = [
-        "pmtId"
+        "nm",
+        "idOrgIdOthrId"
     ]
 )
-class CreditTransferTransactionInformation(
-    @get:XmlElement(name = "PaymentIdentification") var pmtId: PaymentIdentification
+class PartyIdentification(
+    @get:XmlElement(name = "Nm") var nm: String,
+    @get:XmlElement(name = "IdOrgIdOthrId") var idOrgIdOthrId: String
 ) {
-    constructor() : this(PaymentIdentification())
+    constructor() : this("", "")
 }
