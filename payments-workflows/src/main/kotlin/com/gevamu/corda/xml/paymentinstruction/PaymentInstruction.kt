@@ -29,5 +29,5 @@ class PaymentInstruction(
     @get:XmlElement(name = "CdtTrfTxInf") var cdtTrfTxInf: List<CreditTransferTransaction>,
     @get:XmlElement(name = "Dbtr") var dbtr: PartyIdentification
 ) {
-    constructor() : this(mutableListOf(), PartyIdentification())
+    constructor() : this(cdtTrfTxInf = mutableListOf(), dbtr = PartyIdentification())
 }

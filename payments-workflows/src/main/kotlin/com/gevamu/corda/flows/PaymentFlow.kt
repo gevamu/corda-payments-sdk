@@ -89,6 +89,7 @@ class PaymentFlow(
 
         val creditTransferRequest: CustomerCreditTransferInitiation =
             xmlService.unmarshalPaymentRequest(paymentInstruction.data)
+        // pmtInf and cdtTrfTxInf must have at least one element according to PAIN.001 schema
         val endToEndId: String = creditTransferRequest.pmtInf.first().cdtTrfTxInf.first().pmtIdEndToEndId
         logger.info("Save new payment id=$uniquePaymentId, endToEndId=$endToEndId")
         val attachmentId = xmlService.storePaymentInstruction(paymentInstruction, ourIdentity)

@@ -27,5 +27,5 @@ import javax.xml.bind.annotation.XmlType
 class CreditTransferTransaction(
     @get:XmlElement(name = "PmtIdEndToEndId") var pmtIdEndToEndId: String
 ) {
-    constructor() : this("")
+    constructor() : this(pmtIdEndToEndId = "")
 }

@@ -21,13 +21,11 @@ import javax.xml.bind.annotation.XmlType
 
 @XmlType(
     propOrder = [
-        "nm",
         "idOrgIdOthrId"
     ]
 )
 class PartyIdentification(
-    @get:XmlElement(name = "Nm") var nm: String,
     @get:XmlElement(name = "IdOrgIdOthrId") var idOrgIdOthrId: String
 ) {
-    constructor() : this("", "")
+    constructor() : this(idOrgIdOthrId = "")
 }
