@@ -87,11 +87,14 @@ class PaymentFlow(
         val xmlService = serviceHub.cordaService(XmlService::class.java)
         val flowService = serviceHub.cordaService(FlowService::class.java)
 
-        val creditTransferRequest: CustomerCreditTransferInitiation =
-            xmlService.unmarshalPaymentRequest(paymentInstruction.data)
+        val creditTransferRequest: CustomerCreditTransferInitiation = try {
+            xmlService.unmarshalPaymentRequest(paymentInstruction)
+        } catch (error: Exception) {
+            throw IllegalTransferRequestException("Illegal credit transfer initiation request.", error)
+        }
         // pmtInf and cdtTrfTxInf must have at least one element according to PAIN.001 schema
         val endToEndId: String = creditTransferRequest.pmtInf.first().cdtTrfTxInf.first().pmtIdEndToEndId
-        logger.info("Save new payment id=$uniquePaymentId, endToEndId=$endToEndId")
+        logger.info("Store new credit transfer initiation request id=$uniquePaymentId, endToEndId=$endToEndId")
         val attachmentId = xmlService.storePaymentInstruction(paymentInstruction, ourIdentity)
         // TODO Check participant id
 

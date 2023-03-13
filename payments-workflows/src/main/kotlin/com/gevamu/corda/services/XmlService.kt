@@ -54,7 +54,8 @@ open class XmlService protected constructor(protected val serviceHub: AppService
         return storeAttachment(zipBytes, ourIdentity)
     }
 
-    fun unmarshalPaymentRequest(bytes: ByteArray): CustomerCreditTransferInitiation {
+    fun unmarshalPaymentRequest(paymentInstruction: PaymentInstruction): CustomerCreditTransferInitiation {
+        val bytes = paymentInstruction.data
         pain001Validator.validate(bytes.inputStream())
 
         val streamSource = StreamSource(bytes.inputStream())
