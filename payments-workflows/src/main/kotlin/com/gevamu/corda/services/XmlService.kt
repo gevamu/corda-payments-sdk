@@ -18,6 +18,7 @@ package com.gevamu.corda.services
 
 import com.gevamu.corda.flows.PaymentInstruction
 import com.gevamu.corda.iso20022.Iso20022XmlValidator
+import com.gevamu.corda.toolbox.useResource
 import com.gevamu.corda.xml.paymentinstruction.CustomerCreditTransferInitiation
 import net.corda.core.identity.Party
 import net.corda.core.node.AppServiceHub
@@ -26,8 +27,6 @@ import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.io.InputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.xml.XMLConstants
@@ -41,7 +40,9 @@ import javax.xml.validation.SchemaFactory
 
 // TODO Exception handling
 @CordaService
-open class XmlService protected constructor(protected val serviceHub: AppServiceHub) : SingletonSerializeAsToken() {
+class XmlService constructor(private val serviceHub: AppServiceHub) : SingletonSerializeAsToken() {
+    private val transformerFactory: TransformerFactory = TransformerFactory.newInstance()
+
     private val jaxbContext: JAXBContext = JAXBContext.newInstance(CustomerCreditTransferInitiation::class.java)
 
     private val pain001Validator: Iso20022XmlValidator = Iso20022XmlValidator(pain001Schema(), PAIN_001_NAMESPACE)
@@ -89,12 +90,12 @@ open class XmlService protected constructor(protected val serviceHub: AppService
         )
     }
 
-    private fun pain001Schema(): Schema = getResourceAsStream("pain.001.001.09.xsd").use {
+    private fun pain001Schema(): Schema = useResource("pain.001.001.09.xsd") {
         SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(StreamSource(it))
     }
 
-    private fun pain001Xslt(): Templates = getResourceAsStream("pain.001.001.09.xsl").use {
-        TransformerFactory.newInstance().newTemplates(StreamSource(it))
+    private fun pain001Xslt(): Templates = useResource("pain.001.001.09.xsl") {
+        transformerFactory.newTemplates(StreamSource(it))
     }
 
     // TODO consider overriding equals and hashCode
@@ -102,11 +103,5 @@ open class XmlService protected constructor(protected val serviceHub: AppService
 
     companion object {
         const val PAIN_001_NAMESPACE = "urn:iso:std:iso:20022:tech:xsd:pain.001.001.09"
-
-        @Throws(IOException::class)
-        private fun getResourceAsStream(fileName: String): InputStream {
-            return XmlService::class.java.getResourceAsStream(fileName)
-                ?: throw IOException("Resource $fileName isn't found")
-        }
     }
 }
