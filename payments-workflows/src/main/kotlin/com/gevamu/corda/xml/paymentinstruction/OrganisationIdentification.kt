@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Exactpro Systems Limited
+ * Copyright 2023 Exactpro Systems Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,11 @@ import javax.xml.bind.annotation.XmlType
 
 @XmlType(
     propOrder = [
-        "cdtTrfTxInf",
-        "dbtr"
+        "othr"
     ]
 )
-class PaymentInstruction(
-    @get:XmlElement(name = "CdtTrfTxInf") var cdtTrfTxInf: List<CreditTransferTransaction>,
-    @get:XmlElement(name = "Dbtr") var dbtr: PartyIdentification
+class OrganisationIdentification(
+    @get:XmlElement(name = "Othr") var othr: List<GenericOrganisationIdentification>
 ) {
-    constructor() : this(cdtTrfTxInf = mutableListOf(), dbtr = PartyIdentification())
+    constructor() : this(othr = mutableListOf())
 }

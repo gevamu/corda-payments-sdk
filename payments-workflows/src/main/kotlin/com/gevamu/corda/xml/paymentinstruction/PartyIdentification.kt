@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Exactpro Systems Limited
+ * Copyright 2023 Exactpro Systems Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,11 @@ import javax.xml.bind.annotation.XmlType
 
 @XmlType(
     propOrder = [
-        "idOrgIdOthrId"
+        "id"
     ]
 )
 class PartyIdentification(
-    @get:XmlElement(name = "IdOrgIdOthrId") var idOrgIdOthrId: String
+    @get:XmlElement(name = "Id") var id: PartyChoice
 ) {
-    constructor() : this(idOrgIdOthrId = "")
+    constructor() : this(id = PartyChoice())
 }
