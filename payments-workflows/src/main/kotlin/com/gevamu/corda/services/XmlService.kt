@@ -90,11 +90,11 @@ class XmlService constructor(private val serviceHub: AppServiceHub) : SingletonS
         )
     }
 
-    private fun pain001Schema(): Schema = useResource("pain.001.001.09.xsd") {
+    private fun pain001Schema(): Schema = Companion.useResource("pain.001.001.09.xsd") {
         SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(StreamSource(it))
     }
 
-    private fun pain001Xslt(): Templates = useResource("pain.001.001.09.xsl") {
+    private fun pain001Xslt(): Templates = Companion.useResource("pain.001.001.09.xsl") {
         transformerFactory.newTemplates(StreamSource(it))
     }
 
