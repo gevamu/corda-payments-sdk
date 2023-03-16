@@ -20,5 +20,8 @@ import java.io.IOException
 import java.io.InputStream
 
 @Throws(IOException::class)
-fun <R> Any.useResource(fileName: String, block: (InputStream) -> R) =
-    (this.javaClass.getResourceAsStream(fileName) ?: throw IOException("Resource $fileName isn't found")).use(block)
+fun <R> Any.useResource(fileName: String, block: (InputStream) -> R): R {
+    val inputStream = this.javaClass.getResourceAsStream(fileName)
+        ?: throw IOException("Resource $fileName isn't found")
+    return inputStream.use(block)
+}
