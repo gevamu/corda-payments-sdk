@@ -18,4 +18,6 @@ package com.gevamu.corda.flows
 
 import net.corda.core.flows.FlowException
 
-class IllegalTransferRequestException(message: String?, cause: Throwable?) : FlowException(message, cause)
+class IllegalTransferRequestException(message: String?, cause: Throwable?) : FlowException(message, cause) {
+    constructor(message: String?) : this(message, null)
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Exactpro Systems Limited
+ * Copyright 2022 Exactpro Systems Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package com.gevamu.corda.xml.paymentinstruction
+package com.gevamu.corda.flows
 
-import javax.xml.bind.annotation.XmlElement
-import javax.xml.bind.annotation.XmlType
+import net.corda.core.flows.FlowException
 
-@XmlType(
-    propOrder = [
-        "orgId"
-    ]
-)
-class PartyChoice(
-    @get:XmlElement(name = "OrgId") var orgId: OrganisationIdentification
-) {
-    constructor() : this(orgId = OrganisationIdentification())
+class IllegalParticipantException(message: String?, cause: Throwable?) : FlowException(message, cause) {
+    constructor(message: String?) : this(message, null)
 }

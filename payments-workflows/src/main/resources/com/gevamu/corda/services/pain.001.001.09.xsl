@@ -16,29 +16,14 @@
             <xsl:apply-templates select="iso:PmtInf" />
         </CstmrCdtTrfInitn>
     </xsl:template>
+    <xsl:template match="iso:Othr">
+        <DbtrIdOrgIdOthrId>
+            <xsl:value-of select="iso:Id" />
+        </DbtrIdOrgIdOthrId>
+    </xsl:template>
     <xsl:template match="iso:PmtInf">
         <PmtInf>
-            <xsl:apply-templates select="iso:CdtTrfTxInf|iso:Dbtr" />
+            <xsl:apply-templates select="iso:CdtTrfTxInf|iso:Dbtr/iso:Id/iso:OrgId/iso:Othr" />
         </PmtInf>
-    </xsl:template>
-    <xsl:template match="iso:Dbtr">
-        <Dbtr>
-            <xsl:apply-templates select="iso:Id" />
-        </Dbtr>
-    </xsl:template>
-    <xsl:template match="iso:Id">
-        <Id>
-            <xsl:apply-templates select="iso:OrgId" />
-        </Id>
-    </xsl:template>
-    <xsl:template match="iso:OrgId">
-        <OrgId>
-            <xsl:apply-templates select="iso:Othr" />
-        </OrgId>
-    </xsl:template>
-    <xsl:template match="iso:Othr">
-        <Othr>
-            <Id><xsl:value-of select="iso:Id" /></Id>
-        </Othr>
     </xsl:template>
 </xsl:stylesheet>

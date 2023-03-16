@@ -22,12 +22,12 @@ import javax.xml.bind.annotation.XmlType
 @XmlType(
     propOrder = [
         "cdtTrfTxInf",
-        "dbtr"
+        "dbtrIdOrgIdOthrId"
     ]
 )
 class PaymentInstruction(
     @get:XmlElement(name = "CdtTrfTxInf") var cdtTrfTxInf: List<CreditTransferTransaction>,
-    @get:XmlElement(name = "Dbtr") var dbtr: PartyIdentification
+    @get:XmlElement(name = "DbtrIdOrgIdOthrId") var dbtrIdOrgIdOthrId: List<String>
 ) {
-    constructor() : this(cdtTrfTxInf = mutableListOf(), dbtr = PartyIdentification())
+    constructor() : this(cdtTrfTxInf = mutableListOf(), dbtrIdOrgIdOthrId = mutableListOf())
 }
