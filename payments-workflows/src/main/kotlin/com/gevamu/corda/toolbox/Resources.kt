@@ -18,10 +18,11 @@ package com.gevamu.corda.toolbox
 
 import java.io.IOException
 import java.io.InputStream
+import kotlin.reflect.KClass
 
 @Throws(IOException::class)
-fun <R> Any.useResource(fileName: String, block: (InputStream) -> R): R {
-    val inputStream = this.javaClass.getResourceAsStream(fileName)
+fun <R> KClass<*>.useResource(fileName: String, block: (InputStream) -> R): R {
+    val inputStream = this.java.getResourceAsStream(fileName)
         ?: throw IOException("Resource $fileName isn't found")
     return inputStream.use(block)
 }
