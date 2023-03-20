@@ -25,7 +25,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'corretto'
-          java-version: '11'
+          java-version: '8'
           cache: 'gradle'
       - name: 'Build'
         run: ./gradlew build -x dokkaJavadoc --no-daemon

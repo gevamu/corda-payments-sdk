@@ -92,6 +92,6 @@ data class Payment(
         ACCEPTED,
         PENDING,
         COMPLETED,
-        REJECTED,
+        REJECTED
     }
 }

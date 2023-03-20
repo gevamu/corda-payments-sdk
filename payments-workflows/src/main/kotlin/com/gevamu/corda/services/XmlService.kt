@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Exactpro Systems Limited
+ * Copyright 2022-2023 Exactpro Systems Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@
 package com.gevamu.corda.services
 
 import com.gevamu.corda.flows.PaymentInstruction
-import com.gevamu.corda.iso20022.pain.CustomerCreditTransferInitiationV09
+import com.gevamu.corda.iso20022.Iso20022XmlValidator
+import com.gevamu.corda.toolbox.useResource
+import com.gevamu.corda.xml.paymentinstruction.CustomerCreditTransferInitiation
 import net.corda.core.identity.Party
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.AttachmentId
@@ -27,39 +29,45 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
+import javax.xml.XMLConstants
 import javax.xml.bind.JAXBContext
-import javax.xml.stream.XMLInputFactory
+import javax.xml.transform.Templates
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.sax.SAXResult
+import javax.xml.transform.stream.StreamSource
+import javax.xml.validation.Schema
+import javax.xml.validation.SchemaFactory
 
 // TODO Exception handling
-
 @CordaService
-open class XmlService protected constructor(
-    protected val serviceHub: AppServiceHub,
-    xmlClasses: List<Class<*>>
-) : SingletonSerializeAsToken() {
-    protected val jaxbContext: JAXBContext = JAXBContext.newInstance(
-        *(listOf<Class<*>>(CustomerCreditTransferInitiationV09::class.java) + xmlClasses).toTypedArray()
-    )
-    protected val xmlInputFactory = XMLInputFactory.newFactory()
+class XmlService constructor(private val serviceHub: AppServiceHub) : SingletonSerializeAsToken() {
+    private val transformerFactory: TransformerFactory = TransformerFactory.newInstance()
 
-    constructor(serviceHub: AppServiceHub) : this(serviceHub, listOf())
+    private val jaxbContext: JAXBContext = JAXBContext.newInstance(CustomerCreditTransferInitiation::class.java)
+
+    private val pain001Validator: Iso20022XmlValidator = Iso20022XmlValidator(pain001Schema(), PAIN_001_NAMESPACE)
+
+    private val pain001Templates: Templates = pain001Xslt()
 
     fun storePaymentInstruction(paymentInstruction: PaymentInstruction, ourIdentity: Party): AttachmentId {
-        val zipBytes = zip(listOf(ZipFileEntry("paymentInstruction.xml", paymentInstruction.paymentInstruction)))
+        // TODO Store format.
+        val zipBytes = zip(listOf(ZipFileEntry("paymentInstruction.xml", paymentInstruction.data)))
         return storeAttachment(zipBytes, ourIdentity)
     }
 
-    fun unmarshalPaymentRequest(bytes: ByteArray): CustomerCreditTransferInitiationV09 {
-        val unmarshaller = jaxbContext.createUnmarshaller()
-        // XXX store factory in class; there is newDefaultFactory()
-        val inputStream = ByteArrayInputStream(bytes)
-        val jaxbElement = unmarshaller.unmarshal(
-            // XXX pass encoding as 2nd argument
-            xmlInputFactory.createXMLStreamReader(inputStream),
-            CustomerCreditTransferInitiationV09::class.java
-        )
-        // XXX Do we need to close XML stream reader?
-        return jaxbElement.value
+    fun unmarshalPaymentRequest(paymentInstruction: PaymentInstruction): CustomerCreditTransferInitiation {
+        val bytes = paymentInstruction.data
+        pain001Validator.validate(bytes.inputStream())
+
+        val streamSource = StreamSource(bytes.inputStream())
+        val unmarshallerHandler = jaxbContext.createUnmarshaller().unmarshallerHandler
+        val saxResult = SAXResult()
+        saxResult.handler = unmarshallerHandler
+
+        // TODO: Create transformer pool
+        pain001Templates.newTransformer().transform(streamSource, saxResult)
+
+        return unmarshallerHandler.result as CustomerCreditTransferInitiation
     }
 
     private fun zip(zipEntries: List<ZipFileEntry>): ByteArray {
@@ -82,6 +90,18 @@ open class XmlService protected constructor(
         )
     }
 
+    private fun pain001Schema(): Schema = XmlService::class.useResource("pain.001.001.09.xsd") {
+        SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(StreamSource(it))
+    }
+
+    private fun pain001Xslt(): Templates = XmlService::class.useResource("pain.001.001.09.xsl") {
+        transformerFactory.newTemplates(StreamSource(it))
+    }
+
     // TODO consider overriding equals and hashCode
     private data class ZipFileEntry(val name: String, val contentBytes: ByteArray)
+
+    companion object {
+        const val PAIN_001_NAMESPACE = "urn:iso:std:iso:20022:tech:xsd:pain.001.001.09"
+    }
 }

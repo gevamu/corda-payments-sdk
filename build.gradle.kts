@@ -1,3 +1,6 @@
+import java.time.LocalDate
+import java.time.ZoneId
+
 plugins {
     // Add lifecycle tasks
     base
@@ -27,4 +30,12 @@ tasks {
             }
         }
     }
+}
+
+tasks.dokkaHtmlMultiModule.configure {
+    val currentYear = LocalDate.now(ZoneId.of("UTC")).year
+    pluginsMapConfiguration.put(
+        "org.jetbrains.dokka.base.DokkaBase",
+        """ { "footerMessage": "Copyright 2022-$currentYear Exactpro Systems Limited" } """,
+    )
 }
