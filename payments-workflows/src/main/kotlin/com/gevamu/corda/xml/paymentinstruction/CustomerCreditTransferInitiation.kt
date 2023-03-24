@@ -23,11 +23,16 @@ import javax.xml.bind.annotation.XmlType
 @XmlRootElement(name = "CstmrCdtTrfInitn")
 @XmlType(
     propOrder = [
-        "pmtInf"
+        "grpHdr",
+        "pmtInf",
     ]
 )
 class CustomerCreditTransferInitiation(
-    @get:XmlElement(name = "PmtInf") var pmtInf: List<PaymentInstruction>
+    @get:XmlElement(name = "GrpHdr") var grpHdr: GroupHeader,
+    @get:XmlElement(name = "PmtInf") var pmtInf: List<PaymentInstruction>,
 ) {
-    constructor() : this(pmtInf = mutableListOf())
+    constructor() : this(
+        grpHdr = GroupHeader(),
+        pmtInf = mutableListOf(),
+    )
 }

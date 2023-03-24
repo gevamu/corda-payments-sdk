@@ -85,9 +85,12 @@ class StatusUpdateFlow(
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
         val payerParty = paymentUpdate.first().payer
         val builder = TransactionBuilder(notary)
-            .addCommand(PaymentContract.Commands.UpdateStatus(uniquePaymentId), ourIdentity.owningKey, payerParty.owningKey)
             .addAttachment(paymentUpdate.first().paymentInstructionId)
-        foundPaymentStates.forEach { builder.addInputState(it) }
+        foundPaymentStates.forEach {
+            builder.addInputState(it)
+                .addCommand(PaymentContract.Commands.UpdateStatus(it.state.data.uniquePaymentId),
+                    ourIdentity.owningKey, payerParty.owningKey)
+        }
         paymentUpdate.forEach { builder.addOutputState(it) }
         builder.verify(serviceHub)
 

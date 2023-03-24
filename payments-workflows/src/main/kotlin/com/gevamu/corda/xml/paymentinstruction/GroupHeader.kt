@@ -16,20 +16,31 @@
 
 package com.gevamu.corda.xml.paymentinstruction
 
+import java.time.Instant
 import javax.xml.bind.annotation.XmlElement
 import javax.xml.bind.annotation.XmlType
+import javax.xml.datatype.DatatypeFactory
+import javax.xml.datatype.XMLGregorianCalendar
 
 @XmlType(
     propOrder = [
-        "pmtIdEndToEndId"
+        "msgId",
+        "nbOfTxs",
+        "creDtTm",
     ]
 )
-class CreditTransferTransaction(
-    @get:XmlElement(name = "PmtIdEndToEndId") var pmtIdEndToEndId: String
+class GroupHeader(
+    @get:XmlElement(name = "MsgId", required = true) var msgId: String,
+    @get:XmlElement(name = "NbOfTxs", required = true) var nbOfTxs: String,
+    @get:XmlElement(name = "CreDtTm") var creDtTm: XMLGregorianCalendar,
 ) {
-    constructor() : this(pmtIdEndToEndId = "")
+    constructor() : this(
+        msgId = "",
+        nbOfTxs = "0",
+        creDtTm = DatatypeFactory.newInstance().newXMLGregorianCalendar(Instant.now().toString()),
+    )
 
-    fun clone(): CreditTransferTransaction {
-        return CreditTransferTransaction(pmtIdEndToEndId)
+    fun clone(): GroupHeader {
+        return GroupHeader(msgId, nbOfTxs, creDtTm.clone() as XMLGregorianCalendar)
     }
 }

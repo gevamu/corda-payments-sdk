@@ -30,4 +30,8 @@ class PaymentInstruction(
     @get:XmlElement(name = "DbtrIdOrgIdOthrId") var dbtrIdOrgIdOthrId: List<String>
 ) {
     constructor() : this(cdtTrfTxInf = mutableListOf(), dbtrIdOrgIdOthrId = mutableListOf())
+
+    fun clone(): PaymentInstruction {
+        return PaymentInstruction(cdtTrfTxInf.map {it.clone()}, dbtrIdOrgIdOthrId.toList())
+    }
 }

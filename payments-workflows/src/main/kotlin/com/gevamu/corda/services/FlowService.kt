@@ -28,6 +28,7 @@ import java.util.concurrent.Executors
 class FlowService(private val serviceHub: AppServiceHub) : SingletonSerializeAsToken() {
     fun startXxxFlow(uniquePaymentIds: Collection<UUID>) {
         // TODO persist execution queue; consider usage of list of Payment states in CREATED status
+
         executor.execute { serviceHub.startFlow(SendPaymentFlow(uniquePaymentIds)) }
     }
 
