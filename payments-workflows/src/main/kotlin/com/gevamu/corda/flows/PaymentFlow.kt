@@ -87,71 +87,62 @@ class PaymentFlow(
         val xmlService = serviceHub.cordaService(XmlService::class.java)
         val flowService = serviceHub.cordaService(FlowService::class.java)
 
-        val paymentRequest: CustomerCreditTransferInitiation = try {
-            xmlService.unmarshalPaymentRequest(paymentInstruction)
-        } catch (error: Exception) {
-            throw IllegalTransferRequestException("Illegal credit transfer initiation request.", error)
-        }
-        val endToEndIds = paymentRequest.pmtInf.map { it.cdtTrfTxInf.first().pmtIdEndToEndId }
-        logger.info("Store new credit transfer initiation requests id=${this.uniquePaymentIdToETEIdMap}, endToEndId=$endToEndIds")
+        val paymentRequest: CustomerCreditTransferInitiationV09 =
+            xmlService.unmarshalPaymentRequest(paymentInstruction.paymentInstruction)
+        val endToEndIds = paymentRequest.pmtInf.map { it.cdtTrfTxInf.first().pmtId.endToEndId }
+//        logger.info("Save new payment id=${this.uniquePaymentIdToETEIdMap}, endToEndId=$endToEndIds")
+//        val creditTransferRequest: CustomerCreditTransferInitiation = try {
+//            xmlService.unmarshalPaymentRequest(paymentInstruction)
+//        } catch (error: Exception) {
+//            throw IllegalTransferRequestException("Illegal credit transfer initiation request.", error)
+//        }
+//        // pmtInf and cdtTrfTxInf must have at least one element according to PAIN.001 schema
+//        val endToEndId: String = creditTransferRequest.pmtInf.first().cdtTrfTxInf.first().pmtIdEndToEndId
+        logger.info("Store new credit transfer initiation request id=$uniquePaymentId, endToEndId=$endToEndId")
+        val attachmentId = xmlService.storePaymentInstruction(paymentInstruction, ourIdentity)
         // TODO Check participant id
 
-        val notary = serviceHub.networkMapCache.notaryIdentities.first()
-        val builder = TransactionBuilder(notary)
-
-        // Use as a storage when need to generate new pairs
-        val generatedPaymentToETEIdsMap = HashMap<String, UUID>(endToEndIds.size)
         // Build and collect output states
         // If empty, generate and pass through new UUIDs
-        paymentRequest.pmtInf.forEach {
-            // Tmp holder to split payments into separate instructions
-            val storedPayment = CustomerCreditTransferInitiation(
-                paymentRequest.grpHdr.clone(), // For some stupid reason data class' `copy()` didn't work
-                listOf(it.clone()), // So had to implement it myself
-            )
-            logger.info("Marshalling payment ${storedPayment.pmtInf.first().cdtTrfTxInf.first().pmtIdEndToEndId}, cal=${storedPayment.grpHdr.creDtTm}")
-            // Save separate xml attachments for each payment
-            val marshalledXml = xmlService.marshall(storedPayment)
-            val attachmentId = xmlService.storePaymentInstruction(
-                PaymentInstruction(PaymentInstructionFormat.ISO20022_V9_XML_UTF8, marshalledXml),
-                ourIdentity,
-                "paymentInstruction_${it.cdtTrfTxInf.first().pmtIdEndToEndId}.xml"
-            )
-            builder.addAttachment(attachmentId)
-
-            val paymentState = if (this.uniquePaymentIdToETEIdMap == null) {
-                val endToEndId = it.cdtTrfTxInf.first().pmtIdEndToEndId
-                // Save generated UUIDs to pass to the [SendPaymentFlow]
+        val payments: List<Payment> = if (this.uniquePaymentIdToETEIdMap == null) {
+            // Init new map instead of null
+            this.uniquePaymentIdToETEIdMap = HashMap(endToEndIds.size)
+            endToEndIds.map {
                 val randomUUID = UUID.randomUUID()
-                generatedPaymentToETEIdsMap[endToEndId] = randomUUID
+                // Save generated UUIDs to pass to the [SendPaymentFlow]
+                (this.uniquePaymentIdToETEIdMap as HashMap)[it] = randomUUID
                 Payment(
-                    endToEndId = endToEndId,
+                    endToEndId = it,
                     uniquePaymentId = randomUUID,
                     payer = ourIdentity,
                     gateway = gateway,
                     paymentInstructionId = attachmentId,
                     status = Payment.PaymentStatus.CREATED,
                 )
-            } else if (this.uniquePaymentIdToETEIdMap!!.keys.containsAll(endToEndIds)) {
-                // All keys are in the map, save each
-                val endToEndId = it.cdtTrfTxInf.first().pmtIdEndToEndId
+            }
+        } else if (this.uniquePaymentIdToETEIdMap!!.keys.containsAll(endToEndIds)) {
+            // all keys are in the map, save each
+            endToEndIds.map {
                 Payment(
-                    endToEndId = endToEndId,
-                    uniquePaymentId = this.uniquePaymentIdToETEIdMap!![endToEndId]!!,
+                    endToEndId = it,
+                    uniquePaymentId = this.uniquePaymentIdToETEIdMap!![it]!!,
                     payer = ourIdentity,
                     gateway = gateway,
                     paymentInstructionId = attachmentId,
                     status = Payment.PaymentStatus.CREATED,
                 )
-            } else {
-                throw Exception("Mismatched keys: 'unique payment' map does not contain all of the 'end to end' id entries")
             }
-
-            // Save state to the db
-            builder.addOutputState(paymentState)
-                .addCommand(PaymentContract.Commands.Create(paymentState.uniquePaymentId), ourIdentity.owningKey)
+        } else {
+            throw Exception("Mismatched keys: 'unique payment' map does not contain all of the 'end to end' id entries")
         }
 
+        val notary = serviceHub.networkMapCache.notaryIdentities.first()
+        val builder = TransactionBuilder(notary)
+            .addCommand(PaymentContract.Commands.Create(uniquePaymentId), ourIdentity.owningKey)
+            .addAttachment(attachmentId)
+        payments.forEach {
+            builder.addOutputState(it)
+        }
         builder.verify(serviceHub)
 
         val signedTransaction = serviceHub.signInitialTransaction(builder)
@@ -159,7 +150,7 @@ class PaymentFlow(
         subFlow(FinalityFlow(signedTransaction, listOf()))
 
         logger.info("startXxxFlow id={}", this.uniquePaymentIdToETEIdMap)
-        flowService.startXxxFlow(this.uniquePaymentIdToETEIdMap?.values ?: generatedPaymentToETEIdsMap.values)
+        flowService.startXxxFlow(this.uniquePaymentIdToETEIdMap!!.values)
 
         return signedTransaction.tx.filterOutRefs { true }
     }

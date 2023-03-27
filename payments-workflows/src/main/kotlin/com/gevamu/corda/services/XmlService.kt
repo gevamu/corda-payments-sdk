@@ -27,22 +27,16 @@ import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.nio.charset.StandardCharsets
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.xml.XMLConstants
 import javax.xml.bind.JAXBContext
-import javax.xml.bind.JAXBElement
-import javax.xml.bind.Marshaller
-import javax.xml.namespace.QName
-import javax.xml.stream.XMLOutputFactory
 import javax.xml.transform.Templates
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.sax.SAXResult
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.Schema
 import javax.xml.validation.SchemaFactory
-
 
 // TODO Exception handling
 @CordaService
@@ -55,9 +49,9 @@ class XmlService constructor(private val serviceHub: AppServiceHub) : SingletonS
 
     private val pain001Templates: Templates = pain001Xslt()
 
-    fun storePaymentInstruction(paymentInstruction: PaymentInstruction, ourIdentity: Party, name: String = "paymentInstruction.xml"): AttachmentId {
+    fun storePaymentInstruction(paymentInstruction: PaymentInstruction, ourIdentity: Party): AttachmentId {
         // TODO Store format.
-        val zipBytes = zip(listOf(ZipFileEntry(name, paymentInstruction.data)))
+        val zipBytes = zip(listOf(ZipFileEntry("paymentInstruction.xml", paymentInstruction.data)))
         return storeAttachment(zipBytes, ourIdentity)
     }
 
@@ -74,28 +68,6 @@ class XmlService constructor(private val serviceHub: AppServiceHub) : SingletonS
         pain001Templates.newTransformer().transform(streamSource, saxResult)
 
         return unmarshallerHandler.result as CustomerCreditTransferInitiation
-    }
-
-    fun marshall(paymentInstruction: CustomerCreditTransferInitiation): ByteArray {
-        try {
-            val marshaller: Marshaller = jaxbContext.createMarshaller()
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, false)
-            return ByteArrayOutputStream().also { byteStream ->
-                val outputFactory = XMLOutputFactory.newFactory()
-                val outputStream = outputFactory.createXMLStreamWriter(byteStream, StandardCharsets.UTF_8.name())
-                marshaller.marshal(
-                    JAXBElement(
-                        QName(PAIN_001_NAMESPACE, "CstmrCdtTrfInitn"),
-                        CustomerCreditTransferInitiation::class.java,
-                        null,
-                        paymentInstruction,
-                    ),
-                    outputStream
-                )
-            }.toByteArray()
-        } catch (e: Exception) {
-            throw Exception("XML marshalling error", e)
-        }
     }
 
     private fun zip(zipEntries: List<ZipFileEntry>): ByteArray {

@@ -28,8 +28,4 @@ class CreditTransferTransaction(
     @get:XmlElement(name = "PmtIdEndToEndId") var pmtIdEndToEndId: String
 ) {
     constructor() : this(pmtIdEndToEndId = "")
-
-    fun clone(): CreditTransferTransaction {
-        return CreditTransferTransaction(pmtIdEndToEndId)
-    }
 }
