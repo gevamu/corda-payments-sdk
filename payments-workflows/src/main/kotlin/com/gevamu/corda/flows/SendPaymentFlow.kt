@@ -67,12 +67,14 @@ class SendPaymentFlow(private val uniquePaymentIds: Collection<UUID>) : FlowLogi
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
         val gateway = paymentStateAndRefs.first().state.data.gateway
         val builder = TransactionBuilder(notary)
-            .addCommand(PaymentContract.Commands.SendToGateway(uniquePaymentId), ourIdentity.owningKey, gateway.owningKey)
             .addAttachment(paymentStateAndRefs.first().state.data.paymentInstructionId)
         // Consume old states
         paymentStateAndRefs.forEach { builder.addInputState(it) }
         // Persist mutated states with new status and timestamp
-        payments.forEach { builder.addOutputState(it) }
+        payments.forEach {
+            builder.addOutputState(it)
+                .addCommand(PaymentContract.Commands.SendToGateway(it.uniquePaymentId), ourIdentity.owningKey, gateway.owningKey)
+        }
         builder.verify(serviceHub)
 
         // Sign the transaction on our payer cordapp
