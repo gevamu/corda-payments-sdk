@@ -17,6 +17,7 @@
 package com.gevamu.corda.web.server.services;
 
 import com.gevamu.corda.iso20022.pain.CustomerCreditTransferInitiationV09;
+import com.gevamu.corda.services.XmlService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,18 +42,21 @@ public class XmlMarshallingService {
         context = JAXBContext.newInstance(CustomerCreditTransferInitiationV09.class);
     }
 
-    public byte[] marshal(@NonNull CustomerCreditTransferInitiationV09 obj) {
+    public byte[] marshal(@NonNull CustomerCreditTransferInitiationV09 paymentInitiation) {
         try {
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 marshaller.marshal(
                     new JAXBElement<>(
-                        new QName("CstmrCdtTrfInitn"), CustomerCreditTransferInitiationV09.class, null, obj
+                        new QName(XmlService.PAIN_001_NAMESPACE, "CstmrCdtTrfInitn"),
+                        CustomerCreditTransferInitiationV09.class,
+                        null,
+                        paymentInitiation
                     ),
-                    output
+                    outputStream
                 );
-                byte[] result = output.toByteArray();
+                byte[] result = outputStream.toByteArray();
                 if (log.isDebugEnabled()) {
                     String xml = new String(result);
                     log.debug("Marshalling result:\n{}", xml);
