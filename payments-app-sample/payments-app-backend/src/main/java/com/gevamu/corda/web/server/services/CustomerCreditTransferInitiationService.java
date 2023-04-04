@@ -79,7 +79,7 @@ public class CustomerCreditTransferInitiationService {
         cdtTrfTxInf.setPmtId(paymentIdentification);
 
         Purpose2Choice purp = objectFactory.createPurpose2Choice();
-        purp.setCd("CGODDR");
+        purp.setCd("CGOD");
         cdtTrfTxInf.setPurp(purp);
         RemittanceInformation16 rmtInf = objectFactory.createRemittanceInformation16();
         rmtInf.getUstrd().add("2037123 IT test");
