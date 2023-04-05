@@ -194,7 +194,7 @@ public class CustomerCreditTransferInitiationServiceTest {
         assertThat(transaction.getInstrForCdtrAgt().get(0).getInstrInf()).isEqualTo("ACC/SERVICE TRADE");
         assertThat(transaction.getInstrForDbtrAgt()).isEqualTo("Instr For Debtor Agent");
         assertThat(transaction.getPurp()).isNotNull();
-        assertThat(transaction.getPurp().getCd()).isEqualTo("CGODDR");
+        assertThat(transaction.getPurp().getCd()).isEqualTo("CGOD");
         assertThat(transaction.getRmtInf()).isNotNull();
         assertThat(transaction.getRmtInf().getUstrd().size()).isEqualTo(1);
         assertThat(transaction.getRmtInf().getUstrd().get(0)).isEqualTo("2037123 IT test");
