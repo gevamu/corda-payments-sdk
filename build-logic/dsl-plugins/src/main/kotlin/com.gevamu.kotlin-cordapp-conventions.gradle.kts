@@ -1,4 +1,7 @@
 import net.corda.plugins.CordappExtension
+import java.io.ByteArrayOutputStream
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 plugins {
     // Include Java-library Conventions
@@ -29,6 +32,35 @@ dependencies {
     testImplementation("net.corda:corda-node-driver:4.9.3")
 }
 
+fun gitHash(): String {
+    val stdout = ByteArrayOutputStream()
+    exec {
+        commandLine("git", "rev-parse", "--short", "HEAD")
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+fun gitHasChanges(): Boolean {
+    val stdout = ByteArrayOutputStream()
+    exec {
+        commandLine("git", "status", "--porcelain", "--untracked-files=no")
+        // Returns either empty line or "XX YY"
+        // Where XX is change type ([M]odified, [A]dded, ...) and YY is filename
+        standardOutput = stdout
+    }
+    return stdout.toString().trim().isNotEmpty()
+}
+
+fun gitBranch(): String {
+    val stdout = ByteArrayOutputStream()
+    exec {
+        commandLine("git", "branch", "--show-current")
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
 tasks {
     test {
         javaLauncher.set(javaToolchains.launcherFor {
@@ -40,6 +72,16 @@ tasks {
         isPreserveFileTimestamps = false
         isReproducibleFileOrder = true
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        manifest {
+            attributes["Build-Version"] = // 
+                // Add version or branch name if no version present
+                "${if (project.version == "unspecified") gitBranch() else project.version}" +
+                    // Add last git hash commit, short form, in brackets
+                    // Append +M if there are local changes (ignoring untracked files)
+                    "(${gitHash()}${if (gitHasChanges()) "+M" else ""})" +
+                    // Add Unix timestamp of build date
+                    " built on ${LocalDateTime.now(ZoneId.of("UTC"))}"
+        }
     }
     named<Jar>("javadocJar") {
         from(named("dokkaJavadoc"))

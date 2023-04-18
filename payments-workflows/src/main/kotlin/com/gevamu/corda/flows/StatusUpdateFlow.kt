@@ -27,7 +27,7 @@ import net.corda.core.flows.InitiatingFlow
 import net.corda.core.flows.StartableByService
 import net.corda.core.node.services.Vault
 import net.corda.core.node.services.queryBy
-import net.corda.core.node.services.vault.Builder.equal
+import net.corda.core.node.services.vault.Builder.`in`
 import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.node.services.vault.builder
 import net.corda.core.transactions.TransactionBuilder
@@ -37,14 +37,14 @@ import java.util.UUID
 @InitiatingFlow
 @StartableByService
 class StatusUpdateFlow(
-    private val uniquePaymentId: UUID,
+    private val uniquePaymentIds: Collection<UUID>,
     private val paymentStatus: Payment.PaymentStatus,
     private val additionalInfo: String,
     private val timestamp: Instant,
 ) : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
-        logger.info("Update payment id=$uniquePaymentId with status=$paymentStatus")
+        logger.info("Update payment id=$uniquePaymentIds with status=$paymentStatus")
         // TODO This flow may be executed concurrently with the same paymentId.
         //      To address it, flow should update state only if timestamp is newer than timestamp from the last state
         //      and retry the flow if "Input state consumed" exception is raised.
@@ -53,7 +53,7 @@ class StatusUpdateFlow(
 
         // Find sent payment state by id to use as an input
         val idEqualsCriteria = QueryCriteria.VaultCustomQueryCriteria(
-            expression = PaymentSchemaV1.PersistentPayment::uniquePaymentId.equal(uniquePaymentId),
+            expression = PaymentSchemaV1.PersistentPayment::uniquePaymentId.`in`(uniquePaymentIds),
             // State should be unconsumed as it will be used as input state for transaction
             status = Vault.StateStatus.UNCONSUMED,
             // Gateway node is a participant
@@ -67,39 +67,37 @@ class StatusUpdateFlow(
                 .states
         }
         if (foundPaymentStates.isEmpty()) {
-            logger.error("No payments found for id={}", uniquePaymentId)
+            logger.error("No payments found for id={}", uniquePaymentIds)
             // XXX Send HTTP reply with error status if flow started on push notification?
             return
         }
-        if (foundPaymentStates.size > 1) {
-            throw RuntimeException(
-                "Internal error: query for payment state with id=$uniquePaymentId returned ${foundPaymentStates.size} states"
-            )
-        }
-        val paymentStateAndRef = foundPaymentStates.first()
 
         // Update payment with the params from the bank's response
-        val paymentUpdate = paymentStateAndRef.state.data.copy(
-            status = paymentStatus,
-            additionalInfo = additionalInfo,
-            timestamp = timestamp,
-        )
+        val paymentUpdate = foundPaymentStates.map {
+            it.state.data.copy(
+                status = paymentStatus,
+                additionalInfo = additionalInfo,
+                timestamp = timestamp,
+            )
+        }
 
         // Build and prepare state and contract on gateway
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
+        val payerParty = paymentUpdate.first().payer
         val builder = TransactionBuilder(notary)
-            // FIXME change to reference flow?
-            .addInputState(paymentStateAndRef)
-            .addOutputState(paymentUpdate)
-            .addCommand(PaymentContract.Commands.UpdateStatus(uniquePaymentId), ourIdentity.owningKey, paymentUpdate.payer.owningKey)
-            .addAttachment(paymentUpdate.paymentInstructionId)
+            .addAttachment(paymentUpdate.first().paymentInstructionId)
+        foundPaymentStates.forEach { builder.addInputState(it) }
+        paymentUpdate.forEach {
+            builder.addCommand(PaymentContract.Commands.UpdateStatus(it.uniquePaymentId), ourIdentity.owningKey, payerParty.owningKey)
+                .addOutputState(it)
+        }
         builder.verify(serviceHub)
 
         // Sign the transaction on gateway
         val partSignedTx = serviceHub.signInitialTransaction(builder)
 
         // Initiate update status flow with original participants
-        val paymentSession = initiateFlow(paymentUpdate.payer)
+        val paymentSession = initiateFlow(payerParty)
         // TODO As of 2022/10/26 it has only the payer party and should use [participants] instead going forward
         // val sessions = paymentUpdate.participants.map { initiateFlow(it) }
 
