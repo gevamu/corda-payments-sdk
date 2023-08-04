@@ -20,8 +20,6 @@ import co.paralleluniverse.fibers.Suspendable
 import com.gevamu.corda.contracts.PaymentContract
 import com.gevamu.corda.schema.PaymentSchemaV1
 import com.gevamu.corda.states.Payment
-import java.time.Instant
-import java.util.UUID
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.flows.CollectSignaturesFlow
 import net.corda.core.flows.FinalityFlow
@@ -40,6 +38,8 @@ import net.corda.core.node.services.vault.builder
 import net.corda.core.serialization.CordaSerializable
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
+import java.time.Instant
+import java.util.UUID
 
 data class PaymentStatusUpdate(
     val paymentStatus: Payment.PaymentStatus,
@@ -65,7 +65,8 @@ class StatusUpdateFlow(
         val uniquePaymentId = inputStateAndRef.state.data.uniquePaymentId
         logger.debug(
             "Updating report for payment request id={} with status={}",
-            uniquePaymentId, statusUpdate.paymentStatus
+            uniquePaymentId,
+            statusUpdate.paymentStatus
         )
         // TODO If timestamp of input state is newer than timestamp of the payment update, don't record this update.
         //      Note. Besides timestamp comparison, additional criteria may be needed as timestamps may come from
