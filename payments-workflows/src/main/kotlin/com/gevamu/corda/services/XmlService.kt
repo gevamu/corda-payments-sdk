@@ -37,17 +37,18 @@ import javax.xml.transform.sax.SAXResult
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.Schema
 import javax.xml.validation.SchemaFactory
+import net.corda.core.node.ServiceHub
 
 // TODO Exception handling
 @CordaService
-class XmlService constructor(private val serviceHub: AppServiceHub) : SingletonSerializeAsToken() {
+class XmlService(private val serviceHub: AppServiceHub) : SingletonSerializeAsToken() {
     private val transformerFactory: TransformerFactory = TransformerFactory.newInstance()
 
     private val jaxbContext: JAXBContext = JAXBContext.newInstance(CustomerCreditTransferInitiation::class.java)
 
     private val pain001Validator: Iso20022XmlValidator = Iso20022XmlValidator(pain001Schema(), PAIN_001_NAMESPACE)
 
-    private val pain001Templates: Templates = pain001Xslt()
+    private val pain001Xslt: Templates = pain001Xslt()
 
     fun storePaymentInstruction(paymentInstruction: PaymentInstruction, ourIdentity: Party): AttachmentId {
         // TODO Store format.
@@ -65,7 +66,7 @@ class XmlService constructor(private val serviceHub: AppServiceHub) : SingletonS
         saxResult.handler = unmarshallerHandler
 
         // TODO: Create transformer pool
-        pain001Templates.newTransformer().transform(streamSource, saxResult)
+        pain001Xslt.newTransformer().transform(streamSource, saxResult)
 
         return unmarshallerHandler.result as CustomerCreditTransferInitiation
     }
@@ -99,9 +100,11 @@ class XmlService constructor(private val serviceHub: AppServiceHub) : SingletonS
     }
 
     // TODO consider overriding equals and hashCode
-    private data class ZipFileEntry(val name: String, val contentBytes: ByteArray)
+    private class ZipFileEntry(val name: String, val contentBytes: ByteArray)
 
     companion object {
         const val PAIN_001_NAMESPACE = "urn:iso:std:iso:20022:tech:xsd:pain.001.001.09"
     }
 }
+
+val ServiceHub.paymentSdkXmlService: XmlService get() = cordaService(XmlService::class.java)
