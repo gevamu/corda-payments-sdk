@@ -7,13 +7,13 @@ databaseChangeLog:
             tableName: payment_states
             columns:
               - column:
-                  name: output_index
-                  type: int
+                  name: transaction_id
+                  type: varchar(144)
                   constraints:
                     nullable: false
               - column:
-                  name: transaction_id
-                  type: varchar(144)
+                  name: output_index
+                  type: int
                   constraints:
                     nullable: false
               - column:
