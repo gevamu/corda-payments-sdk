@@ -20,26 +20,26 @@ import co.paralleluniverse.fibers.Suspendable
 import com.gevamu.corda.contracts.PaymentContract
 import com.gevamu.corda.schema.PaymentSchemaV1
 import com.gevamu.corda.states.Payment
+import java.time.Instant
+import java.util.UUID
+import net.corda.core.contracts.StateAndRef
 import net.corda.core.flows.CollectSignaturesFlow
 import net.corda.core.flows.FinalityFlow
+import net.corda.core.flows.FlowException
 import net.corda.core.flows.FlowLogic
 import net.corda.core.flows.InitiatingFlow
+import net.corda.core.flows.NotaryError
+import net.corda.core.flows.NotaryException
+import net.corda.core.flows.NotaryFlow
 import net.corda.core.flows.StartableByService
+import net.corda.core.node.ServiceHub
 import net.corda.core.node.services.Vault
 import net.corda.core.node.services.queryBy
 import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.node.services.vault.builder
-import net.corda.core.transactions.TransactionBuilder
-import java.time.Instant
-import java.util.UUID
-import net.corda.core.contracts.StateAndRef
-import net.corda.core.flows.FlowException
-import net.corda.core.flows.NotaryError
-import net.corda.core.flows.NotaryException
-import net.corda.core.flows.NotaryFlow
-import net.corda.core.node.ServiceHub
 import net.corda.core.serialization.CordaSerializable
 import net.corda.core.transactions.SignedTransaction
+import net.corda.core.transactions.TransactionBuilder
 
 data class PaymentStatusUpdate(
     val paymentStatus: Payment.PaymentStatus,
