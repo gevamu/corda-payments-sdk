@@ -22,7 +22,7 @@ dependencies {
 
     cordaRuntimeOnly("net.corda:corda:4.9.3")
 
-    // logging. Corda 4.9 provides log4j 2.17.1
+    // Logging. Corda 4.9.3 provides log4j 2.17.1
     cordaProvided("org.apache.logging.log4j:log4j-api:2.17.1")
 
     testImplementation("net.corda:corda-node-driver:4.9.3")
