@@ -17,26 +17,40 @@
 package com.gevamu.corda.flows
 
 import co.paralleluniverse.fibers.Suspendable
+import net.corda.core.crypto.SecureHash
 import net.corda.core.flows.FlowLogic
 import net.corda.core.flows.FlowSession
 import net.corda.core.flows.InitiatedBy
 import net.corda.core.flows.ReceiveFinalityFlow
 import net.corda.core.flows.SignTransactionFlow
 import net.corda.core.transactions.SignedTransaction
+import net.corda.core.utilities.unwrap
 
 @InitiatedBy(StatusUpdateFlow::class)
-class StatusUpdateFlowResponder(val counterpartySession: FlowSession) : FlowLogic<SignedTransaction>() {
+class StatusUpdateFlowResponder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
     @Suspendable
-    override fun call(): SignedTransaction {
-        // confirm transaction
-        val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
-            override fun checkTransaction(stx: SignedTransaction) {}
+    override fun call() {
+        val signedTransactionId = receiveAndSignTransaction()
+        subFlow(ReceiveFinalityFlow(counterpartySession, expectedTxId = signedTransactionId))
+    }
+
+    private val signTransactionFlow: SignTransactionFlow get() =
+        object : SignTransactionFlow(counterpartySession) {
+            override fun checkTransaction(stx: SignedTransaction) {
+                // TODO Check it's expected transaction
+            }
         }
 
-        // sign transaction on payer side
-        val signedTransaction = subFlow(signTransactionFlow)
+    @Suspendable
+    private fun nextStep(): StatusUpdateFlow.FlowStep =
+        counterpartySession.receive(StatusUpdateFlow.FlowStep::class.java, maySkipCheckpoint = true).unwrap { it }
 
-        // finish transaction on our side
-        return subFlow(ReceiveFinalityFlow(counterpartySession, expectedTxId = signedTransaction.id))
+    @Suspendable
+    private fun receiveAndSignTransaction(): SecureHash {
+        var signedTransactionId: SecureHash
+        do {
+            signedTransactionId = subFlow(signTransactionFlow).id
+        } while (nextStep() == StatusUpdateFlow.FlowStep.SIGN_TRANSACTION)
+        return signedTransactionId
     }
 }
