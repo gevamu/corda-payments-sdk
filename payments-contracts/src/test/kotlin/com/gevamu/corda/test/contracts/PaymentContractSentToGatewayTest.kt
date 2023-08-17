@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Exactpro Systems Limited
+ * Copyright 2022-2023 Exactpro Systems Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,14 @@ import com.gevamu.corda.states.Payment
 import net.corda.core.crypto.SecureHash
 import net.corda.testing.node.ledger
 import org.junit.jupiter.api.Test
+import java.util.UUID
 
 class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     private val inputPayment = Payment(
         uniquePaymentId = uniquePaymentId,
         payer = payer.party,
         gateway = gateway.party,
+        paymentProviderId = paymentProviderId,
         endToEndId = endToEndId,
         paymentInstructionId = attachmentId,
         status = Payment.PaymentStatus.CREATED
@@ -38,6 +40,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
             gateway = gateway.party,
+            paymentProviderId = paymentProviderId,
             endToEndId = endToEndId,
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
@@ -58,11 +61,12 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if EndToEndId is blank`() {
+    fun `should fail if endToEndId is blank`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
             gateway = gateway.party,
+            paymentProviderId = paymentProviderId,
             endToEndId = "",
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
@@ -83,11 +87,91 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     }
 
     @Test
+    fun `should fail if paymentProviderId is not set`() {
+        val inputPaymentNoProviderId = inputPayment.copy(paymentProviderId = null)
+        val outputPayment = Payment(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            endToEndId = endToEndId,
+            paymentInstructionId = attachmentId,
+            status = Payment.PaymentStatus.SENT_TO_GATEWAY
+        )
+        ledgerServices.ledger {
+            transaction {
+                command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
+                output(PaymentContract.ID, "CREATED", inputPaymentNoProviderId)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                input("CREATED")
+                output(PaymentContract.ID, outputPayment)
+                failsWith("Field paymentProviderId is not set (Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
+            }
+        }
+    }
+
+    @Test
+    fun `should allow setting paymentProviderId if it isn't previously set`() {
+        val inputPaymentNoProviderId = inputPayment.copy(paymentProviderId = null)
+        val outputPayment = Payment(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            paymentProviderId = paymentProviderId,
+            endToEndId = endToEndId,
+            paymentInstructionId = attachmentId,
+            status = Payment.PaymentStatus.SENT_TO_GATEWAY
+        )
+        ledgerServices.ledger {
+            transaction {
+                command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
+                output(PaymentContract.ID, "CREATED", inputPaymentNoProviderId)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), PaymentContract.Commands.SendToGateway(uniquePaymentId))
+                input("CREATED")
+                output(PaymentContract.ID, outputPayment)
+                verifies()
+            }
+        }
+    }
+
+    @Test
+    fun `should fail if paymentProviderId is unset`() {
+        val outputPayment = Payment(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            endToEndId = endToEndId,
+            paymentInstructionId = attachmentId,
+            status = Payment.PaymentStatus.SENT_TO_GATEWAY
+        )
+        val sendToGatewayCommand = PaymentContract.Commands.SendToGateway(uniquePaymentId)
+        ledgerServices.ledger {
+            transaction {
+                command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
+                output(PaymentContract.ID, "CREATED", inputPayment)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), sendToGatewayCommand)
+                input("CREATED")
+                output(PaymentContract.ID, outputPayment)
+                failsWith("Field paymentProviderId is not set (Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
+            }
+        }
+    }
+
+    @Test
     fun `should fail if the transaction does not contain Payer's signature`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
             gateway = gateway.party,
+            paymentProviderId = paymentProviderId,
             endToEndId = endToEndId,
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
@@ -116,6 +200,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
             gateway = gateway.party,
+            paymentProviderId = paymentProviderId,
             endToEndId = endToEndId,
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
@@ -144,6 +229,7 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
             gateway = gateway.party,
+            paymentProviderId = paymentProviderId,
             endToEndId = endToEndId,
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.ACCEPTED
@@ -167,11 +253,41 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if EndToEndId is changed`() {
+    fun `should fail if paymentProviderId is changed`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
             gateway = gateway.party,
+            paymentProviderId = UUID.randomUUID(),
+            endToEndId = endToEndId,
+            paymentInstructionId = attachmentId,
+            status = Payment.PaymentStatus.SENT_TO_GATEWAY
+        )
+
+        val sendToGatewayCommand = PaymentContract.Commands.SendToGateway(uniquePaymentId)
+
+        ledgerServices.ledger {
+            transaction {
+                command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
+                output(PaymentContract.ID, "CREATED", inputPayment)
+                verifies()
+            }
+            transaction {
+                command(listOf(payer.publicKey, gateway.publicKey), sendToGatewayCommand)
+                input("CREATED")
+                output(PaymentContract.ID, outputPayment)
+                failsWith("Output state should have same value in paymentProviderId as input state for command $sendToGatewayCommand, index 0 (Input state ${outputPayment::class.simpleName}, index 0; Output state ${outputPayment::class.simpleName}, index 0), contract: ${PaymentContract.ID}")
+            }
+        }
+    }
+
+    @Test
+    fun `should fail if endToEndId is changed`() {
+        val outputPayment = Payment(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            paymentProviderId = paymentProviderId,
             endToEndId = "0",
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
@@ -195,12 +311,13 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if Payer is changed`() {
+    fun `should fail if payer is changed`() {
         val thirdParty = createIdentity("Third Party")
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = thirdParty.party,
             gateway = gateway.party,
+            paymentProviderId = paymentProviderId,
             endToEndId = endToEndId,
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
@@ -224,12 +341,13 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if Gateway is changed`() {
+    fun `should fail if gateway is changed`() {
         val thirdParty = createIdentity("Third Party")
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
             gateway = thirdParty.party,
+            paymentProviderId = paymentProviderId,
             endToEndId = endToEndId,
             paymentInstructionId = attachmentId,
             status = Payment.PaymentStatus.SENT_TO_GATEWAY
@@ -253,11 +371,12 @@ class PaymentContractSentToGatewayTest : AbstractPaymentContractTest() {
     }
 
     @Test
-    fun `should fail if PaymentInstructionId is changed`() {
+    fun `should fail if paymentInstructionId is changed`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,
             gateway = gateway.party,
+            paymentProviderId = paymentProviderId,
             endToEndId = endToEndId,
             paymentInstructionId = SecureHash.SHA256(ByteArray(32) { 1 }),
             status = Payment.PaymentStatus.SENT_TO_GATEWAY

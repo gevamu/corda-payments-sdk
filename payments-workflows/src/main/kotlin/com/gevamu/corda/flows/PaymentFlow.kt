@@ -80,6 +80,7 @@ class PaymentFlow(
     private val paymentInstruction: PaymentInstruction,
     private val gateway: Party,
     private val uniquePaymentId: UUID = UUID.randomUUID(),
+    private val paymentProviderId: UUID? = null,
 ) : FlowLogic<List<StateAndRef<Payment>>>() {
 
     @Suspendable
@@ -102,6 +103,7 @@ class PaymentFlow(
             uniquePaymentId = uniquePaymentId,
             payer = ourIdentity,
             gateway = gateway,
+            paymentProviderId = paymentProviderId,
             paymentInstructionId = attachmentId,
             endToEndId = endToEndId,
             status = Payment.PaymentStatus.CREATED,

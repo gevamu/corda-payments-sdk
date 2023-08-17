@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Exactpro Systems Limited
+ * Copyright 2022-2023 Exactpro Systems Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,31 @@ import com.gevamu.corda.contracts.PaymentContract
 import com.gevamu.corda.states.Payment
 import net.corda.testing.node.ledger
 import org.junit.jupiter.api.Test
+import java.util.UUID
 
 class PaymentContractCreateTest : AbstractPaymentContractTest() {
     @Test
     fun `should pass the valid transaction`() {
+        val outputPayment = Payment(
+            uniquePaymentId = uniquePaymentId,
+            payer = payer.party,
+            gateway = gateway.party,
+            paymentProviderId = UUID.randomUUID(),
+            endToEndId = endToEndId,
+            paymentInstructionId = attachmentId,
+            status = Payment.PaymentStatus.CREATED
+        )
+        ledgerServices.ledger {
+            transaction {
+                command(payer.publicKey, PaymentContract.Commands.Create(uniquePaymentId))
+                output(PaymentContract.ID, outputPayment)
+                verifies()
+            }
+        }
+    }
+
+    @Test
+    fun `should pass if paymentProviderId is not set`() {
         val outputPayment = Payment(
             uniquePaymentId = uniquePaymentId,
             payer = payer.party,

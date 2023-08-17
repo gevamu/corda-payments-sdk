@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Exactpro Systems Limited
+ * Copyright 2022-2023 Exactpro Systems Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,4 +38,5 @@ abstract class AbstractPaymentContractTest {
     protected val uniquePaymentId: UUID = UUID.randomUUID()
     protected val attachmentId = SecureHash.SHA256(ByteArray(32))
     protected val endToEndId = "a1b2c3d4e5f6"
+    protected val paymentProviderId: UUID = UUID.randomUUID()
 }
