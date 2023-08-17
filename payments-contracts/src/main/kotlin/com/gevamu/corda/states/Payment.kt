@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Exactpro Systems Limited
+ * Copyright 2022-2023 Exactpro Systems Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import java.util.UUID
  *
  * @param payer Corda party, which initiated payment
  * @param gateway Corda party, which processes payment
+ * @param paymentProviderId ID of payment provider, which processes payment
  * @param endToEndId Unique value for the payment in debtor-creditor scope
  * @param paymentInstructionId Link to payment instruction, stored as attachment. See [AttachmentId]
  * @param status Status of the payment in workflow
@@ -46,6 +47,7 @@ import java.util.UUID
 data class Payment(
     val payer: Party,
     val gateway: Party,
+    val paymentProviderId: UUID? = null,
     val endToEndId: String,
     val paymentInstructionId: AttachmentId,
     val status: PaymentStatus,
@@ -79,11 +81,10 @@ data class Payment(
      * Workflow:
      * 1. [CREATED]
      * 2. [SENT_TO_GATEWAY]
-     * 3. [PENDING]
-     * 4. [ACCEPTED] / [REJECTED]
+     * 3. [PENDING] / [ACCEPTED] / [REJECTED] / [COMPLETED]
      *
-     * If Accepted:
-     * 5. [COMPLETED]
+     * If [PENDING], [ACCEPTED]:
+     * N. [PENDING] / [ACCEPTED] / [REJECTED] / [COMPLETED]
      */
     @CordaSerializable
     enum class PaymentStatus {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Exactpro Systems Limited
+ * Copyright 2022-2023 Exactpro Systems Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,6 +119,7 @@ class PaymentContract : Contract {
             val input = requireSingleInput()
             val output = requireSingleOutput()
             requireValidPayment(output)
+            requirePaymentProviderId(output)
             requirePaymentStatus(input, Payment.PaymentStatus.CREATED)
             requirePaymentStatus(output, Payment.PaymentStatus.SENT_TO_GATEWAY)
             requireNoPaymentChange(input, output)
@@ -133,6 +134,7 @@ class PaymentContract : Contract {
             val input = requireSingleInput()
             val output = requireSingleOutput()
             requireValidPayment(output)
+            requirePaymentProviderId(output)
             requirePaymentStatus(
                 input,
                 EnumSet.of(
@@ -217,6 +219,12 @@ class PaymentContract : Contract {
             }
         }
 
+        protected fun requirePaymentProviderId(paymentWithRef: StateWithRef<Payment>) {
+            require(paymentWithRef.state.paymentProviderId != null) {
+                "Field paymentProviderId is not set ($paymentWithRef)"
+            }
+        }
+
         protected fun requireSignature(vararg party: Party) {
             require(signers.containsAll(party.map { it.owningKey })) {
                 "Required signature is absent for $commandText"
@@ -226,6 +234,13 @@ class PaymentContract : Contract {
         protected fun requireNoPaymentChange(input: StateWithRef<Payment>, output: StateWithRef<Payment>) {
             val inputPayment = input.state
             val outputPayment = output.state
+            // Once paymentProviderId is set, it shouldn't be changed.
+            require(
+                inputPayment.paymentProviderId == outputPayment.paymentProviderId ||
+                    inputPayment.paymentProviderId == null
+            ) {
+                valueChangedText(input, output, "paymentProviderId")
+            }
             require(inputPayment.endToEndId == outputPayment.endToEndId) {
                 valueChangedText(input, output, "endToEndId")
             }

@@ -31,6 +31,7 @@ import net.corda.core.node.services.queryBy
 import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.node.services.vault.builder
 import net.corda.core.transactions.TransactionBuilder
+import net.corda.core.utilities.unwrap
 import java.time.Instant
 import java.util.UUID
 
@@ -39,7 +40,7 @@ import java.util.UUID
 class SendPaymentFlow(private val uniquePaymentId: UUID) : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
-        logger.debug("Send payment id=$uniquePaymentId")
+        logger.debug("Send payment id={}", uniquePaymentId)
         val paymentStateAndRef = builder {
             // Find all active Payments for the given ID using its JPA entity
             val criteria = QueryCriteria.VaultCustomQueryCriteria(
@@ -54,18 +55,26 @@ class SendPaymentFlow(private val uniquePaymentId: UUID) : FlowLogic<Unit>() {
             //      and status is CREATED or add status to the query criteria
             serviceHub.vaultService.queryBy<Payment>(criteria).states.first()
         }
-        logger.debug("Found payment stateAndRef=$paymentStateAndRef")
+        logger.debug("Found payment stateAndRef={}", paymentStateAndRef)
+
+        val gateway = paymentStateAndRef.state.data.gateway
+
+        val gatewaySession: FlowSession = initiateFlow(gateway)
+
+        val defaultPaymentProvider: UUID = gatewaySession.receive(UUID::class.java).unwrap { it }
 
         // Mutate it to change status and timestamp
-        val payment = paymentStateAndRef.state.data.copy(
-            status = Payment.PaymentStatus.SENT_TO_GATEWAY,
-            timestamp = Instant.now(),
-        )
+        val payment = paymentStateAndRef.state.data.run {
+            copy(
+                status = Payment.PaymentStatus.SENT_TO_GATEWAY,
+                timestamp = Instant.now(),
+                paymentProviderId = if (paymentProviderId == null) defaultPaymentProvider else paymentProviderId
+            )
+        }
 
         // Prepare transaction to send over the state
         // TODO It's better to replace notary with named one since we are consuming states
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
-        val gateway = paymentStateAndRef.state.data.gateway
         val builder = TransactionBuilder(notary)
             .addInputState(paymentStateAndRef)
             .addOutputState(payment)
@@ -73,12 +82,8 @@ class SendPaymentFlow(private val uniquePaymentId: UUID) : FlowLogic<Unit>() {
             .addAttachment(paymentStateAndRef.state.data.paymentInstructionId)
         builder.verify(serviceHub)
 
-        // Sign the transaction on our payer cordapp
+        // Sign the transaction on our side
         val partiallySignedTransaction = serviceHub.signInitialTransaction(builder)
-
-        // Notify gateway about incoming payment tx
-        val gatewaySession: FlowSession = initiateFlow(gateway)
-        logger.debug("initiateFlow(gateway)")
 
         // Expect gateway to sign the transaction
         val fullySignedTransaction = subFlow(CollectSignaturesFlow(partiallySignedTransaction, listOf(gatewaySession)))

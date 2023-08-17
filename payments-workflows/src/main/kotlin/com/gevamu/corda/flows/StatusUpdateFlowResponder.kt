@@ -27,7 +27,7 @@ import net.corda.core.transactions.SignedTransaction
 import net.corda.core.utilities.unwrap
 
 @InitiatedBy(StatusUpdateFlow::class)
-class StatusUpdateFlowResponder(val counterpartySession: FlowSession) : FlowLogic<Unit>() {
+class StatusUpdateFlowResponder(private val counterpartySession: FlowSession) : FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
         val signedTransactionId = receiveAndSignTransaction()
