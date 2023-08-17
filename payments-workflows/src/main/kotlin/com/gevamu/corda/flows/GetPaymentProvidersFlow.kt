@@ -25,6 +25,7 @@ import net.corda.core.identity.Party
 import net.corda.core.serialization.CordaSerializable
 import net.corda.core.utilities.unwrap
 
+// serial may be used for local cache
 @CordaSerializable
 class GetPaymentProvidersResponse(val providers: List<PaymentProviderInfo>, val serial: Int)
 
