@@ -31,9 +31,9 @@ import net.corda.core.node.services.queryBy
 import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.node.services.vault.builder
 import net.corda.core.transactions.TransactionBuilder
+import net.corda.core.utilities.unwrap
 import java.time.Instant
 import java.util.UUID
-import net.corda.core.utilities.unwrap
 
 @InitiatingFlow
 @StartableByService
