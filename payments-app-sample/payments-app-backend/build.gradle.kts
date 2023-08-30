@@ -9,7 +9,7 @@ group = rootProject.group
 
 repositories {
     mavenCentral()
-    maven("https://software.r3.com/artifactory/corda")
+    maven("https://download.corda.net/maven/corda-dependencies")
 }
 
 java {
@@ -48,7 +48,7 @@ dependencies {
     implementation(project(":iso20022"))
 
     implementation("co.paralleluniverse:quasar-core:0.8.0")
-    implementation("net.corda:corda-rpc:4.9.3")
+    implementation("net.corda:corda-rpc:4.9.6")
     implementation("net.openhft:chronicle-map:3.24ea0")
 
     implementation("org.springframework.boot:spring-boot-starter-validation")

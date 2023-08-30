@@ -1,5 +1,5 @@
 plugins {
-    id("com.gevamu.java-library-conventions")
+    id("com.gevamu.build.java-library-conventions")
 }
 
 group = rootProject.group
