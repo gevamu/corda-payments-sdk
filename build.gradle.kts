@@ -4,8 +4,11 @@ import java.time.ZoneId
 plugins {
     // Add lifecycle tasks
     base
-    // Kotlin plugin should be loaded only once
-    id("com.gevamu.kotlin-common-conventions") apply false
+
+    // Load Gevamu build support plugins (mostly to have versions in one place)
+    id("com.gevamu.build.cordapp-publish-conventions") version "0.1.0" apply false
+    id("com.gevamu.build.kotlin-cordapp-conventions") version "0.1.0" apply false
+
     // Generate api reference index with dokka
     id("org.jetbrains.dokka") version "1.7.20"
 }

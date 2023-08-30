@@ -2,12 +2,10 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 plugins {
-    // Include Kotlin Common Conventions
-    id("com.gevamu.kotlin-common-conventions")
     // Apply common settings for cordapps
-    id("com.gevamu.kotlin-cordapp-conventions")
-    // Publish to mvn
-    id("com.gevamu.publish-cordapp-conventions")
+    id("com.gevamu.build.kotlin-cordapp-conventions")
+    // Publish to maven
+    id("com.gevamu.build.cordapp-publish-conventions")
 }
 
 group = rootProject.group

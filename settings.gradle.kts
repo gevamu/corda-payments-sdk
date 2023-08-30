@@ -1,13 +1,23 @@
 pluginManagement {
     repositories {
-        // Use the plugin portal to apply community plugins in convention plugins.
         gradlePluginPortal()
 
-        // Corda plugins v5.1.0 aren't published to the Gradle Plugin Portal :-(
-        maven("https://software.r3.com/artifactory/corda")
+        // Repository with Gevamu build support plugins
+        maven {
+            name = "buildPluginPackages"
+            url = uri("https://maven.pkg.github.com/gevamu/gradle-convention-plugins")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?:
+                    providers.gradleProperty("com.gevamu.build.githubActor").orNull
+                password = System.getenv("GITHUB_TOKEN") ?:
+                    providers.gradleProperty("com.gevamu.build.githubToken").orNull
+            }
+        }
     }
 
-    includeBuild("build-logic")
+    if (java.nio.file.Files.isDirectory(java.nio.file.Paths.get("../gradle-convention-plugins"))) {
+        includeBuild("../gradle-convention-plugins")
+    }
 }
 
 rootProject.name = "corda-payments-sdk"
