@@ -22,9 +22,13 @@ jobs:
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: 'Build Contracts'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew :payments-contracts:build -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
 
       - name: 'Build Workflows'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew :payments-workflows:build -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
 
       - name: 'Publish to Maven Central'
@@ -32,6 +36,7 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew publishAllPublicationsToOSSRHRepository -Pversion="${GITHUB_REF_NAME:1}" -Psigning.gnupg.keyName=D3838CD92688873C -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" --no-daemon
 
       - name: 'Calculate Checksums'
@@ -52,6 +57,8 @@ jobs:
             payments-workflows/build/libs/*
 
       - name: 'Build API Documentation'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew dokkaHtmlMultiModule -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
 
       # Push HTML files to gh-pages branch
