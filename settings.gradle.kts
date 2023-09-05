@@ -22,8 +22,8 @@ pluginManagement {
 
 rootProject.name = "corda-payments-sdk"
 include(
-    "payments-contracts",
-    "payments-workflows",
+    "gevamu-payment-contracts",
+    "gevamu-payment-workflows",
     "iso20022",
     "payments-app-sample:payments-app-backend",
     "payments-app-sample:payments-app-frontend",

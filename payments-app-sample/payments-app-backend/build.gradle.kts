@@ -40,11 +40,11 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
 
-    compileOnly("org.projectlombok:lombok")
-    testCompileOnly("org.projectlombok:lombok")
+//    compileOnly("org.projectlombok:lombok")
+//    testCompileOnly("org.projectlombok:lombok")
 
-    implementation(project(":payments-contracts"))
-    implementation(project(":payments-workflows"))
+    implementation(project(":gevamu-payment-contracts"))
+    implementation(project(":gevamu-payment-workflows"))
     implementation(project(":iso20022"))
 
     implementation("co.paralleluniverse:quasar-core:0.8.0")
