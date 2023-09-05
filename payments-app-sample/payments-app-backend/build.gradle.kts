@@ -40,9 +40,6 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
 
-//    compileOnly("org.projectlombok:lombok")
-//    testCompileOnly("org.projectlombok:lombok")
-
     implementation(project(":gevamu-payment-contracts"))
     implementation(project(":gevamu-payment-workflows"))
     implementation(project(":iso20022"))
