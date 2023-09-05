@@ -25,8 +25,8 @@ tasks {
         listOf(
             "payments-app-sample:payments-app-backend",
             "payments-app-sample:payments-app-frontend",
-            "payments-contracts",
-            "payments-workflows"
+            "gevamu-payment-contracts",
+            "gevamu-payment-workflows"
         ).forEach { subproject ->
             task {
                 dependsOn("${subproject}:${task.name}")

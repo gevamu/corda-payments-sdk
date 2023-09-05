@@ -13,7 +13,7 @@ plugins {
 group = rootProject.group
 
 dependencies {
-    cordapp(project(":payments-contracts"))
+    cordapp(project(":gevamu-payment-contracts"))
 
     // Corda 4 provides 2.3.1
     api("javax.xml.bind:jaxb-api:2.3.1")
@@ -21,7 +21,7 @@ dependencies {
 
 cordapp {
     contract {
-        name("Payments Workflows")
+        name("Gevamu Payment Workflows")
         vendor("Exactpro Systems LLC")
         licence("Apache License, Version 2.0")
         versionId(1)

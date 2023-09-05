@@ -12,7 +12,7 @@ group = rootProject.group
 
 cordapp {
     contract {
-        name("Payments Contracts")
+        name("Gevamu Payment Contracts")
         vendor("Exactpro Systems LLC")
         licence("Apache License, Version 2.0")
         versionId(1)
