@@ -17,7 +17,6 @@
 package com.gevamu.corda.web.server.config;
 
 import lombok.Data;
-import lombok.Value;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
 import javax.xml.bind.annotation.XmlAccessType;

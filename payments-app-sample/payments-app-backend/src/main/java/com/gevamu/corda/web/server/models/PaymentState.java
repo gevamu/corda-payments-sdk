@@ -18,7 +18,6 @@ package com.gevamu.corda.web.server.models;
 
 import com.gevamu.corda.states.Payment;
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.Value;
 
 import java.math.BigDecimal;
