@@ -16,46 +16,47 @@
 
 package com.gevamu.corda.web.server.services;
 
+import com.gevamu.corda.flows.ParticipantRegistration;
 import com.gevamu.corda.flows.PaymentInstruction;
 import com.gevamu.corda.flows.PaymentInstructionFormat;
-import com.gevamu.corda.iso20022.pain.CreditTransferTransaction34;
-import com.gevamu.corda.iso20022.pain.CustomerCreditTransferInitiationV09;
-import com.gevamu.corda.iso20022.pain.PaymentInstruction30;
 import com.gevamu.corda.states.Payment;
+import com.gevamu.corda.web.server.config.Participant;
 import com.gevamu.corda.web.server.models.ParticipantAccount;
 import com.gevamu.corda.web.server.models.PaymentRequest;
 import com.gevamu.corda.web.server.models.PaymentState;
+import com.gevamu.corda.web.server.models.WirePaymentRequest;
 import com.gevamu.corda.web.server.util.CompletableFutures;
 import com.gevamu.corda.web.server.util.MoreCollectors;
+import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 @Service
 public class PaymentService {
+    @Autowired
+    private transient CordaRpcClientService cordaRpcClientService;
+
+    @Autowired
+    private transient IdGeneratorService idGeneratorService;
+
+    @Autowired
+    private transient ParticipantService participantService;
 
     @Autowired
     private transient RegistrationService registrationService;
 
     @Autowired
-    private transient CordaRpcClientService cordaRpcClientService;
-
-    @Autowired
-    private transient CustomerCreditTransferInitiationService customerCreditTransferInitiationService;
-
-    @Autowired
     private transient XmlMarshallingService xmlMarshallingService;
 
-    public CompletionStage<Void> processPayment(PaymentRequest paymentRequest) {
+    public @NotNull CompletionStage<Void> processPayment(@NonNull PaymentRequest paymentRequest) {
         try {
             registrationService.getRegistration()
                 .orElseThrow(ParticipantNotRegisteredException::new);
-            CustomerCreditTransferInitiationV09 customerCreditTransferInitiation = customerCreditTransferInitiationService.createCustomerCreditTransferInitiation(paymentRequest);
-            byte[] bytes = xmlMarshallingService.marshal(customerCreditTransferInitiation);
+            byte[] bytes = xmlMarshallingService.marshalPaymentRequest(toWireFormat(paymentRequest));
             PaymentInstruction paymentInstruction = new PaymentInstruction(PaymentInstructionFormat.ISO20022_V9_XML_UTF8, bytes);
             return cordaRpcClientService.executePaymentFlow(paymentInstruction);
         }
@@ -64,67 +65,56 @@ public class PaymentService {
         }
     }
 
-    public List<PaymentState> getPaymentStates() {
+    public @NotNull List<PaymentState> getPaymentStates() {
         return cordaRpcClientService.getPayments()
             .stream()
-            .map(this::convert)
+            .map(this::toPaymentState)
             .collect(MoreCollectors.toUnmodifiableList());
     }
 
-    private PaymentState convert(Payment payment) {
-        PaymentState.PaymentStateBuilder builder = PaymentState.builder()
+    private @NotNull PaymentState toPaymentState(@NotNull Payment payment) {
+        byte[] attachment = cordaRpcClientService.getAttachedPaymentInstruction(payment.getPaymentInstructionId());
+        WirePaymentRequest wireRequest = xmlMarshallingService.unmarshalPaymentRequest(attachment);
+
+        return PaymentState.builder()
             .paymentId(payment.getEndToEndId())
             .status(payment.getStatus())
-            .updateTime(payment.getTimestamp());
-
-        byte[] attachment = cordaRpcClientService.getAttachedPaymentInstruction(payment.getPaymentInstructionId());
-        CustomerCreditTransferInitiationV09 xml = xmlMarshallingService.unmarshal(attachment);
-        Instant creationTime = xml.getGrpHdr()
-            .getCreDtTm()
-            .toGregorianCalendar()
-            .toZonedDateTime()
-            .toInstant();
-        builder.creationTime(creationTime);
-
-        if (!xml.getPmtInf().isEmpty()) {
-            PaymentInstruction30 paymentInstruction = xml.getPmtInf().get(0);
-            if (!paymentInstruction.getCdtTrfTxInf().isEmpty()) {
-                CreditTransferTransaction34 transaction = paymentInstruction.getCdtTrfTxInf().get(0);
-                String endToEndId = transaction.getPmtId().getEndToEndId();
-                BigDecimal amount = transaction.getAmt().getInstdAmt().getValue();
-                String currency = transaction.getAmt().getInstdAmt().getCcy();
-                ParticipantAccount creditor = deriveCreditor(transaction);
-                ParticipantAccount debtor = deriveDebtor(paymentInstruction);
-                builder.endToEndId(endToEndId)
-                    .amount(amount)
-                    .currency(currency)
-                    .creditor(creditor)
-                    .debtor(debtor);
-            }
-        }
-
-        return builder.build();
-    }
-
-    private ParticipantAccount deriveCreditor(CreditTransferTransaction34 transaction) {
-        String creditor = transaction.getCdtr().getNm();
-        String creditorAccount = transaction.getCdtrAcct().getId().getOthr().getId();
-        String creditorCurrency = transaction.getCdtrAcct().getCcy();
-        return ParticipantAccount.builder()
-            .accountId(creditorAccount)
-            .accountName(creditor)
-            .currency(creditorCurrency)
+            .updateTime(payment.getTimestamp())
+            .creationTime(wireRequest.getCreDtTm().toGregorianCalendar().toInstant())
+            .endToEndId(wireRequest.getEndToEndId())
+            .amount(wireRequest.getAmount())
+            .currency(wireRequest.getCreditor().getCurrency())
+            .creditor(fromParticipant(wireRequest.getCreditor()))
+            .debtor(fromParticipant(wireRequest.getDebtor()))
             .build();
     }
 
-    private ParticipantAccount deriveDebtor(PaymentInstruction30 paymentInstruction) {
-        String creditor = paymentInstruction.getDbtr().getNm();
-        String creditorAccount = paymentInstruction.getDbtrAcct().getId().getOthr().getId();
-        String creditorCurrency = paymentInstruction.getDbtrAcct().getCcy();
+    private @NotNull WirePaymentRequest toWireFormat(@NotNull PaymentRequest paymentRequest)
+        throws ParticipantNotRegisteredException
+    {
+        WirePaymentRequest wireRequest = new WirePaymentRequest();
+        wireRequest.setParticipantId(
+            registrationService.getRegistration()
+                .map(ParticipantRegistration::getParticipantId)
+                .orElseThrow(ParticipantNotRegisteredException::new)
+        );
+        wireRequest.setCreditor(participantService.getCreditor(paymentRequest.getCreditorAccount()));
+        wireRequest.setDebtor(participantService.getDebtor(paymentRequest.getDebtorAccount()));
+        wireRequest.setAmount(paymentRequest.getAmount());
+        wireRequest.setMsgId(idGeneratorService.generateId());
+        wireRequest.setInstrId(idGeneratorService.generateId());
+        wireRequest.setPmtInfId(idGeneratorService.generateId());
+        wireRequest.setEndToEndId(idGeneratorService.generateEndToEndId());
+        wireRequest.setCreDtTm(xmlMarshallingService.xmlNow());
+        wireRequest.setReqdExctnDt(xmlMarshallingService.xmlToday());
+        return wireRequest;
+    }
+
+    private static @NotNull ParticipantAccount fromParticipant(@NotNull Participant participant) {
         return ParticipantAccount.builder()
-            .accountId(creditorAccount)
-            .accountName(creditor)
-            .currency(creditorCurrency)
+            .accountId(participant.getAccount())
+            .accountName(participant.getAccountName())
+            .currency(participant.getCurrency())
             .build();
     }
 }

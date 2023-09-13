@@ -86,6 +86,8 @@ class SendPaymentFlow(private val uniquePaymentId: UUID) : FlowLogic<Unit>() {
         val partiallySignedTransaction = serviceHub.signInitialTransaction(builder)
 
         // Expect gateway to sign the transaction
+        // TODO At this point payment request may fail validation at the Payment gateway.
+        //      In this case, new state with Rejected status should be created.
         val fullySignedTransaction = subFlow(CollectSignaturesFlow(partiallySignedTransaction, listOf(gatewaySession)))
 
         // Record signed transaction to the vault
