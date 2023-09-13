@@ -25,8 +25,10 @@ import lombok.Value;
 public class ParticipantAccount {
     @NonNull
     String accountId;
+
     @NonNull
     String accountName;
+
     @NonNull
     String currency;
 }

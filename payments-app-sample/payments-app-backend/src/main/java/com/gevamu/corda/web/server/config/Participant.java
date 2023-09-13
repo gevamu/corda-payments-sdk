@@ -16,18 +16,35 @@
 
 package com.gevamu.corda.web.server.config;
 
-import lombok.Value;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 @ConstructorBinding
-@Value
+@Data
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Participant {
+    @XmlElement(name = "Bic")
     String bic;
+
+    @XmlElement(name = "Country")
     String country;
+
+    @XmlElement(name = "Currency")
     String currency;
+
+    @XmlElement(name = "Account")
     String account;
+
+    @XmlElement(name = "AccountName")
     String accountName;
+
     String effectiveDate;
+
     String expiryDate;
+
     String paymentLimit;
 }

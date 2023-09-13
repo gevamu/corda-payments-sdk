@@ -24,7 +24,6 @@ rootProject.name = "corda-payments-sdk"
 include(
     "gevamu-payment-contracts",
     "gevamu-payment-workflows",
-    "iso20022",
     "payments-app-sample:payments-app-backend",
     "payments-app-sample:payments-app-frontend",
 )

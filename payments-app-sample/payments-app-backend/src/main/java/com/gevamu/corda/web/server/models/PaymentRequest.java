@@ -27,8 +27,10 @@ import javax.validation.constraints.NotNull;
 public class PaymentRequest {
     @NotBlank
     String creditorAccount;
+
     @NotBlank
     String debtorAccount;
+
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false)
     BigDecimal amount;

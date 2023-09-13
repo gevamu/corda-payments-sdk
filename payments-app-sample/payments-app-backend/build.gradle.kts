@@ -42,7 +42,6 @@ dependencies {
 
     implementation(project(":gevamu-payment-contracts"))
     implementation(project(":gevamu-payment-workflows"))
-    implementation(project(":iso20022"))
 
     implementation("co.paralleluniverse:quasar-core:0.8.0")
     implementation("net.corda:corda-rpc:4.9.6")
@@ -56,7 +55,7 @@ dependencies {
 }
 
 tasks {
-    getByName("run") {
+    getByName<JavaExec>("run") {
         dependsOn(":payments-app-sample:payments-app-frontend:assemble")
     }
 

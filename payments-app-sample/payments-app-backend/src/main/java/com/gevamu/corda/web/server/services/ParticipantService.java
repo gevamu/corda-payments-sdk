@@ -16,47 +16,25 @@
 
 package com.gevamu.corda.web.server.services;
 
-import com.gevamu.corda.iso20022.pain.AccountIdentification4Choice;
-import com.gevamu.corda.iso20022.pain.BranchAndFinancialInstitutionIdentification6;
-import com.gevamu.corda.iso20022.pain.CashAccount38;
-import com.gevamu.corda.iso20022.pain.FinancialInstitutionIdentification18;
-import com.gevamu.corda.iso20022.pain.GenericAccountIdentification1;
-import com.gevamu.corda.iso20022.pain.GenericOrganisationIdentification1;
-import com.gevamu.corda.iso20022.pain.ObjectFactory;
-import com.gevamu.corda.iso20022.pain.OrganisationIdentification29;
-import com.gevamu.corda.iso20022.pain.Party38Choice;
-import com.gevamu.corda.iso20022.pain.PartyIdentification135;
-import com.gevamu.corda.iso20022.pain.PostalAddress24;
 import com.gevamu.corda.web.server.config.Participant;
 import com.gevamu.corda.web.server.config.Participants;
 import com.gevamu.corda.web.server.util.MoreCollectors;
 import lombok.NonNull;
-import lombok.Value;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 @Service
 public class ParticipantService {
-
-    @Autowired
-    private transient RegistrationService registrationService;
-
-    @Value
-    public static class ParticipantIdentification {
-        BranchAndFinancialInstitutionIdentification6 branchAndFinancialInstitutionIdentification;
-        PartyIdentification135 partyIdentification;
-        CashAccount38 cashAccount;
-    }
-
-    private final transient ObjectFactory objectFactory = new ObjectFactory();
     private final transient Map<String, Participant> creditors;
+
     private final transient Map<String, Participant> debtors;
 
-    public ParticipantService(Participants participants) {
+    public ParticipantService(@NonNull Participants participants) {
         creditors = participants.getCreditors()
             .stream()
             .collect(MoreCollectors.toUnmodifiableMap(Participant::getAccount, Function.identity()));
@@ -65,75 +43,29 @@ public class ParticipantService {
             .collect(MoreCollectors.toUnmodifiableMap(Participant::getAccount, Function.identity()));
     }
 
-    public Collection<Participant> getCreditors() {
+    public @NotNull Collection<Participant> getCreditors() {
         return creditors.values();
     }
 
-    public Collection<Participant> getDebtors() {
+    public @NotNull Collection<Participant> getDebtors() {
         return debtors.values();
     }
 
-    public ParticipantIdentification getCreditorIdentification(@NonNull String account) {
-        Participant creditor = creditors.get(account);
-        return createIdentification(creditor);
+    public @NotNull Participant getCreditor(@NonNull String account) {
+        return getParticipant("creditor", creditors, account);
     }
 
-    public ParticipantIdentification getDebtorIdentification(@NonNull String account) {
-        return registrationService.getRegistration()
-            .map(it -> {
-                Participant debtor = debtors.get(account);
-                ParticipantIdentification identification = createIdentification(debtor);
-
-                GenericOrganisationIdentification1 genericOrgId = objectFactory.createGenericOrganisationIdentification1();
-                genericOrgId.setId(it.getParticipantId());
-                OrganisationIdentification29 orgId = objectFactory.createOrganisationIdentification29();
-                orgId.getOthr().add(genericOrgId);
-                Party38Choice id = objectFactory.createParty38Choice();
-                id.setOrgId(orgId);
-                identification.getPartyIdentification().setId(id);
-
-                return identification;
-            })
-            .orElseThrow(ParticipantNotRegisteredException::new);
+    public @NotNull Participant getDebtor(@NonNull String account) {
+        return getParticipant("debtor", debtors, account);
     }
 
-    private ParticipantIdentification createIdentification(@NonNull Participant participant) {
-        BranchAndFinancialInstitutionIdentification6 branchAndFinancialInstitutionIdentification = createBranchAndFinancialInstitutionIdentification(participant);
-        PartyIdentification135 partyIdentification = createPartyIdentification(participant);
-        CashAccount38 cashAccount = createCashAccount(participant);
-        return new ParticipantIdentification(branchAndFinancialInstitutionIdentification, partyIdentification, cashAccount);
-    }
-
-    private BranchAndFinancialInstitutionIdentification6 createBranchAndFinancialInstitutionIdentification(Participant participant) {
-        FinancialInstitutionIdentification18 financialInstitutionIdentification = objectFactory.createFinancialInstitutionIdentification18();
-        financialInstitutionIdentification.setBICFI(participant.getBic());
-        BranchAndFinancialInstitutionIdentification6 result = objectFactory.createBranchAndFinancialInstitutionIdentification6();
-        result.setFinInstnId(financialInstitutionIdentification);
-        return result;
-    }
-
-    private PartyIdentification135 createPartyIdentification(Participant participant) {
-        PartyIdentification135 result = objectFactory.createPartyIdentification135();
-        result.setNm(participant.getAccountName());
-
-        PostalAddress24 pstlAdr = objectFactory.createPostalAddress24();
-        pstlAdr.setCtry(participant.getCountry());
-        result.setPstlAdr(pstlAdr);
-
-        return result;
-    }
-
-    private CashAccount38 createCashAccount(Participant participant) {
-        GenericAccountIdentification1 othr = objectFactory.createGenericAccountIdentification1();
-        othr.setId(participant.getAccount());
-
-        AccountIdentification4Choice id = objectFactory.createAccountIdentification4Choice();
-        id.setOthr(othr);
-
-        CashAccount38 result = objectFactory.createCashAccount38();
-        result.setId(id);
-        result.setNm(participant.getAccountName());
-        result.setCcy(participant.getCurrency());
-        return result;
+    private static @NotNull Participant getParticipant(
+        @NotNull String participantType, @NotNull Map<String, Participant> participants, @NotNull String account
+    ) {
+        Participant participant = participants.get(account);
+        if (participant == null) {
+            throw new NoSuchElementException(String.format("There is no %s with account %s", participantType, account));
+        }
+        return participant;
     }
 }
