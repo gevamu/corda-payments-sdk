@@ -12,6 +12,6 @@ A payment instruction submitted by the Participant as a document formatted accor
 
 The Gevamu Gateway acts as an authorized end-point connected to the payment gateway on the side of the PSP and transfers the payment instruction received from the Participant on-chain to the PSP located off-chain. The Gevamu Payments solution manages the payment flow. As part of the flow, it creates Corda states and updates them based on responses received by the Payment Gateway from the PSP. Payment status updates are communicated back to the Participant.
 
-## Documention
+## Documentation
 
 Please follow the documentation at [gevamu.github.io](https://gevamu.github.io)!

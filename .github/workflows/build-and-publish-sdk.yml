@@ -24,12 +24,12 @@ jobs:
       - name: 'Build Contracts'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew :payments-contracts:build -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
+        run: ./gradlew :gevamu-payment-contracts:build -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
 
       - name: 'Build Workflows'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew :payments-workflows:build -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
+        run: ./gradlew :gevamu-payment-workflows:build -x testFixturesJar -Pversion="${GITHUB_REF_NAME:1}" --no-daemon
 
       - name: 'Publish to Maven Central'
         env:
@@ -41,11 +41,11 @@ jobs:
 
       - name: 'Calculate Checksums'
         run: |
-          cd payments-contracts/build/libs/ || return 1
+          cd gevamu-payment-contracts/build/libs/ || return 1
           find . -name "*.jar" -exec sh -c 'sha256sum "$1" > $1.sha256' _ {} \;
           cd ../../../
           # SC2011, SC2227
-          cd payments-workflows/build/libs/ || return 1
+          cd gevamu-payment-workflows/build/libs/ || return 1
           find . -name "*.jar" -exec sh -c 'sha256sum "$1" > "$1.sha256"' _ {} \;
           cd ../../../
 
@@ -53,8 +53,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            payments-contracts/build/libs/*
-            payments-workflows/build/libs/*
+            gevamu-payment-contracts/build/libs/*
+            gevamu-payment-workflows/build/libs/*
 
       - name: 'Build API Documentation'
         env:
