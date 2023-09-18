@@ -6,7 +6,7 @@ plugins {
     base
 
     // Load Gevamu build support plugins (mostly to have versions in one place)
-    id("com.gevamu.build.cordapp-publish-conventions") version "0.1.0" apply false
+    id("com.gevamu.build.cordapp-publish-conventions") version "0.1.1" apply false
     id("com.gevamu.build.kotlin-cordapp-conventions") version "0.1.0" apply false
 
     // Generate api reference index with dokka

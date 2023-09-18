@@ -1,3 +1,4 @@
+import com.gevamu.build.Cordapp_publish_conventions_gradle.LicenseType
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -17,6 +18,13 @@ cordapp {
         licence("Apache License, Version 2.0")
         versionId(1)
     }
+}
+
+cordappPublishing {
+    name.set("Gevamu Payment Contracts")
+    description.set("Gevamu Payment for Corda Contracts CorDapp")
+    vcsUrl.set("https://github.com/gevamu/corda-payments-sdk")
+    license.set(LicenseType.APACHE_2)
 }
 
 tasks.dokkaHtmlPartial.configure {
